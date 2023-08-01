@@ -19,26 +19,20 @@ class Create_Post_Controller extends \Voxel\Controllers\Base_Controller {
 			$user = \Voxel\current_user();
 			$post_type = \Voxel\Post_Type::get( $_GET['post_type'] ?? null );
 			if ( ! $post_type ) {
-				throw new \Exception( __( 'Invalid request', 'voxel' ), 100 );
+				throw new \Exception( __( 'Invalid request', 'voxel' ) );
 			}
 
 			if ( empty( $_POST['postdata'] ) ) {
-				throw new \Exception( __( 'Invalid request', 'voxel' ), 101 );
+				throw new \Exception( __( 'Invalid request', 'voxel' ) );
 			}
 
 			$post = null;
 			$is_editing = false;
-			$save_as_draft = ( $_REQUEST['save_as_draft'] ?? null ) === 'yes';
 
 			if ( $post_type->get_key() === 'profile' ) {
 				$post = $user->get_or_create_profile();
 				if ( ! $post ) {
-					throw new \Exception( _x( 'Could not update profile.', 'create post', 'voxel' ), 102 );
-				}
-
-				// cannot save profiles as draft
-				if ( $save_as_draft ) {
-					throw new \Exception( __( 'Invalid request', 'voxel' ), 120 );
+					throw new \Exception( _x( 'Could not update profile.', 'create post', 'voxel' ) );
 				}
 			}
 
@@ -46,20 +40,15 @@ class Create_Post_Controller extends \Voxel\Controllers\Base_Controller {
 				$post = \Voxel\Post::get( $_GET['post_id'] );
 
 				if ( $post_type->get_setting( 'submissions.update_status' ) === 'disabled' ) {
-					throw new \Exception( _x( 'Edits not allowed.', 'create post', 'voxel' ), 103 );
+					throw new \Exception( _x( 'Edits not allowed.', 'create post', 'voxel' ) );
 				}
 
 				if ( ! ( $post && \Voxel\Post::current_user_can_edit( $_GET['post_id'] ) ) ) {
-					throw new \Exception( __( 'Permission check failed.', 'voxel' ), 104 );
+					throw new \Exception( __( 'Permission check failed.', 'voxel' ) );
 				}
 
 				if ( ! ( $post && $post->post_type->get_key() === $post_type->get_key() ) ) {
-					throw new \Exception( __( 'Invalid request', 'voxel' ), 105 );
-				}
-
-				// to save an existing post as draft, its previous status must be draft as well
-				if ( $save_as_draft && $post->get_status() !== 'draft' ) {
-					throw new \Exception( __( 'Invalid request', 'voxel' ), 120 );
+					throw new \Exception( __( 'Invalid request', 'voxel' ) );
 				}
 
 				$is_editing = true;
@@ -67,18 +56,18 @@ class Create_Post_Controller extends \Voxel\Controllers\Base_Controller {
 
 			if ( ! $is_editing ) {
 				if ( ! $user->can_create_post( $post_type->get_key() ) ) {
-					throw new \Exception( _x( 'You do not have permission to create new posts.', 'create post', 'voxel' ), 106 );
+					throw new \Exception( _x( 'You do not have permission to create new posts.', 'create post', 'voxel' ) );
 				}
 			}
 
 			// submissions/edits allowed check
 			if ( $is_editing ) {
 				if ( $post_type->get_setting( 'submissions.update_status' ) === 'disabled' ) {
-					throw new \Exception( _x( 'Edits not allowed.', 'create post', 'voxel' ), 107 );
+					throw new \Exception( _x( 'Edits not allowed.', 'create post', 'voxel' ) );
 				}
 			} else {
 				if ( ! $post_type->get_setting( 'submissions.enabled' ) ) {
-					throw new \Exception( _x( 'Submissions not allowed.', 'create post', 'voxel' ), 108 );
+					throw new \Exception( _x( 'Submissions not allowed.', 'create post', 'voxel' ) );
 				}
 
 				do_action( 'voxel/create-post-validation', $post_type );
@@ -191,31 +180,16 @@ class Create_Post_Controller extends \Voxel\Controllers\Base_Controller {
 
 			// determine post status
 			if ( $is_editing ) {
-				$post_author_id = $post->get_author_id();
-
-				if ( $post->get_status() === 'draft' ) {
-					if ( $save_as_draft ) {
-						$post_status = 'draft';
-					} else {
-						$post_status = $post_type->get_setting( 'submissions.status' ) === 'publish' ? 'publish' : 'pending';
-					}
-				} elseif ( $post->get_status() === 'publish' ) {
+				if ( $post->get_status() === 'publish' ) {
 					$post_status = $post_type->get_setting( 'submissions.update_status' ) === 'pending' ? 'pending' : 'publish';
-				} elseif ( $post->get_status() === 'rejected' ) {
-					$post_status = 'pending';
 				} else {
 					$post_status = $post->get_status();
 				}
-			} else {
-				$post_author_id = $user->get_id();
 
-				if ( $save_as_draft ) {
-					$post_status = 'draft';
-				} elseif ( $post_type->get_setting( 'submissions.status' ) === 'publish' ) {
-					$post_status = 'publish';
-				} else {
-					$post_status = 'pending';
-				}
+				$post_author_id = $post->get_author_id();
+			} else {
+				$post_status = $post_type->get_setting( 'submissions.status' ) === 'pending' ? 'pending' : 'publish';
+				$post_author_id = $user->get_id();
 			}
 
 			$data = [
@@ -239,7 +213,7 @@ class Create_Post_Controller extends \Voxel\Controllers\Base_Controller {
 			}
 
 			if ( is_wp_error( $post_id ) ) {
-				throw new \Exception( _x( 'Could not save post.', 'create post', 'voxel' ), 109 );
+				throw new \Exception( _x( 'Could not save post.', 'create post', 'voxel' ) );
 			}
 
 			$post = \Voxel\Post::get( $post_id );
@@ -259,7 +233,7 @@ class Create_Post_Controller extends \Voxel\Controllers\Base_Controller {
 			// success message
 			if ( $is_editing ) {
 				$update_status = $post_type->get_setting( 'submissions.update_status' );
-				if ( $post_status === 'pending' ) {
+				if ( $update_status === 'pending' ) {
 					$message = _x( 'Your changes have been submitted for review.', 'create post', 'voxel' );
 				} elseif ( $update_status === 'pending_merge' ) {
 					$message = _x( 'Your changes have been submitted and will be applied once approved.', 'create post', 'voxel' );
@@ -269,9 +243,7 @@ class Create_Post_Controller extends \Voxel\Controllers\Base_Controller {
 
 				( new \Voxel\Events\Post_Updated_Event( $post->post_type ) )->dispatch( $post->get_id() );
 			} else {
-				if ( $post_status === 'draft' ) {
-					$message = _x( 'Your post has been saved as draft.', 'create post', 'voxel' );
-				} elseif ( $post_status === 'pending' ) {
+				if ( $post_type->get_setting( 'submissions.status' ) === 'pending' ) {
 					$message = _x( 'Your post has been submitted for review.', 'create post', 'voxel' );
 				} else {
 					$message = _x( 'Your post has been published.', 'create post', 'voxel' );
@@ -293,7 +265,6 @@ class Create_Post_Controller extends \Voxel\Controllers\Base_Controller {
 			return wp_send_json( [
 				'success' => false,
 				'message' => $e->getMessage(),
-				'code' => $e->getCode(),
 			] );
 		}
 	}
@@ -480,11 +451,11 @@ class Create_Post_Controller extends \Voxel\Controllers\Base_Controller {
 					$query_order_by = "MATCH(post_title) AGAINST('{$search_string}' IN BOOLEAN MODE) DESC";
 				}
 			}
+// INDEX fixing relation field. post_author = {$author_id}						AND
 
 			$sql = <<<SQL
 				SELECT ID FROM {$wpdb->posts}
-					WHERE post_author = {$author_id}
-						AND post_status = 'publish'
+					WHERE  post_status = 'publish'
 						AND post_type IN ({$query_post_types})
 						{$post__not_in}
 						{$query_search}
