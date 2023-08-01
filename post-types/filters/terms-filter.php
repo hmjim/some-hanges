@@ -21,13 +21,13 @@ class Terms_Filter extends Base_Filter {
 		return [
 			'label' => $this->get_label_model(),
 			'placeholder' => $this->get_placeholder_model(),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
-
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'source' => $this->get_source_model( 'taxonomy' ),
 			'orderby' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Term order',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 				'choices' => [
 					'default' => 'Default',
 					'name' => 'Alphabetical',
@@ -36,9 +36,8 @@ class Terms_Filter extends Base_Filter {
 			'multiple' => [
 				'type' => \Voxel\Form_Models\Switcher_Model::class,
 				'label' => 'Allow selection of multiple terms?',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 			],
-			'icon' => $this->get_icon_model(),
 		];
 	}
 

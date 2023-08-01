@@ -21,7 +21,6 @@ class Append extends \Voxel\Dynamic_Tags\Base_Modifier {
 			'text' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => _x( 'Text to append', 'modifiers', 'voxel-backend' ),
-				'classes' => 'x-col-12',
 			],
 		];
 	}

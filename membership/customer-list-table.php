@@ -69,7 +69,7 @@ class Customer_List_Table extends \WP_List_Table {
 				return sprintf(
 					'<span class="price-amount">%s</span> %s',
 					\Voxel\currency_format( $membership->get_amount(), $membership->get_currency() ),
-					_x( 'one time', 'members table', 'voxel-backend' )
+					_x( 'one time payment', 'members table', 'voxel-backend' )
 				);
 			}
 
@@ -128,7 +128,7 @@ class Customer_List_Table extends \WP_List_Table {
 		}
 
 		$active = $_GET['plan'] ?? null;
-		$plans = \Voxel\Plan::all();
+		$plans = \Voxel\Membership\Plan::all();
 
 		$views['all'] = sprintf(
 			'<a href="%s" class="%s">%s%s</a>',

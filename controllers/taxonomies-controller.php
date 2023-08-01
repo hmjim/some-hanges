@@ -116,48 +116,8 @@ class Taxonomies_Controller extends Base_Controller {
 
 	protected function render_manage_taxonomies_screen() {
 		$add_taxonomy_url = admin_url('admin.php?page=voxel-taxonomies&action=create-taxonomy');
-		$taxonomies = \Voxel\Taxonomy::get_voxel_taxonomies();
+		$taxonomies = \Voxel\Taxonomy::get_all();
 
-		$default_taxonomies = [
-			'category',
-			'post_tag',
-		];
-
-		foreach ( $default_taxonomies as $taxonomy_key ) {
-			if ( ! isset( $taxonomies[ $taxonomy_key ] ) && ( $taxonomy = \Voxel\Taxonomy::get( $taxonomy_key ) ) ) {
-				$taxonomies[ $taxonomy_key ] = $taxonomy;
-			}
-		}
-
-		$config = [
-			'tab' => $_GET['tab'] ?? 'manage-taxonomies',
-			'post_types' => array_filter( array_map( function( $post_type ) {
-				$taxonomies = get_object_taxonomies( $post_type->get_key() );
-				if ( ! empty( $taxonomies ) ) {
-					return [
-						'label'	=> $post_type->get_label(),
-						'slug' => $post_type->get_key(),
-					];
-				}
-			}, \Voxel\Post_Type::get_voxel_types() ) ),
-			'taxonomies' => array_map( function( $taxonomy ) {
-				return [
-					'label' => $taxonomy->get_label(),
-					'slug' => $taxonomy->get_key(),
-					'post_types' => $taxonomy->get_post_types(),
-					'reorder_terms'	=> admin_url( sprintf(
-						'admin.php?page=voxel-taxonomies&action=reorder-terms&taxonomy=%s',
-						$taxonomy->get_key()
-					) ),
-					'edit_taxonomy'	=> admin_url( sprintf(
-						'admin.php?page=voxel-taxonomies&action=edit-taxonomy&taxonomy=%s',
-						$taxonomy->get_key()
-					) ),
-				];
-			}, $taxonomies ),
-		];
-
-		wp_enqueue_script('vx:taxonomies-editor.js');
 		require locate_template( 'templates/backend/taxonomies/view-taxonomies.php' );
 	}
 

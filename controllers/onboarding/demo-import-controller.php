@@ -352,6 +352,13 @@ class Demo_Import_Controller extends \Voxel\Controllers\Base_Controller {
 			if ( ! empty( $config['active_kit'] ) ) {
 				$active_kit = get_option( 'elementor_active_kit' );
 				foreach ( $config['active_kit'] as $meta_key => $meta_value ) {
+					if ( $meta_key === '_elementor_page_settings' && isset( $meta_value['system_typography'] ) ) {
+						$meta_value['system_typography'][0]['typography_font_family'] = 'Arial';
+						$meta_value['system_typography'][1]['typography_font_family'] = 'Arial';
+						$meta_value['system_typography'][2]['typography_font_family'] = 'Arial';
+						$meta_value['system_typography'][3]['typography_font_family'] = 'Arial';
+					}
+
 					update_post_meta( $active_kit, $meta_key, $meta_value );
 				}
 			}
@@ -400,16 +407,6 @@ class Demo_Import_Controller extends \Voxel\Controllers\Base_Controller {
 			// templates
 			$templates = $this->_load_config_file( 'templates.json' );
 			\Voxel\set( 'templates', $templates );
-
-			try {
-				// custom_templates
-				$custom_templates = $this->_load_config_file( 'custom_templates.json' );
-				if ( is_array( $custom_templates ) ) {
-					\Voxel\set( 'custom_templates', $custom_templates );
-				}
-			} catch ( \Exception $e ) {
-				//
-			}
 
 			// product types
 			$existing = \Voxel\get( 'product_types', [] );
@@ -730,15 +727,6 @@ class Demo_Import_Controller extends \Voxel\Controllers\Base_Controller {
 		}
 
 		\Voxel\set( 'templates', $templates );
-
-		$custom_templates = \Voxel\get( 'custom_templates', [] );
-		foreach ( (array) $custom_templates as $group => $items ) {
-			foreach ( (array) $items as $index => $item ) {
-				$custom_templates[ $group ][ $index ]['id'] = \Voxel\get_imported_post_id( $item['id'] );
-			}
-		}
-
-		\Voxel\set( 'custom_templates', $custom_templates );
 
 		$post_types = \Voxel\get( 'post_types', [] );
 		foreach ( $post_types as $key => $post_type ) {

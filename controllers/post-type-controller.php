@@ -11,11 +11,7 @@ class Post_Type_Controller extends Base_Controller {
 	protected function hooks() {
 		$this->on( 'voxel/backend/post-types/screen:edit-type', '@render_edit_screen', 30 );
 		$this->on( 'admin_post_voxel_save_post_type_settings', '@save_settings' );
-		$this->on( 'voxel_ajax_pte.create_template', '@create_custom_template' );
-		$this->on( 'voxel_ajax_pte.create_page', '@create_page' );
-		$this->on( 'voxel_ajax_pte.update_template', '@update_custom_template' );
-		$this->on( 'voxel_ajax_pte.update_template_order', '@update_custom_template_order' );
-		$this->on( 'voxel_ajax_pte.delete_template', '@delete_template' );
+		$this->on( 'voxel_ajax_pte.create_template', '@create_template' );
 		$this->on( 'voxel_ajax_pte.export_revision', '@export_revision' );
 		$this->on( 'voxel_ajax_pte.rollback_revision', '@rollback_revision' );
 		$this->on( 'voxel_ajax_pte.remove_revision', '@remove_revision' );
@@ -30,7 +26,7 @@ class Post_Type_Controller extends Base_Controller {
 		}
 
 		// create templates for post type if they don't exist
-		$post_type->get_templates( $create_if_not_exists = [ 'single', 'card', 'archive' ] );
+		$post_type->get_templates( $create_if_not_exists = true );
 
 		// load required assets
 		wp_enqueue_script('vue');
@@ -48,7 +44,6 @@ class Post_Type_Controller extends Base_Controller {
 
 		$editor_options = [
 			'elementor_edit_link' => admin_url( 'post.php?post={id}&action=elementor' ),
-			'elementor_preview_link' => home_url( '/?p={id}' ),
 			'field_types' => [],
 			'field_presets' => $this->get_field_presets( $post_type ),
 			'supported_conditions' => [],
@@ -255,7 +250,7 @@ class Post_Type_Controller extends Base_Controller {
 			'fields' => $config['fields'],
 			'search' => $config['search'],
 			'templates' => $config['templates'],
-			'custom_templates' => array_map( 'array_values', (array) $config['custom_templates'] ),
+			'custom_templates' => $config['custom_templates'],
 		] );
 
 		if ( $previous_config !== wp_json_encode( $post_type->repository->get_config() ) ) {
@@ -399,17 +394,17 @@ class Post_Type_Controller extends Base_Controller {
 		return $presets;
 	}
 
-	protected function create_custom_template() {
+	protected function create_template() {
 		try {
 			if ( ! current_user_can('manage_options') ) {
 				throw new \Exception( __( 'Invalid request.', 'voxel-backend' ) );
 			}
 
 			$post_type = \Voxel\Post_Type::get( $_GET['post_type'] ?? null );
-			$label = sanitize_text_field( $_GET['label'] ?? '' );
+			$label = sanitize_key( $_GET['label'] ?? '' );
 
 			$group = sanitize_text_field( $_GET['group'] ?? '' );
-			if ( ! in_array( $group, [ 'card', 'single', 'single_post' ], true ) ) {
+			if ( ! in_array( $group, [ 'card', 'single' ], true ) ) {
 				throw new \Exception( __( 'Could not create template', 'voxel-backend' ) );
 			}
 
@@ -426,13 +421,11 @@ class Post_Type_Controller extends Base_Controller {
 			}
 
 			$templates = $post_type->repository->get_custom_templates();
-
 			$templates[ $group ][] = [
 				'label' => $label,
-				'id' => absint( $template_id )
+				'id' => absint( $template_id ),
 			];
 
-			$templates = array_map( 'array_values', $templates );
 			$post_type->repository->set_config( [
 				'custom_templates' => $templates,
 			] );
@@ -441,212 +434,6 @@ class Post_Type_Controller extends Base_Controller {
 				'success' => true,
 				'templates' => $templates,
 			] );
-		} catch ( \Exception $e ) {
-			return wp_send_json( [
-				'success' => false,
-				'message' => $e->getMessage(),
-			] );
-		}
-	}
-
-	protected function create_page() {
-		try {
-			if ( ! current_user_can('manage_options') ) {
-				throw new \Exception( __( 'Invalid request.', 'voxel-backend' ) );
-			}
-
-			$post_type = \Voxel\Post_Type::get( $_GET['post_type'] ?? null );
-			$group = sanitize_text_field( $_GET['group'] ?? '' );
-			if ( ! in_array( $group, [ 'form' ], true ) ) {
-				throw new \Exception( __( 'Could not create page', 'voxel-backend' ) );
-			}
-
-			if ( ! $post_type ) {
-				throw new \Exception( __( 'Could not create page', 'voxel-backend' ) );
-			}
-
-			$title = sprintf( 'Create %s', $post_type->get_singular_name() );
-			$new_template_id = \Voxel\create_page(
-				$title,
-				sprintf( 'create-%s', $post_type->get_key() )
-			);
-
-			if ( is_wp_error( $new_template_id ) ) {
-				throw new \Exception( __( 'Could not create page', 'voxel-backend' ) );
-			}
-
-			$templates = $post_type->repository->get_templates();
-			$templates['form'] = $new_template_id;
-			
-			$post_type->repository->set_config( [
-				'templates' => $templates,
-			] );
-			
-			return wp_send_json( [
-				'success' => true,
-				'template_id' => $new_template_id,
-			] );
-		} catch ( \Exception $e ) {
-			return wp_send_json( [
-				'success' => false,
-				'message' => $e->getMessage(),
-			] );
-		}
-	}
-
-	protected function update_custom_template() {
-		try {
-			if ( ! current_user_can('manage_options') ) {
-				throw new \Exception( __( 'Invalid request.', 'voxel-backend' ) );
-			}
-
-			$post_type = \Voxel\Post_Type::get( $_GET['post_type'] ?? null );
-			$label = sanitize_text_field( $_GET['label'] ?? '' );
-			$template_id = absint( $_GET['template_id'] ?? null );
-
-			$visibility_rules = $_GET['visibility_rules'] ?? [];
-
-			$group = sanitize_text_field( $_GET['group'] ?? '' );
-			if ( ! in_array( $group, [ 'card', 'single', 'single_post' ], true ) ) {
-				throw new \Exception( __( 'Could not update template.', 'voxel-backend' ) );
-			}
-
-			if ( ! ( $post_type && $label && $template_id ) ) {
-				throw new \Exception( __( 'Template label and ID are required.', 'voxel-backend' ) );
-			}
-
-			$templates = $post_type->repository->get_custom_templates();
-			if ( ! isset( $templates[ $group ] ) ) {
-				throw new \Exception( __( 'Could not update template.', 'voxel-backend' ) );
-			}
-
-			$found = false;
-			foreach ( $templates[ $group ] as $index => $template ) {
-				if ( $template['id'] !== $template_id ) {
-					continue;
-				}
-
-				$found = true;
-				$templates[ $group ][ $index ] = [
-					'label' => $label,
-					'id' => absint( $template_id ),
-					'visibility_rules'  => $visibility_rules ? $visibility_rules : [],
-				];
-			}
-
-			if ( ! $found ) {
-				$templates[ $group ][] = [
-					'label' => $label,
-					'id' => absint( $template_id ),
-				];
-			}
-
-			$templates = array_map( 'array_values', $templates );
-			$post_type->repository->set_config( [
-				'custom_templates' => $templates,
-			] );
-
-			return wp_send_json( [
-				'success' => true,
-				'templates' => $templates,
-			] );
-		} catch ( \Exception $e ) {
-			return wp_send_json( [
-				'success' => false,
-				'message' => $e->getMessage(),
-			] );
-		}
-	}
-
-	protected function update_custom_template_order() {
-		try {
-			if ( ! current_user_can('manage_options') ) {
-				throw new \Exception( __( 'Invalid request.', 'voxel-backend' ) );
-			}
-
-			$post_type = \Voxel\Post_Type::get( $_REQUEST['post_type'] ?? null );
-			$custom_templates = json_decode( stripslashes( $_REQUEST['custom_templates'] ), true );
-
-			if ( ! is_array( $custom_templates ) || empty( $custom_templates ) ) {
-				throw new \Exception( 'Invalid request.' );
-			}
-
-			$templates = array_map( 'array_values', $custom_templates );
-			$post_type->repository->set_config( [
-				'custom_templates' => $custom_templates,
-			] );
-
-			return wp_send_json( [
-				'success' => true,
-			] );
-		} catch ( \Exception $e ) {
-			return wp_send_json( [
-				'success' => false,
-				'message' => $e->getMessage(),
-			] );
-		}
-	}
-
-	protected function delete_template() {
-		try {
-			if ( ! current_user_can('manage_options') ) {
-				throw new \Exception( __( 'Invalid request.', 'voxel-backend' ) );
-			}
-
-			$post_type = \Voxel\Post_Type::get( $_GET['post_type'] ?? null );
-			$page_id = absint( $_GET['id'] ?? null );
-
-			$group = sanitize_text_field( $_GET['group'] ?? '' );
-			if ( ! in_array( $group, [ 'card', 'single', 'single_post', 'form' ], true ) ) {
-				throw new \Exception( __( 'Could not delete template', 'voxel-backend' ) );
-			}
-
-			if ( ! ( $post_type && $page_id ) ) {
-				throw new \Exception( __( 'Page ID is required.', 'voxel-backend' ) );
-			}
-
-			if ( $group === 'form' ) {
-				wp_delete_post( $page_id );
-
-				$templates = $post_type->repository->get_templates();
-				$templates['form'] = null;
-
-				$post_type->repository->set_config( [
-					'templates' => $templates,
-				] );
-
-				return wp_send_json( [
-					'success' => true,
-					'templates' => $templates,
-				] );
-			} elseif ( in_array( $group, [ 'card', 'single', 'single_post' ], true ) ) {
-				$templates = $post_type->repository->get_custom_templates();
-				$is_found = false;
-				foreach ( $templates[ $group ] as $key => $data ) {
-					if ( $page_id !== $data['id'] ) {
-						continue;
-					}
-
-					wp_delete_post( $page_id );
-
-					$is_found = true;
-					unset( $templates[ $group ][ $key ] );
-				}
-
-				if ( ! $is_found ) {
-					throw new \Exception( __( 'Could not delete template', 'voxel-backend' ) );
-				}
-
-				$templates = array_map( 'array_values', $templates );
-				$post_type->repository->set_config( [
-					'custom_templates' => $templates,
-				] );
-
-				return wp_send_json( [
-					'success' => true,
-					'custom_templates' => $templates,
-				] );
-			}
 		} catch ( \Exception $e ) {
 			return wp_send_json( [
 				'success' => false,
@@ -717,7 +504,6 @@ class Post_Type_Controller extends Base_Controller {
 			] );
 
 			wp_safe_redirect( add_query_arg( 'revision', 'rollback', $post_type->get_edit_link() ) );
-			exit;
 		} catch ( \Exception $e ) {
 			return call_user_func( apply_filters( 'wp_die_handler', '_default_wp_die_handler' ), $e->getMessage(), '', [ 'back_link' => true ] );
 		}

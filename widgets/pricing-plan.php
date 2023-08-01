@@ -25,8 +25,8 @@ class Pricing_Plan extends Base_Widget {
 	}
 
 	protected function register_controls() {
-		$plans = \Voxel\Plan::active();
-		$default_plan = \Voxel\Plan::get_or_create_default_plan();
+		$plans = \Voxel\Membership\Plan::active();
+		$default_plan = \Voxel\Membership\Plan::get_or_create_default_plan();
 		$options = [
 			'default' => $default_plan->get_label(),
 		];
@@ -51,7 +51,7 @@ class Pricing_Plan extends Base_Widget {
 					);
 
 					$option_label = \Voxel\currency_format( $price['amount'], $price['currency'] );
-					if ( $period = \Voxel\interval_format( $price['recurring']['interval'] ?? null, $price['recurring']['interval_count'] ?? null ) ) {
+					if ( $period = \Voxel\Membership\Plan::get_price_period( $price ) ) {
 						$option_label .= sprintf( ' / %s', $period );
 					}
 
@@ -89,8 +89,6 @@ class Pricing_Plan extends Base_Widget {
 				'label' => __( 'Items', 'voxel-elementor' ),
 				'type' => \Elementor\Controls_Manager::REPEATER,
 				'fields' => $repeater->get_controls(),
-				'_disable_loop' => true,
-				'title_field' => '{{{ group_label }}}',
 			] );
 
 			$this->end_controls_section();
@@ -296,9 +294,9 @@ class Pricing_Plan extends Base_Widget {
 					[
 						'label' => __( 'Align', 'voxel-elementor' ),
 						'type' => \Elementor\Controls_Manager::SELECT,
-						'default' => 'flex-start',
+						'default' => 'left',
 						'options' => [
-							'flex-start'  => __( 'Left', 'voxel-elementor' ),
+							'left'  => __( 'Left', 'voxel-elementor' ),
 							'center' => __( 'Center', 'voxel-elementor' ),
 							'flex-end' => __( 'Right', 'voxel-elementor' ),
 						],
@@ -364,9 +362,9 @@ class Pricing_Plan extends Base_Widget {
 					[
 						'label' => __( 'Align content', 'voxel-elementor' ),
 						'type' => \Elementor\Controls_Manager::SELECT,
-						'default' => 'flex-start',
+						'default' => 'left',
 						'options' => [
-							'flex-start'  => __( 'Left', 'voxel-elementor' ),
+							'left'  => __( 'Left', 'voxel-elementor' ),
 							'center' => __( 'Center', 'voxel-elementor' ),
 							'flex-end' => __( 'Right', 'voxel-elementor' ),
 						],
@@ -398,53 +396,7 @@ class Pricing_Plan extends Base_Widget {
 					]
 				);
 
-				$this->add_control(
-					'plan_desc_section',
-					[
-						'label' => __( 'Plan description', 'voxel-elementor' ),
-						'type' => \Elementor\Controls_Manager::HEADING,
-						'separator' => 'before',
-					]
-				);
 
-				$this->add_control(
-					'desc_align',
-					[
-						'label' => __( 'Text align', 'voxel-elementor' ),
-						'type' => \Elementor\Controls_Manager::SELECT,
-						'default' => 'left',
-						'options' => [
-							'left'  => __( 'Left', 'voxel-elementor' ),
-							'center' => __( 'Center', 'voxel-elementor' ),
-							'right' => __( 'Right', 'voxel-elementor' ),
-						],
-
-						'selectors' => [
-							'{{WRAPPER}} .ts-plan-desc' => 'text-align: {{VALUE}}',
-						],
-					]
-				);
-
-				$this->add_group_control(
-					\Elementor\Group_Control_Typography::get_type(),
-					[
-						'name' => 'desc_typo',
-						'label' => __( 'Typography', 'voxel-elementor' ),
-						'selector' => '{{WRAPPER}} .ts-plan-desc',
-					]
-				);
-
-				$this->add_responsive_control(
-					'desc_col',
-					[
-						'label' => __( 'Color', 'voxel-elementor' ),
-						'type' => \Elementor\Controls_Manager::COLOR,
-						'selectors' => [
-							'{{WRAPPER}} .ts-plan-desc p' => 'color: {{VALUE}}',
-						],
-
-					]
-				);
 
 				$this->add_control(
 					'plan_list_section',
@@ -460,9 +412,9 @@ class Pricing_Plan extends Base_Widget {
 					[
 						'label' => __( 'Align content', 'voxel-elementor' ),
 						'type' => \Elementor\Controls_Manager::SELECT,
-						'default' => 'flex-start',
+						'default' => 'left',
 						'options' => [
-							'flex-start'  => __( 'Left', 'voxel-elementor' ),
+							'left'  => __( 'Left', 'voxel-elementor' ),
 							'center' => __( 'Center', 'voxel-elementor' ),
 							'flex-end' => __( 'Right', 'voxel-elementor' ),
 						],
@@ -472,8 +424,6 @@ class Pricing_Plan extends Base_Widget {
 						],
 					]
 				);
-
-
 
 				$this->add_responsive_control(
 					'list_gap',
@@ -625,9 +575,9 @@ class Pricing_Plan extends Base_Widget {
 							[
 								'label' => __( 'Justify', 'voxel-elementor' ),
 								'type' => \Elementor\Controls_Manager::SELECT,
-								'default' => 'flex-start',
+								'default' => 'left',
 								'options' => [
-									'flex-start'  => __( 'Left', 'voxel-elementor' ),
+									'left'  => __( 'Left', 'voxel-elementor' ),
 									'center' => __( 'Center', 'voxel-elementor' ),
 									'flex-end' => __( 'Right', 'voxel-elementor' ),
 									'space-between' => __( 'Space between', 'voxel-elementor' ),
@@ -1381,11 +1331,17 @@ class Pricing_Plan extends Base_Widget {
 				'ts_ui_icons',
 				[
 					'label' => __( 'Icons', 'voxel-elementor' ),
-					'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+					'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
 				]
 			);
 
-
+				$this->add_control(
+					'plan_list_icon',
+					[
+						'label' => __( 'Feature icon', 'text-domain' ),
+						'type' => \Elementor\Controls_Manager::ICONS,
+					]
+				);
 
 				$this->add_control(
 					'ts_arrow_right',
@@ -1416,19 +1372,11 @@ class Pricing_Plan extends Base_Widget {
 				'type' => \Elementor\Controls_Manager::TEXT,
 			] );
 
-			$repeater->add_control(
-				'feature_ico',
-				[
-					'label' => __( 'Icon', 'text-domain' ),
-					'type' => \Elementor\Controls_Manager::ICONS,
-				]
-			);
+
 			$this->add_control( $key.':features', [
 				'label' => __( 'Features', 'voxel-elementor' ),
 				'type' => \Elementor\Controls_Manager::REPEATER,
 				'fields' => $repeater->get_controls(),
-				'_disable_loop' => true,
-				'title_field' => '{{{ text }}}',
 			] );
 
 			$this->end_controls_section();
@@ -1438,86 +1386,68 @@ class Pricing_Plan extends Base_Widget {
 	protected function render( $instance = [] ) {
 		$groups = $this->get_settings_for_display( 'ts_price_groups' );
 		$prices = [];
-		$switch_role = $this->_get_switch_role();
 		foreach ( $groups as $group ) {
 			if ( ! is_array( $group['prices'] ) || empty( $group['prices'] ) ) {
 				continue;
 			}
 
 			foreach ( $group['prices'] as $price_key ) {
-				try {
-					$link = add_query_arg( [
+				$price_id = substr( strrchr( $price_key, '@' ), 1 );
+				$plan_key = str_replace( '@'.$price_id, '', $price_key );
+				$mode = substr( $price_id, 0, 5 ) === 'test:' ? 'test' : 'live';
+				$price_id = str_replace( 'test:', '', $price_id );
+
+				$plan = \Voxel\Membership\Plan::get( $plan_key );
+				if ( ! $plan ) {
+					continue;
+				}
+
+				if ( $plan->get_key() === 'default' ) {
+					$price = [
+						'type' => 'one_time',
+						'currency' => \Voxel\get( 'settings.stripe.currency', 'USD' ),
+						'amount' => 0,
+						'active' => true,
+					];
+				} else {
+					$pricing = $plan->get_pricing();
+					if ( empty( $pricing[ $mode ] ) || empty( $pricing[ $mode ]['prices'][ $price_id ] ) ) {
+						continue;
+					}
+
+					$price = $pricing[ $mode ]['prices'][ $price_id ];
+					if ( ! $price['active'] ) {
+						continue;
+					}
+				}
+
+				if ( $this->get_settings_for_display( sprintf( 'ts_plan:%s:image', $plan->get_key() ) ) ) {
+					$image = \Elementor\Group_Control_Image_Size::get_attachment_image_html(
+						$this->get_settings_for_display(),
+						'thumbnail',
+						sprintf( 'ts_plan:%s:image', $plan->get_key() )
+					);
+				} else {
+					$image = '';
+				}
+
+				$prices[] = [
+					'price_id' => $price_id,
+					'key' => $price_key,
+					'group' => $group['_id'],
+					'label' => $plan->get_label(),
+					'is_free' => floatval( $price['amount'] ) === 0.0,
+					'amount' => \Voxel\currency_format( $price['amount'], strtoupper( $price['currency'] ) ),
+					'period' => \Voxel\Membership\Plan::get_price_period( $price ),
+					'image' => $image,
+					'features' => $this->get_settings_for_display( sprintf( 'ts_plan:%s:features', $plan->get_key() ) ),
+					'link' => add_query_arg( [
 						'action' => 'plans.choose_plan',
 						'plan' => $price_key,
 						'redirect_to' => $_GET['redirect_to'] ?? null,
-						'context' => $_GET['context'] ?? null,
-						'switch_to_role' => $switch_role ? $switch_role->get_key() : null,
 						'_wpnonce' => wp_create_nonce( 'vx_choose_plan' ),
-					], home_url('/?vx=1') );
-
-					if ( $price_key === 'default' ) {
-						$plan = \Voxel\Plan::get_or_create_default_plan();
-						$prices[] = [
-							'price_id' => '',
-							'key' => 'default',
-							'group' => $group['_id'],
-							'label' => $plan->get_label(),
-							'description' => $plan->get_description(),
-							'image' => $this->_get_plan_image( $plan->get_key() ),
-							'features' => $this->_get_plan_features( $plan->get_key() ),
-							'link' => $link,
-							'is_free' => true,
-						];
-					} else {
-						$price = \Voxel\Plan_Price::from_key( $price_key );
-						$plan = $price->plan;
-
-						if ( ! $price->is_enabled() ) {
-							continue;
-						}
-
-						if ( is_user_logged_in() ) {
-							if ( $switch_role !== null ) {
-								if ( ! $plan->supports_role( $switch_role->get_key() ) ) {
-									continue;
-								}
-							} else {
-								// if ( ! $plan->supports_user( \Voxel\current_user() ) ) {
-								// 	continue;
-								// }
-							}
-						}
-
-						if ( ! in_array( $price->get_type(), [ 'one_time', 'recurring' ], true ) ) {
-							continue;
-						}
-
-						$interval = $price->get_details()['recurring'] ?? null;
-						$prices[] = [
-							'price_id' => $price->get_id(),
-							'key' => $price_key,
-							'group' => $group['_id'],
-							'label' => $plan->get_label(),
-							'description' => $plan->get_description(),
-							'image' => $this->_get_plan_image( $plan->get_key() ),
-							'features' => $this->_get_plan_features( $plan->get_key() ),
-							'link' => $link,
-							'is_free' => floatval( $price->get_amount() ) === 0.0,
-							'amount' => \Voxel\currency_format(
-								$price->get_amount(),
-								strtoupper( $price->get_currency() )
-							),
-							'period' => \Voxel\interval_format(
-								$interval['interval'] ?? null,
-								$interval['interval_count'] ?? null
-							),
-						];
-					}
-				} catch ( \Exception $e ) {
-					if ( \Voxel\is_dev_mode() ) {
-						// dump($price_key.': '.$e->getMessage());
-					}
-				}
+					], home_url('/?vx=1') ),
+				];
 			}
 		}
 
@@ -1538,43 +1468,4 @@ class Pricing_Plan extends Base_Widget {
 
 	protected function content_template() {}
 	public function render_plain_content( $instance = [] ) {}
-
-	private function _get_plan_image( $plan_key ) {
-		if ( $this->get_settings_for_display( sprintf( 'ts_plan:%s:image', $plan_key ) ) ) {
-			return \Elementor\Group_Control_Image_Size::get_attachment_image_html(
-				$this->get_settings_for_display(),
-				'thumbnail',
-				sprintf( 'ts_plan:%s:image', $plan_key )
-			);
-		}
-
-		return '';
-	}
-
-	private function _get_plan_features( $plan_key ) {
-		return $this->get_settings_for_display( sprintf( 'ts_plan:%s:features', $plan_key ) );
-	}
-
-	private function _get_switch_role() {
-		if ( ! is_user_logged_in() ) {
-			return null;
-		}
-
-		if ( empty( $_REQUEST['switch_to_role'] ) ) {
-			return null;
-		}
-
-		$switch_role = \Voxel\Role::get( $_REQUEST['switch_to_role'] );
-		if ( ! ( $switch_role && $switch_role->is_switching_enabled() ) ) {
-			return null;
-		}
-
-		$user = \Voxel\current_user();
-		$switchable_roles = $user->get_switchable_roles();
-		if ( ! isset( $switchable_roles[ $switch_role->get_key() ] ) ) {
-			return null;
-		}
-
-		return $switch_role;
-	}
 }

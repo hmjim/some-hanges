@@ -72,6 +72,16 @@ class Create_Post extends Base_Widget {
 
 		$this->end_controls_section();
 
+		$this->start_controls_section(
+			'ts_ui_labels',
+			[
+				'label' => __( 'Labels', 'voxel-elementor' ),
+				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+			]
+		);
+
+
+		$this->end_controls_section();
 
 		$this->start_controls_section(
 			'ts_ui_icons',
@@ -275,15 +285,6 @@ class Create_Post extends Base_Widget {
 				'ts_rtimeslot_icon',
 				[
 					'label' => __( 'Remove timeslot icon', 'text-domain' ),
-					'type' => \Elementor\Controls_Manager::ICONS,
-
-				]
-			);
-
-			$this->add_control(
-				'ts_upload_ico',
-				[
-					'label' => __( 'Upload icon', 'text-domain' ),
 					'type' => \Elementor\Controls_Manager::ICONS,
 
 				]
@@ -806,14 +807,17 @@ class Create_Post extends Base_Widget {
 				[
 					'label' => __( 'Top spacing', 'voxel-elementor' ),
 					'type' => \Elementor\Controls_Manager::SLIDER,
-					'size_units' => [ 'px' ],
+					'size_units' => [ 'px', '%' ],
 					'range' => [
 						'px' => [
 							'min' => 0,
 							'max' => 100,
 							'step' => 1,
 						],
-
+						'%' => [
+							'min' => 0,
+							'max' => 100,
+						],
 					],
 					'selectors' => [
 						'{{WRAPPER}} .ts-form-footer' => 'padding-top: {{SIZE}}{{UNIT}};',
@@ -825,6 +829,368 @@ class Create_Post extends Base_Widget {
 
 
 
+		$this->start_controls_section(
+			'ts_ffooter_btn',
+			[
+				'label' => __( 'Footer: Next/Previous step', 'voxel-elementor' ),
+				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+			]
+		);
+
+			$this->start_controls_tabs(
+				'ts_ffooter_btn_tabs'
+			);
+
+				/* Normal tab */
+
+				$this->start_controls_tab(
+					'ts_ffooter_btn_normal',
+					[
+						'label' => __( 'Normal', 'voxel-elementor' ),
+					]
+				);
+
+
+
+					$this->add_control(
+						'ts_ffooter_icon',
+						[
+							'label' => __( 'Icon', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
+						]
+					);
+
+
+					$this->add_responsive_control(
+						'ffooter_icon_con_size',
+						[
+							'label' => __( 'Container size', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px', '%' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+								'%' => [
+									'min' => 0,
+									'max' => 100,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev a div' => 'height: {{SIZE}}{{UNIT}}; width: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_responsive_control(
+						'ffooter_icon_size',
+						[
+							'label' => __( 'Icon size', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+							],
+
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev a i' => 'font-size: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-nextprev a svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Border::get_type(),
+						[
+							'name' => 'ffooter_icon_border',
+							'label' => __( 'Border', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-nextprev a > div',
+						]
+					);
+
+					$this->add_responsive_control(
+						'ffooter_icon_radius',
+						[
+							'label' => __( 'Border radius', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px', '%' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+								'%' => [
+									'min' => 0,
+									'max' => 100,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev a > div' => 'border-radius: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_control(
+						'ts_ffooter_text',
+						[
+							'label' => __( 'Text', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Typography::get_type(),
+						[
+							'name' => 'ts_ffooter_text_typo',
+							'label' => __( 'Typography', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-nextprev a span',
+						]
+					);
+
+					$this->add_responsive_control(
+						'ffooter_text_margin',
+						[
+							'label' => __( 'Side margin', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px', '%' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+								'%' => [
+									'min' => 0,
+									'max' => 100,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev a span' => 'margin-left: {{SIZE}}{{UNIT}};margin-right: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+
+
+
+					$this->add_control(
+						'ts_ffooter_colors',
+						[
+							'label' => __( 'Colors (Default)', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
+						]
+					);
+
+
+					$this->add_responsive_control(
+						'ts_ffooter_text_c',
+						[
+							'label' => __( 'Text color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev a span' => 'color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_ffooter_icon_con_c',
+						[
+							'label' => __( 'Icon container background', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev a div' => 'background-color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_ffooter_icon_c',
+						[
+							'label' => __( 'Icon color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev a i' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-nextprev a svg' => 'fill: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_control(
+						'ts_ffooter_fw_colors',
+						[
+							'label' => __( 'Colors (Next)', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
+						]
+					);
+
+
+					$this->add_responsive_control(
+						'ts_ffooter_text_fw_c',
+						[
+							'label' => __( 'Text color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev .ts-next span' => 'color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_ffooter_icon_con_fw_c',
+						[
+							'label' => __( 'Icon container background', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev .ts-next div' => 'background-color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_ffooter_icon_fw_c',
+						[
+							'label' => __( 'Icon color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev .ts-next i' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-nextprev .ts-next svg' => 'fill: {{VALUE}}',
+							],
+
+						]
+					);
+
+
+
+
+				$this->end_controls_tab();
+
+
+				/* Hover tab */
+
+				$this->start_controls_tab(
+					'ts_ffooter_btn_hover',
+					[
+						'label' => __( 'Hover', 'voxel-elementor' ),
+					]
+				);
+
+					$this->add_control(
+						'ts_ffooter_colors_h',
+						[
+							'label' => __( 'Colors (Default)', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
+						]
+					);
+
+
+					$this->add_responsive_control(
+						'ts_ffooter_text_c_h',
+						[
+							'label' => __( 'Text color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev a:hover span' => 'color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_ffooter_icon_con_c_h',
+						[
+							'label' => __( 'Icon container background', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev a:hover div' => 'background-color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_ffooter_icon_c_h',
+						[
+							'label' => __( 'Icon color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev a:hover i' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-nextprev a:hover svg' => 'fill: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_control(
+						'ts_ffooter_fw_colors_h',
+						[
+							'label' => __( 'Colors (Next)', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
+						]
+					);
+
+
+					$this->add_responsive_control(
+						'ts_ffooter_text_fw_c_h',
+						[
+							'label' => __( 'Text color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev .ts-next:hover span' => 'color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_ffooter_icon_con_fw_c_h',
+						[
+							'label' => __( 'Icon container background', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev .ts-next:hover div' => 'background-color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_ffooter_icon_c_fw_h',
+						[
+							'label' => __( 'Icon color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-nextprev .ts-next:hover i' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-nextprev .ts-next:hover svg' => 'fill: {{VALUE}}',
+							],
+
+						]
+					);
+
+
+				$this->end_controls_tab();
+
+			$this->end_controls_tabs();
+
+		$this->end_controls_section();
 
 		$this->start_controls_section(
 			'ts_sf1_fields_general',
@@ -970,38 +1336,6 @@ class Create_Post extends Base_Widget {
 					'type' => \Elementor\Controls_Manager::COLOR,
 					'selectors' => [
 						'{{WRAPPER}} .ts-form-group  small' => 'color: {{VALUE}}',
-					],
-
-				]
-			);
-
-			$this->add_control(
-				'ts1_field_req_h',
-				[
-					'label' => __( 'Field required', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::HEADING,
-					'separator' => 'before',
-				]
-			);
-
-
-			$this->add_group_control(
-				\Elementor\Group_Control_Typography::get_type(),
-				[
-					'name' => 'ts1_field_req_t',
-					'label' => __( 'Typography' ),
-					'selector' => '{{WRAPPER}} span.is-required',
-				]
-			);
-
-
-			$this->add_responsive_control(
-				'ts1_field_req_col',
-				[
-					'label' => __( 'Color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}} span.is-required' => 'color: {{VALUE}}',
 					],
 
 				]
@@ -2103,7 +2437,7 @@ class Create_Post extends Base_Widget {
 								'label' => __( 'Chevron color', 'voxel-elementor' ),
 								'type' => \Elementor\Controls_Manager::COLOR,
 								'selectors' => [
-									'{{WRAPPER}} div.ts-filter .ts-down-icon' => 'border-color: {{VALUE}}',
+									'{{WRAPPER}} div.ts-filter .ts-down-icon' => 'border-top-color: {{VALUE}}',
 								],
 							]
 						);
@@ -2188,7 +2522,16 @@ class Create_Post extends Base_Widget {
 							]
 						);
 
-
+						$this->add_control(
+							'ts_chevron_btn_h',
+							[
+								'label' => __( 'Chevron color', 'voxel-elementor' ),
+								'type' => \Elementor\Controls_Manager::COLOR,
+								'selectors' => [
+									'{{WRAPPER}} div.ts-filter:hover .ts-down-icon' => 'border-top-color: {{VALUE}}',
+								],
+							]
+						);
 
 					$this->end_controls_tab();
 
@@ -2273,12 +2616,16 @@ class Create_Post extends Base_Widget {
 							[
 								'label' => __( 'Border width', 'voxel-elementor' ),
 								'type' => \Elementor\Controls_Manager::SLIDER,
-								'size_units' => [ 'px' ],
+								'size_units' => [ 'px', '%' ],
 								'range' => [
 									'px' => [
 										'min' => 0,
 										'max' => 100,
 										'step' => 1,
+									],
+									'%' => [
+										'min' => 0,
+										'max' => 100,
 									],
 								],
 								'selectors' => [
@@ -2296,14 +2643,23 @@ class Create_Post extends Base_Widget {
 							]
 						);
 
-
+						$this->add_control(
+							'ts_chevron_btn_f',
+							[
+								'label' => __( 'Chevron color', 'voxel-elementor' ),
+								'type' => \Elementor\Controls_Manager::COLOR,
+								'selectors' => [
+									'{{WRAPPER}} div.ts-filter.ts-filled .ts-down-icon' => 'border-top-color: {{VALUE}}',
+								],
+							]
+						);
 
 
 					$this->end_controls_tab();
 
 				$this->end_controls_tabs();
 
-		$this->end_controls_section();
+			$this->end_controls_section();
 
 		$this->start_controls_section(
 			'inline_popup_list',
@@ -2582,7 +2938,7 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Chevron color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .inline-multilevel .ts-right-icon' => 'border-color: {{VALUE}}',
+								'{{WRAPPER}} .inline-multilevel .ts-right-icon' => 'border-left-color: {{VALUE}}',
 							],
 						]
 					);
@@ -4602,7 +4958,7 @@ class Create_Post extends Base_Widget {
 						[
 							'name' => 'ts_submit_btn_typo',
 							'label' => __( 'Button typography', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .ts-btn-2.form-btn',
+							'selector' => '{{WRAPPER}} .ts-btn-2.create-btn',
 						]
 					);
 
@@ -4624,7 +4980,7 @@ class Create_Post extends Base_Widget {
 								],
 							],
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-2.form-btn' => 'height: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-btn-2.create-btn' => 'height: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
@@ -4635,7 +4991,7 @@ class Create_Post extends Base_Widget {
 						[
 							'name' => 'ts_sf_form_btn_border',
 							'label' => __( 'Border', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .ts-btn-2.form-btn',
+							'selector' => '{{WRAPPER}} .ts-btn-2.create-btn',
 						]
 					);
 
@@ -4657,7 +5013,7 @@ class Create_Post extends Base_Widget {
 								],
 							],
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-2.form-btn' => 'border-radius: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-btn-2.create-btn' => 'border-radius: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
@@ -4667,7 +5023,7 @@ class Create_Post extends Base_Widget {
 						[
 							'name' => 'ts_sf_form_btn_shadow',
 							'label' => __( 'Box Shadow', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .ts-btn-2.form-btn',
+							'selector' => '{{WRAPPER}} .ts-btn-2.create-btn',
 						]
 					);
 
@@ -4678,7 +5034,7 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Text color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-2.form-btn' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-btn-2.create-btn' => 'color: {{VALUE}}',
 							],
 
 						]
@@ -4691,7 +5047,7 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Background color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-2.form-btn' => 'background: {{VALUE}}',
+								'{{WRAPPER}} .ts-btn-2.create-btn' => 'background: {{VALUE}}',
 							],
 
 						]
@@ -4714,8 +5070,8 @@ class Create_Post extends Base_Widget {
 							],
 
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-2.form-btn i' => 'font-size: {{SIZE}}{{UNIT}};',
-								'{{WRAPPER}} .ts-btn-2.form-btn svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-btn-2.create-btn i' => 'font-size: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-btn-2.create-btn svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
@@ -4726,8 +5082,8 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Icon color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-2.form-btn i' => 'color: {{VALUE}}',
-								'{{WRAPPER}} .ts-btn-2.form-btn svg' => 'fill: {{VALUE}}',
+								'{{WRAPPER}} .ts-btn-2.create-btn i' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-btn-2.create-btn svg' => 'fill: {{VALUE}}',
 							],
 
 						]
@@ -4747,7 +5103,7 @@ class Create_Post extends Base_Widget {
 								],
 							],
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-2.form-btn' => 'grid-gap: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-btn-2.create-btn' => 'grid-gap: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
@@ -4772,7 +5128,7 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Text color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-2.form-btn:hover' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-btn-2.create-btn:hover' => 'color: {{VALUE}}',
 							],
 
 						]
@@ -4784,7 +5140,7 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Background color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-2.form-btn:hover' => 'background-color: {{VALUE}}',
+								'{{WRAPPER}} .ts-btn-2.create-btn:hover' => 'background-color: {{VALUE}}',
 							],
 
 						]
@@ -4796,7 +5152,7 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Border color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-2.form-btn:hover' => 'border-color: {{VALUE}}',
+								'{{WRAPPER}} .ts-btn-2.create-btn:hover' => 'border-color: {{VALUE}}',
 							],
 
 						]
@@ -4807,7 +5163,7 @@ class Create_Post extends Base_Widget {
 						[
 							'name' => 'ts_sf_form_btn_shadow_h',
 							'label' => __( 'Box Shadow', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .ts-btn-2.form-btn:hover',
+							'selector' => '{{WRAPPER}} .ts-btn-2.create-btn:hover',
 						]
 					);
 
@@ -4817,8 +5173,8 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Icon color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-2.form-btn:hover i' => 'color: {{VALUE}}',
-								'{{WRAPPER}} .ts-btn-2.form-btn:hover svg' => 'fill: {{VALUE}}',
+								'{{WRAPPER}} .ts-btn-2.create-btn:hover i' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-btn-2.create-btn:hover svg' => 'fill: {{VALUE}}',
 							],
 
 						]
@@ -4857,9 +5213,9 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Button icon color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-1.form-btn i'
+								'{{WRAPPER}} .ts-btn-1.create-btn i'
 								=> 'color: {{VALUE}}',
-								'{{WRAPPER}} .ts-btn-1.form-btn svg'
+								'{{WRAPPER}} .ts-btn-1.create-btn svg'
 								=> 'fill: {{VALUE}}',
 							],
 
@@ -4880,8 +5236,8 @@ class Create_Post extends Base_Widget {
 								],
 							],
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-1.form-btn i' => 'font-size: {{SIZE}}{{UNIT}};',
-								'{{WRAPPER}} .ts-btn-1.form-btn svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-btn-1.create-btn i' => 'font-size: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-btn-1.create-btn svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
@@ -4904,7 +5260,7 @@ class Create_Post extends Base_Widget {
 								],
 							],
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-1.form-btn' => 'grid-gap: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-btn-1.create-btn' => 'grid-gap: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
@@ -4915,7 +5271,7 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Button background', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-1.form-btn'
+								'{{WRAPPER}} .ts-btn-1.create-btn'
 								=> 'background-color: {{VALUE}}',
 							],
 
@@ -4927,7 +5283,7 @@ class Create_Post extends Base_Widget {
 						[
 							'name' => 'scndry_btn_border',
 							'label' => __( 'Button border', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .ts-btn-1.form-btn',
+							'selector' => '{{WRAPPER}} .ts-btn-1.create-btn',
 						]
 					);
 
@@ -4949,7 +5305,7 @@ class Create_Post extends Base_Widget {
 								],
 							],
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-1.form-btn' => 'border-radius: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-btn-1.create-btn' => 'border-radius: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
@@ -4972,7 +5328,7 @@ class Create_Post extends Base_Widget {
 								],
 							],
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-1.form-btn' => 'height: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-btn-1.create-btn' => 'height: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
@@ -4982,7 +5338,7 @@ class Create_Post extends Base_Widget {
 						[
 							'name' => 'scndry_btn_text',
 							'label' => __( 'Typography' ),
-							'selector' => '{{WRAPPER}} .ts-btn-1.form-btn',
+							'selector' => '{{WRAPPER}} .ts-btn-1.create-btn',
 						]
 					);
 
@@ -4992,7 +5348,7 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Text color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-1.form-btn'
+								'{{WRAPPER}} .ts-btn-1.create-btn'
 								=> 'color: {{VALUE}}',
 							],
 
@@ -5018,9 +5374,9 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Button icon color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-1.form-btn:hover i'
+								'{{WRAPPER}} .ts-btn-1.create-btn:hover i'
 								=> 'color: {{VALUE}}',
-								'{{WRAPPER}} .ts-btn-1.form-btn:hover svg'
+								'{{WRAPPER}} .ts-btn-1.create-btn:hover svg'
 								=> 'fill: {{VALUE}}',
 							],
 
@@ -5033,7 +5389,7 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Button background', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-1.form-btn:hover'
+								'{{WRAPPER}} .ts-btn-1.create-btn:hover'
 								=> 'background-color: {{VALUE}}',
 							],
 
@@ -5046,7 +5402,7 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Border color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-1.form-btn:hover'
+								'{{WRAPPER}} .ts-btn-1.create-btn:hover'
 								=> 'border-color: {{VALUE}}',
 							],
 
@@ -5059,7 +5415,7 @@ class Create_Post extends Base_Widget {
 							'label' => __( 'Text color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-btn-1.form-btn:hover'
+								'{{WRAPPER}} .ts-btn-1.create-btn:hover'
 								=> 'color: {{VALUE}}',
 							],
 
@@ -5270,6 +5626,11 @@ class Create_Post extends Base_Widget {
 
 		$this->end_controls_section();
 
+		/*
+		===================
+		Popup: Popup: File gallery
+		===================
+		*/
 
 
 		$this->apply_controls( Option_Groups\File_Field::class );
@@ -5526,8 +5887,6 @@ class Create_Post extends Base_Widget {
 			return;
 		}
 
-		$user = \Voxel\current_user();
-
 		$post_type = \Voxel\Post_Type::get( $this->get_settings_for_display('ts_post_type') );
 		if ( ! $post_type ) {
 			return;
@@ -5539,7 +5898,6 @@ class Create_Post extends Base_Widget {
 			'is_admin_mode' => $is_admin_mode,
 			'admin_mode_nonce' => $this->get_settings('_ts_admin_mode_nonce'),
 			'autocomplete' => $this->_get_autocomplete_config(),
-			'can_save_draft' => true,
 		];
 
 		$config['post_type'] = [
@@ -5548,7 +5906,7 @@ class Create_Post extends Base_Widget {
 
 		$post = null;
 		if ( $post_type->get_key() === 'profile' ) {
-			$post = $user->get_or_create_profile();
+			$post = \Voxel\current_user()->get_or_create_profile();
 		}
 
 		if ( \Voxel\Post::current_user_can_edit( $_GET['post_id'] ?? null ) ) {
@@ -5563,8 +5921,6 @@ class Create_Post extends Base_Widget {
 			$config['post'] = [
 				'id' => $post->get_id(),
 			];
-
-			$config['can_save_draft'] = $post->get_status() === 'draft';
 		}
 
 		$config['fields'] = [];
@@ -5795,7 +6151,7 @@ class Create_Post extends Base_Widget {
 		$this->add_control(
 			'ts_list_icon',
 			[
-				'label' => __( 'Taxonomy / Select icon', 'text-domain' ),
+				'label' => __( 'List icon', 'text-domain' ),
 				'type' => \Elementor\Controls_Manager::ICONS,
 
 			]

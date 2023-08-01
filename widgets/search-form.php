@@ -60,24 +60,6 @@ class Search_Form extends Base_Widget {
 				]
 			);
 
-			$this->add_responsive_control(
-				'ts_post_type_width',
-				[
-					'label' => __( 'Post type filter width', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SLIDER,
-					'condition' => [ 'cpt_filter_show' => 'yes' ],
-					'size_units' => [ '%' ],
-					'range' => [
-						'min' => 0,
-						'max' => 100,
-						'step' => 5,
-					],
-					'selectors' => [
-						'{{WRAPPER}} .choose-cpt-filter' => 'width: {{SIZE}}%;',
-					],
-				]
-			);
-
 			$this->add_control( 'ts_on_submit', [
 				'label' => __( 'On form submit', 'voxel-elementor' ),
 				'type' => \Elementor\Controls_Manager::SELECT,
@@ -136,9 +118,30 @@ class Search_Form extends Base_Widget {
 				'condition' => [ 'ts_on_submit' => 'submit-to-page' ],
 			] );
 
+			$this->add_control(
+				'ts_cpt_visual',
+				[
+					'label' => __( 'Visual', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::HEADING,
+					'separator' => 'before',
+				]
+			);
 
-
-
+			$this->add_responsive_control(
+				'ts_post_type_width',
+				[
+					'label' => __( 'Width', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SLIDER,
+					'range' => [
+						'min' => 0,
+						'max' => 100,
+						'step' => 5,
+					],
+					'selectors' => [
+						'{{WRAPPER}} .choose-cpt-filter' => 'width: {{SIZE}}%;',
+					],
+				]
+			);
 
 
 
@@ -246,23 +249,6 @@ class Search_Form extends Base_Widget {
 				],
 			] );
 
-
-
-
-
-			$repeater->add_control(
-				'ts_repeater_hide_filter',
-				[
-					'label' => __( 'Hide filter', 'voxel-elementor' ),
-					'description' => __( 'Visually hide this filter but keep it functional', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SWITCHER,
-					'return_value' => 'equal',
-					'selectors' => [
-						'{{CURRENT_ITEM}}' => 'display: none !important;',
-					],
-				]
-			);
-
 			$repeater->add_responsive_control(
 				'align_popup_btn',
 				[
@@ -302,6 +288,18 @@ class Search_Form extends Base_Widget {
 				]
 			);
 
+			$repeater->add_control(
+				'ts_repeater_hide_filter',
+				[
+					'label' => __( 'Hide filter', 'voxel-elementor' ),
+					'description' => __( 'Visually hide this filter but keep it functional', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SWITCHER,
+					'return_value' => 'equal',
+					'selectors' => [
+						'{{CURRENT_ITEM}}' => 'display: none !important;',
+					],
+				]
+			);
 
 			$repeater->add_control(
 				'filt_custom_popup',
@@ -553,6 +551,14 @@ class Search_Form extends Base_Widget {
 			);
 
 
+			$this->add_control(
+				'form_toggle_desktop',
+				[
+					'label' => __( 'Enable on desktop', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SWITCHER,
+					'return_value' => 'yes',
+				]
+			);
 
 
 
@@ -580,7 +586,6 @@ class Search_Form extends Base_Widget {
 				'raw' => '<a href="#" onclick="voxel_reload_editor(); return false;" class="elementor-button">Apply changes</a>',
 			] );
 
-
 			$this->add_control(
 				'ts_sf_filter_wrap',
 				[
@@ -593,13 +598,35 @@ class Search_Form extends Base_Widget {
 			$this->add_control(
 				'ts_sf_wrap_desktop',
 				[
-					'label' => __( 'No wrap (Horizontal scroll)', 'voxel-elementor' ),
-					'description' => __( 'Displays all filters in a single row, horizontal scroll is displayed when space is exceeded', 'voxel-elementor' ),
+					'label' => __( 'Enable horizontal scroll)', 'voxel-elementor' ),
 					'type' => \Elementor\Controls_Manager::SWITCHER,
 
 				]
 			);
 
+			$this->add_responsive_control(
+				'ks_nowrap_max_width',
+				[
+					'label' => __( 'Max filter width', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SLIDER,
+					'description' => __( 'Useful when filters have auto width', 'voxel-elementor' ),
+					'size_units' => [ 'px', '%' ],
+					'range' => [
+						'px' => [
+							'min' => 100,
+							'max' => 500,
+							'step' => 1,
+						],
+						'%' => [
+							'min' => 0,
+							'max' => 100,
+						],
+					],
+					'selectors' => [
+						'{{WRAPPER}} .ts-filter' => 'max-width: {{SIZE}}{{UNIT}};',
+					],
+				]
+			);
 
 
 
@@ -960,28 +987,6 @@ class Search_Form extends Base_Widget {
 					]
 				);
 
-				$this->add_responsive_control(
-					'ts_scroll_height',
-					[
-						'label' => __( 'Scroll height', 'voxel-elementor' ),
-						'type' => \Elementor\Controls_Manager::SLIDER,
-						'size_units' => [ 'px' ],
-						'range' => [
-							'px' => [
-								'min' => 0,
-								'max' => 100,
-								'step' => 1,
-							],
-
-						],
-						'selectors' => [
-							'{{WRAPPER}} .min-scroll.min-scroll-h::-webkit-scrollbar' => 'height: {{SIZE}}{{UNIT}};',
-						],
-					]
-				);
-
-
-
 
 
 
@@ -990,7 +995,7 @@ class Search_Form extends Base_Widget {
 		$this->start_controls_section(
 			'nsf_form_general',
 			[
-				'label' => __( 'General', 'voxel-elementor' ),
+				'label' => __( 'Filters: General', 'voxel-elementor' ),
 				'tab' => 'tab_general',
 			]
 		);
@@ -1000,111 +1005,12 @@ class Search_Form extends Base_Widget {
 				[
 					'label' => __( 'Filter Margin', 'voxel-elementor' ),
 					'type' => \Elementor\Controls_Manager::DIMENSIONS,
-					'size_units' => [ 'px' ],
+					'size_units' => [ 'px', '%', 'em' ],
 					'selectors' => [
 						'{{WRAPPER}} .ts-filter-wrapper > .ts-form-group' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 					],
 				]
 			);
-			// $this->add_responsive_control(
-			// 	'filter_gap',
-			// 	[
-			// 		'label' => __( 'Filter gap', 'voxel-elementor' ),
-			// 		'type' => \Elementor\Controls_Manager::SLIDER,
-			// 		'size_units' => [ 'px' ],
-			// 		'range' => [
-			// 			'px' => [
-			// 				'min' => 0,
-			// 				'max' => 100,
-			// 				'step' => 1,
-			// 			],
-			// 		],
-			// 		'selectors' => [
-			// 			'{{WRAPPER}} .ts-filter-wrapper' => 'grid-gap: {{SIZE}}{{UNIT}};',
-			// 			'{{WRAPPER}} .ts-double-input' => 'grid-gap: {{SIZE}}{{UNIT}};',
-			// 			'{{WRAPPER}} .ts-form-submit' => 'grid-gap: {{SIZE}}{{UNIT}};',
-			// 		],
-			// 	]
-			// );
-
-			$this->add_responsive_control(
-				'ks_nowrap_max_width',
-				[
-					'label' => __( 'Max filter width', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SLIDER,
-					'description' => __( 'Useful when filters have auto width to prevent them from using too much space ', 'voxel-elementor' ),
-					'size_units' => [ 'px', '%' ],
-					'range' => [
-
-						'%' => [
-							'min' => 0,
-							'max' => 100,
-						],
-
-						'px' => [
-							'min' => 0,
-							'max' => 500,
-							'step' => 1,
-						],
-					],
-					'selectors' => [
-						'{{WRAPPER}} .ts-filter' => 'max-width: {{SIZE}}{{UNIT}};',
-					],
-				]
-			);
-
-
-			$this->add_responsive_control(
-				'inline_input_min',
-				[
-					'label' => __( 'Min input width', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SLIDER,
-					'description' => __( 'Increase the minimum width of inputs', 'voxel-elementor' ),
-					'size_units' => [ 'px' ],
-					'range' => [
-						'px' => [
-							'min' => 100,
-							'max' => 500,
-							'step' => 1,
-						],
-					],
-					'selectors' => [
-						'{{WRAPPER}} .ts-inline-filter' => 'min-width: {{SIZE}}{{UNIT}};',
-					],
-				]
-			);
-
-			$this->add_responsive_control(
-				'double_filter_gap',
-				[
-					'label' => __( 'Double filter gap', 'voxel-elementor' ),
-					'description' => __( 'Useful to set the gap for multi component filters', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SLIDER,
-					'size_units' => [ 'px' ],
-					'range' => [
-						'px' => [
-							'min' => 0,
-							'max' => 100,
-							'step' => 1,
-						],
-					],
-					'selectors' => [
-						'{{WRAPPER}} .ts-double-input' => 'grid-gap: {{SIZE}}{{UNIT}};',
-						'{{WRAPPER}} .ts-form-submit' => 'grid-gap: {{SIZE}}{{UNIT}};',
-					],
-				]
-			);
-
-
-		$this->end_controls_section();
-
-		$this->start_controls_section(
-			'ts_labels',
-			[
-				'label' => __( 'Labels', 'voxel-elementor' ),
-				'tab' => 'tab_general',
-			]
-		);
 
 			$this->add_control(
 				'ts_sf_input_lbl',
@@ -1142,7 +1048,7 @@ class Search_Form extends Base_Widget {
 				'ts_sf_input_label_m',
 				[
 					'label' => __( 'Disable on mobile', 'voxel-elementor' ),
-					'description' => __( 'Disable label on mobile', 'voxel-elementor' ),
+					'description' => __( 'Disable label width on mobile', 'voxel-elementor' ),
 					'type' => \Elementor\Controls_Manager::SWITCHER,
 					'condition' => [ 'ts_sf_input_label' => 'yes' ],
 					'return_value' => 'equal',
@@ -1186,41 +1092,141 @@ class Search_Form extends Base_Widget {
 				]
 			);
 
+
+
+			$this->add_control(
+				'ts_db_filters',
+				[
+					'label' => __( 'Double filters', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::HEADING,
+					'separator' => 'before',
+				]
+			);
+
+			$this->add_responsive_control(
+				'ts_sf_input_doube',
+				[
+					'label' => __( 'Double filter spacing', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SLIDER,
+					'size_units' => [ 'px'],
+					'range' => [
+						'px' => [
+							'min' => 0,
+							'max' => 100,
+							'step' => 1,
+						],
+					],
+					'default' => [
+						'unit' => 'px',
+						'size' => 10,
+					],
+					'selectors' => [
+						'{{WRAPPER}} .ts-form .ts-double-input' => 'grid-gap: {{SIZE}}{{UNIT}};',
+					],
+				]
+			);
+
+			$this->add_control(
+				'ts_sf_input_doube_force',
+				[
+					'label' => __( 'Equal width', 'voxel-elementor' ),
+					'description' => __( 'Force equal width for double filters', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SWITCHER,
+					'return_value' => 'equal',
+					'selectors' => [
+						'{{WRAPPER}} .ts-double-input .ts-filter' => 'width: 100% !important;',
+					],
+				]
+			);
+
+			$this->add_control(
+				'ts_sf_input_doube_force_t',
+				[
+					'label' => __( 'Disable on tablet', 'voxel-elementor' ),
+					'description' => __( 'Disable equal width on tablet', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SWITCHER,
+					'condition' => [ 'ts_sf_input_doube_force' => 'equal' ],
+					'return_value' => 'equal',
+					'selectors' => [
+						'(tablet){{WRAPPER}} .ts-double-input .ts-filter' => 'width: auto !important;',
+					],
+				]
+			);
+
+			$this->add_control(
+				'ts_sf_input_doube_force_m',
+				[
+					'label' => __( 'Disable on mobile', 'voxel-elementor' ),
+					'description' => __( 'Disable equal width on mobile', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SWITCHER,
+					'condition' => [ 'ts_sf_input_doube_force' => 'equal' ],
+					'return_value' => 'equal',
+					'selectors' => [
+						'(mobile){{WRAPPER}} .ts-double-input .ts-filter' => 'width: auto !important;',
+					],
+				]
+			);
+
 		$this->end_controls_section();
 
 		$this->start_controls_section(
-			'ts_common_styles',
+			'ts_sf_styling_filters',
 			[
-				'label' => __( 'Common styles', 'voxel-elementor' ),
+				'label' => __( 'Popup button', 'voxel-elementor' ),
 				'tab' => 'tab_general',
 			]
 		);
 
 			$this->start_controls_tabs(
-				'common_tabs'
+				'ts_sf_filters_tabs'
 			);
 
 				/* Normal tab */
 
 				$this->start_controls_tab(
-					'common_normal',
+					'ts_sf_normal',
 					[
 						'label' => __( 'Normal', 'voxel-elementor' ),
 					]
 				);
+
+
 					$this->add_control(
-						'ts_gn_filters',
+						'ts_sf_input',
 						[
-							'label' => __( 'Popup button & Input filters', 'voxel-elementor' ),
+							'label' => __( 'Style', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::HEADING,
 							'separator' => 'before',
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Typography::get_type(),
+						[
+							'name' => 'ts_sf_input_input_typo',
+							'label' => __( 'Typography' ),
+							'selector' => '{{WRAPPER}} .ts-form .ts-filter',
+						]
+					);
+
+
+
+					$this->add_responsive_control(
+						'ts_sf_input_padding',
+						[
+							'label' => __( 'Padding', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::DIMENSIONS,
+							'size_units' => [ 'px', '%', 'em' ],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form .ts-filter' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							],
 						]
 					);
 
 					$this->add_responsive_control(
 						'ts_sf_input_height',
 						[
-							'label' => __( 'Component height', 'voxel-elementor' ),
+							'label' => __( 'Height', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::SLIDER,
 							'size_units' => [ 'px', '%' ],
 							'range' => [
@@ -1236,42 +1242,59 @@ class Search_Form extends Base_Widget {
 							],
 							'selectors' => [
 								'{{WRAPPER}} .ts-filter' => 'height: {{SIZE}}{{UNIT}};',
-								'{{WRAPPER}} .inline-input' => 'height: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
+
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Box_Shadow::get_type(),
+						[
+							'name' => 'ts_sf_input_shadow',
+							'label' => __( 'Box Shadow', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-filter',
+						]
+					);
+
 
 
 
 					$this->add_responsive_control(
-						'ts_sf_input_icon_size',
+						'ts_sf_input_bg',
 						[
-							'label' => __( 'Component icon', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px', '%' ],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 100,
-									'step' => 1,
-								],
-								'%' => [
-									'min' => 0,
-									'max' => 100,
-								],
-							],
-							'default' => [
-								'unit' => 'px',
-								'size' => 24,
-							],
+							'label' => __( 'Background color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-filter i' => 'font-size: {{SIZE}}{{UNIT}};',
-								'{{WRAPPER}} .ts-filter svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
-								'{{WRAPPER}} .ts-inline-filter .ts-input-icon > span > i' => 'font-size: {{SIZE}}{{UNIT}};',
-								'{{WRAPPER}} .ts-inline-filter .ts-input-icon > span > svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-form .ts-filter' => 'background: {{VALUE}}',
 							],
+
 						]
 					);
+
+
+					$this->add_responsive_control(
+						'ts_sf_input_value_col',
+						[
+							'label' => __( 'Text color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form .ts-filter-text' => 'color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Border::get_type(),
+						[
+							'name' => 'ts_sf_input_border',
+							'label' => __( 'Border', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-filter',
+						]
+					);
+
+
+
 
 					$this->add_responsive_control(
 						'ts_sf_input_radius',
@@ -1292,54 +1315,21 @@ class Search_Form extends Base_Widget {
 							],
 							'selectors' => [
 								'{{WRAPPER}} .ts-form .ts-filter' => 'border-radius: {{SIZE}}{{UNIT}};',
-								'{{WRAPPER}} .inline-input' => 'border-radius: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
 
-					$this->add_group_control(
-						\Elementor\Group_Control_Box_Shadow::get_type(),
+
+
+
+
+
+					$this->add_control(
+						'ts_icon_filters',
 						[
-							'name' => 'ts_sf_input_shadow',
-							'label' => __( 'Box Shadow', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .ts-filter, {{WRAPPER}} .inline-input',
-
-						]
-					);
-
-					$this->add_group_control(
-						\Elementor\Group_Control_Border::get_type(),
-						[
-							'name' => 'ts_sf_input_border',
-							'label' => __( 'Border', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .ts-filter, {{WRAPPER}} .inline-input',
-
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_sf_input_bg',
-						[
-							'label' => __( 'Background color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-form .ts-filter' => 'background: {{VALUE}}',
-								'{{WRAPPER}} .inline-input' => 'background: {{VALUE}}',
-							],
-
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_sf_input_value_col',
-						[
-							'label' => __( 'Text color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-form .ts-filter-text' => 'color: {{VALUE}}',
-								'{{WRAPPER}} .inline-input' => 'color: {{VALUE}}',
-							],
-
+							'label' => __( 'Icons', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
 						]
 					);
 
@@ -1351,20 +1341,59 @@ class Search_Form extends Base_Widget {
 							'selectors' => [
 								'{{WRAPPER}} .ts-filter i' => 'color: {{VALUE}}',
 								'{{WRAPPER}} .ts-filter svg' => 'fill: {{VALUE}}',
-								'{{WRAPPER}} .ts-input-icon > span > i' => 'color: {{VALUE}}',
-								'{{WRAPPER}} .ts-input-icon > span > svg' => 'fill: {{VALUE}}',
 							],
 
 						]
 					);
 
-
-					$this->add_group_control(
-						\Elementor\Group_Control_Typography::get_type(),
+					$this->add_responsive_control(
+						'ts_sf_input_icon_size',
 						[
-							'name' => 'ts_sf_input_input_typo',
-							'label' => __( 'Typography' ),
-							'selector' => '{{WRAPPER}} .ts-form .ts-filter, {{WRAPPER}} .inline-input',
+							'label' => __( 'Icon size', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px', '%' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+								'%' => [
+									'min' => 0,
+									'max' => 100,
+								],
+							],
+							'default' => [
+								'unit' => 'px',
+								'size' => 24,
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-filter i' => 'font-size: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-filter svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_sf_input_icon_margin',
+						[
+							'label' => __( 'Icon/Text spacing', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px'],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+							],
+							'default' => [
+								'unit' => 'px',
+								'size' => 10,
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-filter' => 'grid-gap: {{SIZE}}{{UNIT}};',
+							],
 						]
 					);
 
@@ -1399,39 +1428,30 @@ class Search_Form extends Base_Widget {
 							'label' => __( 'Chevron color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-filter .ts-down-icon' => 'border-color: {{VALUE}}',
+								'{{WRAPPER}} .ts-filter .ts-down-icon' => 'border-top-color: {{VALUE}}',
 							],
 						]
 					);
+
+
 				$this->end_controls_tab();
+
 
 				/* Hover tab */
 
 				$this->start_controls_tab(
-					'common_hover',
+					'ts_sf_hover',
 					[
 						'label' => __( 'Hover', 'voxel-elementor' ),
 					]
 				);
-					$this->add_group_control(
-						\Elementor\Group_Control_Box_Shadow::get_type(),
-						[
-							'name' => 'ts_sf_input_shadow_hover',
-							'label' => __( 'Box Shadow', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .ts-filter:hover, {{WRAPPER}} .inline-input:hover',
-						]
-					);
 
 					$this->add_control(
-						'ts_sf_input_border_h',
+						'ts_sf_input_h',
 						[
-							'label' => __( 'Border color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-filter:hover,{{WRAPPER}} .inline-input:hover' => 'border-color: {{VALUE}}',
-							],
-
-
+							'label' => __( 'Style', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
 						]
 					);
 
@@ -1442,7 +1462,6 @@ class Search_Form extends Base_Widget {
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
 								'{{WRAPPER}} .ts-form .ts-filter:hover' => 'background: {{VALUE}}',
-								'{{WRAPPER}} .inline-input:hover' => 'background: {{VALUE}}',
 							],
 
 						]
@@ -1454,8 +1473,19 @@ class Search_Form extends Base_Widget {
 							'label' => __( 'Text color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-filter:hover .ts-filter-text' => 'color: {{VALUE}}',
-								'{{WRAPPER}} .inline-input:hover' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-form .ts-filter:hover .ts-filter-text' => 'color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_control(
+						'ts_sf_input_border_h',
+						[
+							'label' => __( 'Border color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form .ts-filter:hover' => 'border-color: {{VALUE}}',
 							],
 
 						]
@@ -1469,114 +1499,34 @@ class Search_Form extends Base_Widget {
 							'selectors' => [
 								'{{WRAPPER}} .ts-filter:hover i' => 'color: {{VALUE}}',
 								'{{WRAPPER}} .ts-filter:hover svg' => 'fill: {{VALUE}}',
-								'{{WRAPPER}} .ts-inline-filter:hover .ts-input-icon > span > i' => 'color: {{VALUE}}',
-								'{{WRAPPER}} .ts-inline-filter:hover .ts-input-icon > span > svg' => 'fill: {{VALUE}}',
 							],
 
 						]
 					);
 
+					$this->add_group_control(
+						\Elementor\Group_Control_Box_Shadow::get_type(),
+						[
+							'name' => 'ts_sf_input_shadow_hover',
+							'label' => __( 'Box Shadow', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-filter:hover',
+						]
+					);
+
 					$this->add_control(
-						'ts_chevron_btn_color_h',
+						'ts_chevron_btn_h',
 						[
 							'label' => __( 'Chevron color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-filter:hover .ts-down-icon' => 'border-color: {{VALUE}}',
+								'{{WRAPPER}} .ts-filter:hover .ts-down-icon' => 'border-top-color: {{VALUE}}',
 							],
 						]
 					);
 
 				$this->end_controls_tab();
 
-
-
-
-
-			$this->end_controls_tabs();
-
-
-
-		$this->end_controls_section();
-
-
-
-		$this->start_controls_section(
-			'ts_sf_styling_filters',
-			[
-				'label' => __( 'Popup button', 'voxel-elementor' ),
-				'tab' => 'tab_general',
-			]
-		);
-
-			$this->start_controls_tabs(
-				'ts_sf_filters_tabs'
-			);
-
-				/* Normal tab */
-
-				$this->start_controls_tab(
-					'ts_sf_normal',
-					[
-						'label' => __( 'Normal', 'voxel-elementor' ),
-					]
-				);
-
-
-
-
-
-					$this->add_responsive_control(
-						'ts_sf_input_padding',
-						[
-							'label' => __( 'Padding', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::DIMENSIONS,
-							'size_units' => [ 'px', '%', 'em' ],
-							'selectors' => [
-								'{{WRAPPER}} .ts-form .ts-filter' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-							],
-						]
-					);
-
-
-					$this->add_control(
-						'ts_icon_filters',
-						[
-							'label' => __( 'Icons', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::HEADING,
-							'separator' => 'before',
-						]
-					);
-
-
-
-					$this->add_responsive_control(
-						'ts_sf_input_icon_margin',
-						[
-							'label' => __( 'Icon/Text spacing', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px'],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 100,
-									'step' => 1,
-								],
-							],
-							'default' => [
-								'unit' => 'px',
-								'size' => 10,
-							],
-							'selectors' => [
-								'{{WRAPPER}} .ts-filter' => 'grid-gap: {{SIZE}}{{UNIT}};',
-							],
-						]
-					);
-
-
-
-
-				$this->end_controls_tab();
+				/* Hover tab */
 
 				$this->start_controls_tab(
 					'ts_sf_filled',
@@ -1585,7 +1535,14 @@ class Search_Form extends Base_Widget {
 					]
 				);
 
-
+					$this->add_control(
+						'ts_sf_input_filled',
+						[
+							'label' => __( 'Style (Filled)', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
+						]
+					);
 
 					$this->add_group_control(
 						\Elementor\Group_Control_Typography::get_type(),
@@ -1593,7 +1550,6 @@ class Search_Form extends Base_Widget {
 							'name' => 'ts_sf_input_typo_filled',
 							'label' => __( 'Typography', 'voxel-elementor' ),
 							'selector' => '{{WRAPPER}} .ts-filter.ts-filled',
-
 						]
 					);
 
@@ -1679,25 +1635,18 @@ class Search_Form extends Base_Widget {
 					);
 
 					$this->add_control(
-						'ts_chevron_filled',
+						'ts_chevron_btn_f',
 						[
 							'label' => __( 'Chevron color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-filter.ts-filled .ts-down-icon' => 'border-color: {{VALUE}}',
+								'{{WRAPPER}} .ts-filter.ts-filled .ts-down-icon' => 'border-top-color: {{VALUE}}',
 							],
 						]
 					);
 
 
-
 				$this->end_controls_tab();
-
-
-
-
-
-
 
 			$this->end_controls_tabs();
 
@@ -1707,7 +1656,7 @@ class Search_Form extends Base_Widget {
 			'inline_input',
 			[
 				'label' => __( 'Input', 'voxel-elementor' ),
-				'tab' => 'tab_general',
+				'tab' => 'tab_inline',
 			]
 		);
 
@@ -1724,8 +1673,94 @@ class Search_Form extends Base_Widget {
 					]
 				);
 
+					$this->add_control(
+						'inline_heading_input',
+						[
+							'label' => __( 'Input', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
+						]
+					);
 
+					$this->add_responsive_control(
+						'inline_input_height',
+						[
+							'label' => __( 'Height', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px', '%' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+								'%' => [
+									'min' => 0,
+									'max' => 100,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .inline-input' => 'height: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
 
+					$this->add_responsive_control(
+						'inline_input_min',
+						[
+							'label' => __( 'Min width', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'description' => __( 'Useful when this filter has auto width', 'voxel-elementor' ),
+							'size_units' => [ 'px' ],
+							'range' => [
+								'px' => [
+									'min' => 100,
+									'max' => 500,
+									'step' => 1,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-inline-filter' => 'min-width: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_responsive_control(
+						'inline_input_radius',
+						[
+							'label' => __( 'Border radius', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px'],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .inline-input' => 'border-radius: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Box_Shadow::get_type(),
+						[
+							'name' => 'inline_input_shadow',
+							'label' => __( 'Box Shadow', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .inline-input',
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Typography::get_type(),
+						[
+							'name' => 'inline_input_font',
+							'label' => __( 'Typography' ),
+							'selector' => '{{WRAPPER}} .inline-input',
+						]
+					);
 
 					$this->add_responsive_control(
 						'inline_padding_noico',
@@ -1736,6 +1771,41 @@ class Search_Form extends Base_Widget {
 							'selectors' => [
 								'{{WRAPPER}} .inline-input' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 							],
+						]
+					);
+
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Border::get_type(),
+						[
+							'name' => 'inline_input_border',
+							'label' => __( 'Border', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .inline-input',
+						]
+					);
+
+					$this->add_control(
+						'inline_input_bg',
+						[
+							'label' => __( 'Background color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .inline-input' => 'background: {{VALUE}}',
+							],
+
+						]
+					);
+
+
+					$this->add_control(
+						'inline_input_value_col',
+						[
+							'label' => __( 'Value color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .inline-input' => 'color: {{VALUE}}',
+							],
+
 						]
 					);
 
@@ -1754,8 +1824,38 @@ class Search_Form extends Base_Widget {
 						]
 					);
 
+					$this->add_control(
+						'inline_input_popup_icon',
+						[
+							'label' => __( 'Icon color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-inline-filter .ts-input-icon > i, {{WRAPPER}} .ts-inline-filter .ts-input-icon > span > i' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-inline-filter .ts-input-icon > svg, {{WRAPPER}} .ts-inline-filter .ts-input-icon > span > svg' => 'fill: {{VALUE}}',
+							],
 
+						]
+					);
 
+					$this->add_responsive_control(
+						'inline_input_icon_size',
+						[
+							'label' => __( 'Icon size', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 40,
+									'step' => 1,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-inline-filter .ts-input-icon > i, {{WRAPPER}} .ts-inline-filter .ts-input-icon > span > i' => 'font-size: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-inline-filter .ts-input-icon > svg, {{WRAPPER}} .ts-inline-filter .ts-input-icon > span > svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
 
 					$this->add_responsive_control(
 						'inline_input_icon_size_m',
@@ -1782,6 +1882,58 @@ class Search_Form extends Base_Widget {
 					);
 
 				$this->end_controls_tab();
+
+
+				/* Hover tab */
+
+				$this->start_controls_tab(
+					'inline_sfi_hover',
+					[
+						'label' => __( 'Hover', 'voxel-elementor' ),
+					]
+				);
+
+
+					$this->add_control(
+						'inline_input_popup_icon_hover',
+						[
+							'label' => __( 'Icon color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-inline-filter:hover .ts-input-icon > i, {{WRAPPER}} .ts-inline-filter:hover .ts-input-icon > span > i' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-inline-filter:hover .ts-input-icon > svg, {{WRAPPER}} .ts-inline-filter:hover .ts-input-icon > span > svg' => 'fill: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_control(
+						'inline_input_bg_h',
+						[
+							'label' => __( 'Background color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .inline-input:hover' => 'background: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_control(
+						'inline_input_h_border',
+						[
+							'label' => __( 'Border color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .inline-input:hover' => 'border-color: {{VALUE}}',
+							],
+
+						]
+					);
+
+
+				$this->end_controls_tab();
+
 				$this->start_controls_tab(
 					'inline_sfi_active',
 					[
@@ -1815,441 +1967,492 @@ class Search_Form extends Base_Widget {
 
 				$this->end_controls_tab();
 
-
-
-
 			$this->end_controls_tabs();
 
 		$this->end_controls_section();
 
 		$this->start_controls_section(
-					'ts_sf_styling_buttons',
+			'ts_sf_styling_buttons',
+			[
+				'label' => __( 'Submit & Reset button', 'voxel-elementor' ),
+				'tab' => 'tab_general',
+			]
+		);
+
+			$this->start_controls_tabs(
+				'ts_sf_buttons_tabs'
+			);
+
+				/* Normal tab */
+
+				$this->start_controls_tab(
+					'ts_sf_buttons_normal',
 					[
-						'label' => __( 'Submit & Reset button', 'voxel-elementor' ),
-						'tab' => 'tab_general',
+						'label' => __( 'Normal', 'voxel-elementor' ),
 					]
 				);
 
-				$this->start_controls_tabs(
-					'ts_sf_buttons_tabs'
+					$this->add_control(
+						'ts_sf_form_button_general',
+						[
+							'label' => __( 'General', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_sf_submit_tp[_space',
+						[
+							'label' => __( 'Top spacing', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit' => 'margin-top: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+
+
+
+
+					$this->add_responsive_control(
+						'ts_sf_submit_double_space',
+						[
+							'label' => __( 'Button spacing', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit' => 'grid-gap: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+
+
+					$this->add_responsive_control(
+						'ts_sf_form_btn_icon_size',
+						[
+							'label' => __( 'Icon size', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn i' => 'font-size: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-form-submit .ts-btn svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_control(
+						'ts_sf_search_button',
+						[
+							'label' => __( 'Search button', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
+						]
+					);
+
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Typography::get_type(),
+						[
+							'name' => 'ts_submit_btn_typo',
+							'label' => __( 'Typography', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-2',
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_sf_form_btn_c',
+						[
+							'label' => __( 'Color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'default' => '#fff',
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-2' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-form-submit .ts-btn-2 svg' => 'fill: {{VALUE}}',
+							],
+
+						]
+					);
+
+
+
+
+					$this->add_responsive_control(
+						'ts_sf_form_btn_bg',
+						[
+							'label' => __( 'Background color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-2' => 'background: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_sf_form_btn_height',
+						[
+							'label' => __( 'Button Height', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-2' => 'height: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_sf_search_padding',
+						[
+							'label' => __( 'Button padding', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::DIMENSIONS,
+							'size_units' => [ 'px', '%', 'em' ],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-2' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Border::get_type(),
+						[
+							'name' => 'ts_sf_search_border',
+							'label' => __( 'Border', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-2',
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_sf_form_btn_radius',
+						[
+							'label' => __( 'Border radius', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px', '%' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+								'%' => [
+									'min' => 0,
+									'max' => 100,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-2' => 'border-radius: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Box_Shadow::get_type(),
+						[
+							'name' => 'ts_submit_shadow',
+							'label' => __( 'Box Shadow', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-2',
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_submit_ico_pad',
+						[
+							'label' => __( 'Icon/Text spacing', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-2' => 'grid-gap: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_control(
+						'ts_sf_reset_btn',
+						[
+							'label' => __( 'Reset button', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
+						]
+					);
+
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Typography::get_type(),
+						[
+							'name' => 'ts_reset_btn_typo',
+							'label' => __( 'Typography', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-1',
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_sf_reset_btn_c',
+						[
+							'label' => __( 'Color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-1' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-form-submit .ts-btn-1 svg' => 'fill: {{VALUE}}',
+							],
+
+						]
+					);
+
+
+
+
+					$this->add_responsive_control(
+						'ts_sf_reset_btn_bg',
+						[
+							'label' => __( 'Background color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-1' => 'background: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_sf_reset_btn_height',
+						[
+							'label' => __( 'Button Height', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-1' => 'height: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_sf_reset_padding',
+						[
+							'label' => __( 'Button padding', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::DIMENSIONS,
+							'size_units' => [ 'px', '%', 'em' ],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-1' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Border::get_type(),
+						[
+							'name' => 'ts_sf_reset_border',
+							'label' => __( 'Border', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-1',
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_sf_reset_btn_radius',
+						[
+							'label' => __( 'Border radius', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px', '%' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+								'%' => [
+									'min' => 0,
+									'max' => 100,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-1' => 'border-radius: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Box_Shadow::get_type(),
+						[
+							'name' => 'ts_reset_shadow',
+							'label' => __( 'Box Shadow', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-btn-1',
+						]
+					);
+
+					$this->add_responsive_control(
+						'ts_reset_ico_pad',
+						[
+							'label' => __( 'Icon/Text spacing', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 100,
+									'step' => 1,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-1' => 'grid-gap: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+
+
+				$this->end_controls_tab();
+
+
+				/* Hover tab */
+
+				$this->start_controls_tab(
+					'ts_sf_buttons_hover',
+					[
+						'label' => __( 'Hover', 'voxel-elementor' ),
+					]
 				);
 
-					/* Normal tab */
 
-					$this->start_controls_tab(
-						'ts_sf_buttons_normal',
+					$this->add_control(
+						'ts_sf_form_btn_c_h',
 						[
-							'label' => __( 'Normal', 'voxel-elementor' ),
+							'label' => __( 'Search text color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-2:hover' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-form-submit .ts-btn-2:hover svg' => 'fill: {{VALUE}}',
+							],
+
 						]
 					);
 
-						$this->add_control(
-							'ts_sf_form_button_general',
-							[
-								'label' => __( 'General', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::HEADING,
-								'separator' => 'before',
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_submit_tp[_space',
-							[
-								'label' => __( 'Top spacing', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::SLIDER,
-								'size_units' => [ 'px' ],
-								'range' => [
-									'px' => [
-										'min' => 0,
-										'max' => 100,
-										'step' => 1,
-									],
-								],
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit' => 'margin-top: {{SIZE}}{{UNIT}};',
-								],
-							]
-						);
-
-
-						$this->add_responsive_control(
-							'ts_sf_form_btn_icon_size',
-							[
-								'label' => __( 'Icon size', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::SLIDER,
-								'size_units' => [ 'px' ],
-								'range' => [
-									'px' => [
-										'min' => 0,
-										'max' => 100,
-										'step' => 1,
-									],
-								],
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn i' => 'font-size: {{SIZE}}{{UNIT}};',
-									'{{WRAPPER}} .ts-form-submit .ts-btn svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
-								],
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_form_btn_height',
-							[
-								'label' => __( 'Button Height', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::SLIDER,
-								'size_units' => [ 'px' ],
-								'range' => [
-									'px' => [
-										'min' => 0,
-										'max' => 100,
-										'step' => 1,
-									],
-								],
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn' => 'height: {{SIZE}}{{UNIT}};',
-								],
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_form_btn_radius',
-							[
-								'label' => __( 'Border radius', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::SLIDER,
-								'size_units' => [ 'px', '%' ],
-								'range' => [
-									'px' => [
-										'min' => 0,
-										'max' => 100,
-										'step' => 1,
-									],
-									'%' => [
-										'min' => 0,
-										'max' => 100,
-									],
-								],
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-2' => 'border-radius: {{SIZE}}{{UNIT}};',
-									'{{WRAPPER}} .ts-form-submit .ts-btn-1' => 'border-radius: {{SIZE}}{{UNIT}};',
-								],
-							]
-						);
-
-						
-
-						$this->add_control(
-							'ts_sf_search_button',
-							[
-								'label' => __( 'Search button', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::HEADING,
-								'separator' => 'before',
-							]
-						);
-
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Typography::get_type(),
-							[
-								'name' => 'ts_submit_btn_typo',
-								'label' => __( 'Typography', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-2',
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_form_btn_c',
-							[
-								'label' => __( 'Color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'default' => '#fff',
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-2' => 'color: {{VALUE}}',
-									'{{WRAPPER}} .ts-form-submit .ts-btn-2 svg' => 'fill: {{VALUE}}',
-								],
-
-							]
-						);
-
-
-
-
-						$this->add_responsive_control(
-							'ts_sf_form_btn_bg',
-							[
-								'label' => __( 'Background color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-2' => 'background: {{VALUE}}',
-								],
-
-							]
-						);
-
-
-
-						$this->add_responsive_control(
-							'ts_sf_search_padding',
-							[
-								'label' => __( 'Button padding', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::DIMENSIONS,
-								'size_units' => [ 'px', '%', 'em' ],
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-2' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-								],
-							]
-						);
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Border::get_type(),
-							[
-								'name' => 'ts_sf_search_border',
-								'label' => __( 'Border', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-2',
-							]
-						);
-
-
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Box_Shadow::get_type(),
-							[
-								'name' => 'ts_submit_shadow',
-								'label' => __( 'Box Shadow', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-2',
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_submit_ico_pad',
-							[
-								'label' => __( 'Icon/Text spacing', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::SLIDER,
-								'size_units' => [ 'px' ],
-								'range' => [
-									'px' => [
-										'min' => 0,
-										'max' => 100,
-										'step' => 1,
-									],
-								],
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-2' => 'grid-gap: {{SIZE}}{{UNIT}};',
-								],
-							]
-						);
-
-
-
-						$this->add_control(
-							'ts_sf_reset_btn',
-							[
-								'label' => __( 'Reset button', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::HEADING,
-								'separator' => 'before',
-							]
-						);
-
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Typography::get_type(),
-							[
-								'name' => 'ts_reset_btn_typo',
-								'label' => __( 'Typography', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-1',
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_reset_btn_c',
-							[
-								'label' => __( 'Color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-1' => 'color: {{VALUE}}',
-									'{{WRAPPER}} .ts-form-submit .ts-btn-1 svg' => 'fill: {{VALUE}}',
-								],
-
-							]
-						);
-
-
-
-
-						$this->add_responsive_control(
-							'ts_sf_reset_btn_bg',
-							[
-								'label' => __( 'Background color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-1' => 'background: {{VALUE}}',
-								],
-
-							]
-						);
-
-
-						$this->add_responsive_control(
-							'ts_sf_reset_padding',
-							[
-								'label' => __( 'Button padding', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::DIMENSIONS,
-								'size_units' => [ 'px', '%', 'em' ],
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-1' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-								],
-							]
-						);
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Border::get_type(),
-							[
-								'name' => 'ts_sf_reset_border',
-								'label' => __( 'Border', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-1',
-							]
-						);
-
-
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Box_Shadow::get_type(),
-							[
-								'name' => 'ts_reset_shadow',
-								'label' => __( 'Box Shadow', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} .ts-btn-1',
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_reset_ico_pad',
-							[
-								'label' => __( 'Icon/Text spacing', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::SLIDER,
-								'size_units' => [ 'px' ],
-								'range' => [
-									'px' => [
-										'min' => 0,
-										'max' => 100,
-										'step' => 1,
-									],
-								],
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-1' => 'grid-gap: {{SIZE}}{{UNIT}};',
-								],
-							]
-						);
-
-
-
-					$this->end_controls_tab();
-
-
-					/* Hover tab */
-
-					$this->start_controls_tab(
-						'ts_sf_buttons_hover',
+					$this->add_control(
+						'ts_sf_form_btn_bg_h',
 						[
-							'label' => __( 'Hover', 'voxel-elementor' ),
+							'label' => __( 'Search background color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-2:hover' => 'background: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_control(
+						'ts_sf_form_btn_border_h',
+						[
+							'label' => __( 'Search border color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-2:hover' => 'border-color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Box_Shadow::get_type(),
+						[
+							'name' => 'ts_submit_shadow_hover',
+							'label' => __( 'Search box shadow', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-2:hover',
 						]
 					);
 
 
-						$this->add_control(
-							'ts_sf_form_btn_c_h',
-							[
-								'label' => __( 'Search text color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-2:hover' => 'color: {{VALUE}}',
-									'{{WRAPPER}} .ts-form-submit .ts-btn-2:hover svg' => 'fill: {{VALUE}}',
-								],
+					$this->add_control(
+						'ts_sf_form_btn_c_reset_h',
+						[
+							'label' => __( 'Reset text color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-1:hover' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-form-submit .ts-btn-1:hover svg' => 'fill: {{VALUE}}',
+							],
 
-							]
-						);
+						]
+					);
 
-						$this->add_control(
-							'ts_sf_form_btn_bg_h',
-							[
-								'label' => __( 'Search background color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-2:hover' => 'background: {{VALUE}}',
-								],
+					$this->add_control(
+						'ts_sf_form_btn_bg_reset_h',
+						[
+							'label' => __( 'Reset background color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-1:hover' => 'background: {{VALUE}}',
+							],
 
-							]
-						);
+						]
+					);
 
-						$this->add_control(
-							'ts_sf_form_btn_border_h',
-							[
-								'label' => __( 'Search border color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-2:hover' => 'border-color: {{VALUE}}',
-								],
+					$this->add_control(
+						'ts_sf_reset_btn_border_h',
+						[
+							'label' => __( 'Reset border color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form-submit .ts-btn-1:hover' => 'border-color: {{VALUE}}',
+							],
 
-							]
-						);
+						]
+					);
 
-						$this->add_group_control(
-							\Elementor\Group_Control_Box_Shadow::get_type(),
-							[
-								'name' => 'ts_submit_shadow_hover',
-								'label' => __( 'Search box shadow', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-2:hover',
-							]
-						);
-
-
-						$this->add_control(
-							'ts_sf_form_btn_c_reset_h',
-							[
-								'label' => __( 'Reset text color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-1:hover' => 'color: {{VALUE}}',
-									'{{WRAPPER}} .ts-form-submit .ts-btn-1:hover svg' => 'fill: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_control(
-							'ts_sf_form_btn_bg_reset_h',
-							[
-								'label' => __( 'Reset background color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-1:hover' => 'background: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_control(
-							'ts_sf_reset_btn_border_h',
-							[
-								'label' => __( 'Reset border color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form-submit .ts-btn-1:hover' => 'border-color: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Box_Shadow::get_type(),
-							[
-								'name' => 'ts_reset_shadow_hover',
-								'label' => __( 'Reset box shadow', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-1:hover',
-							]
-						);
+					$this->add_group_control(
+						\Elementor\Group_Control_Box_Shadow::get_type(),
+						[
+							'name' => 'ts_reset_shadow_hover',
+							'label' => __( 'Reset box shadow', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-form-submit .ts-btn-1:hover',
+						]
+					);
 
 
 
-					$this->end_controls_tab();
+				$this->end_controls_tab();
 
 			$this->end_controls_tabs();
 
@@ -2277,6 +2480,8 @@ class Search_Form extends Base_Widget {
 						'label' => __( 'Normal', 'voxel-elementor' ),
 					]
 				);
+
+
 
 
 
@@ -2532,7 +2737,7 @@ class Search_Form extends Base_Widget {
 							'label' => __( 'Chevron color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-right-icon' => 'border-color: {{VALUE}}',
+								'{{WRAPPER}} .inline-multilevel .ts-right-icon' => 'border-left-color: {{VALUE}}',
 							],
 						]
 					);
@@ -2656,223 +2861,86 @@ class Search_Form extends Base_Widget {
 			$this->end_controls_tabs();
 
 		$this->end_controls_section();
+
 		$this->start_controls_section(
-			'geo_icon_button',
+			'ts_ml_inline',
 			[
-				'label' => __( 'Geolocation icon', 'voxel-elementor' ),
+				'label' => __( 'User location', 'voxel-elementor' ),
 				'tab' => 'tab_inline',
 			]
 		);
 
-			$this->start_controls_tabs(
-				'geo_icon_button_tabs'
+			$this->add_control(
+				'ml_inline_color',
+				[
+					'label' => __( 'Icon color', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::COLOR,
+					'selectors' => [
+						'{{WRAPPER}} .inline-user-location i'
+						=> 'color: {{VALUE}}',
+						'{{WRAPPER}} .inline-user-location svg'
+						=> 'fill: {{VALUE}}',
+					],
+
+				]
 			);
 
-				/* Normal tab */
+			$this->add_control(
+				'ml_inline_color_h',
+				[
+					'label' => __( 'Icon color (Hover)', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::COLOR,
+					'selectors' => [
+						'{{WRAPPER}} .inline-user-location:hover i'
+						=> 'color: {{VALUE}}',
+						'{{WRAPPER}} .inline-user-location:hover svg'
+						=> 'fill: {{VALUE}}',
+					],
 
-				$this->start_controls_tab(
-					'geo_icon_button_normal',
-					[
-						'label' => __( 'Normal', 'voxel-elementor' ),
-					]
-				);
+				]
+			);
 
-					$this->add_responsive_control(
-						'ml_inline_MARGIN',
-						[
-							'label' => __( 'Icon right margin', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px' ],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 100,
-									'step' => 1,
-								],
-							],
-							'selectors' => [
-								'{{WRAPPER}} .inline-user-location' => !is_rtl() ? 'right: {{SIZE}}{{UNIT}};' : 'left: {{SIZE}}{{UNIT}};',
-							],
-						]
-					);
+			$this->add_responsive_control(
+				'ml_inline_size',
+				[
+					'label' => __( 'Icon size', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SLIDER,
+					'size_units' => [ 'px' ],
+					'range' => [
+						'px' => [
+							'min' => 0,
+							'max' => 100,
+							'step' => 1,
+						],
+					],
+					'selectors' => [
+						'{{WRAPPER}} .inline-user-location i' => 'font-size: {{SIZE}}{{UNIT}};',
+						'{{WRAPPER}} .inline-user-location svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+					],
+				]
+			);
 
-					$this->add_control(
-						'geoib_styling',
-						[
-							'label' => __( 'Button styling', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::HEADING,
-							'separator' => 'before',
-						]
-					);
-
-					$this->add_responsive_control(
-						'geo_number_btn_size',
-						[
-							'label' => __( 'Button size', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px', '%' ],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 100,
-									'step' => 1,
-								],
-								'%' => [
-									'min' => 0,
-									'max' => 100,
-								],
-							],
-							'selectors' => [
-								'{{WRAPPER}} .inline-user-location' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
-							],
-						]
-					);
-
-					$this->add_control(
-						'geo_number_btn_color',
-						[
-							'label' => __( 'Button icon color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .inline-user-location i'
-								=> 'color: {{VALUE}}',
-								'{{WRAPPER}} .inline-user-location svg'
-								=> 'fill: {{VALUE}}',
-							],
-
-						]
-					);
-
-					$this->add_responsive_control(
-						'geo_number_btn_icon_size',
-						[
-							'label' => __( 'Button icon size', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px', '%' ],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 100,
-									'step' => 1,
-								],
-								'%' => [
-									'min' => 0,
-									'max' => 100,
-								],
-							],
-							'selectors' => [
-								'{{WRAPPER}} .inline-user-location i' => 'font-size: {{SIZE}}{{UNIT}};',
-								'{{WRAPPER}} .inline-user-location svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
-							],
-						]
-					);
-
-					$this->add_control(
-						'geo_number_btn_bg',
-						[
-							'label' => __( 'Button background', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .inline-user-location' => 'background-color: {{VALUE}}',
-							],
-
-						]
-					);
-
-					$this->add_group_control(
-						\Elementor\Group_Control_Border::get_type(),
-						[
-							'name' => 'geo_number_btn_border',
-							'label' => __( 'Button border', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .inline-user-location',
-						]
-					);
-
-					$this->add_responsive_control(
-						'geo_number_btn_radius',
-						[
-							'label' => __( 'Button border radius', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px', '%' ],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 100,
-									'step' => 1,
-								],
-								'%' => [
-									'min' => 0,
-									'max' => 100,
-								],
-							],
-							'selectors' => [
-								'{{WRAPPER}} .inline-user-location' => 'border-radius: {{SIZE}}{{UNIT}};',
-							],
-						]
-					);
-
-
-
-
-
-				$this->end_controls_tab();
-
-
-				/* Hover tab */
-
-				$this->start_controls_tab(
-					'geo_icon_button_hover',
-					[
-						'label' => __( 'Hover', 'voxel-elementor' ),
-					]
-				);
-
-					$this->add_control(
-						'geo_popup_number_btn_h',
-						[
-							'label' => __( 'Button icon color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .inline-user-location:hover i'
-								=> 'color: {{VALUE}};',
-								'{{WRAPPER}} .inline-user-location:hover svg'
-								=> 'fill: {{VALUE}};',
-							],
-
-						]
-					);
-
-					$this->add_control(
-						'geo_number_btn_bg_h',
-						[
-							'label' => __( 'Button background color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .inline-user-location:hover'
-								=> 'background-color: {{VALUE}};',
-							],
-
-						]
-					);
-
-					$this->add_control(
-						'geo_button_border_c_h',
-						[
-							'label' => __( 'Button border color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .inline-user-location:hover'
-								=> 'border-color: {{VALUE}};',
-							],
-
-						]
-					);
-
-				$this->end_controls_tab();
-
-			$this->end_controls_tabs();
+			$this->add_responsive_control(
+				'ml_inline_MARGIN',
+				[
+					'label' => __( 'Icon right margin', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SLIDER,
+					'size_units' => [ 'px' ],
+					'range' => [
+						'px' => [
+							'min' => 0,
+							'max' => 100,
+							'step' => 1,
+						],
+					],
+					'selectors' => [
+						'{{WRAPPER}} .inline-user-location' => !is_rtl() ? 'right: {{SIZE}}{{UNIT}};' : 'left: {{SIZE}}{{UNIT}};',
+					],
+				]
+			);
 
 		$this->end_controls_section();
+
 		$this->start_controls_section(
 			'ts_sf_popup_number',
 			[
@@ -3766,7 +3834,100 @@ class Search_Form extends Base_Widget {
 
 		$this->end_controls_section();
 
+		$this->start_controls_section(
+			'ts_toggle_popup',
+			[
+				'label' => __( 'Toggle popup', 'voxel-elementor' ),
+				'tab' => 'tab_general',
+			]
+		);
 
+
+			$this->add_control(
+				'toggle_pg_width',
+				[
+					'label' => __( 'Min width', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SLIDER,
+					'description' => __( 'Does not affect mobile', 'voxel-elementor' ),
+					'size_units' => [ 'px' ],
+					'range' => [
+						'px' => [
+							'min' => 200,
+							'max' => 800,
+							'step' => 1,
+						],
+					],
+					'selectors' => [
+						'.ts-search-portal{{WRAPPER}} .ts-field-popup' => 'min-width: {{SIZE}}{{UNIT}};',
+					],
+				]
+			);
+
+			$this->add_control(
+				'toggle_max_width',
+				[
+					'label' => __( 'Max width', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SLIDER,
+					'description' => __( 'Does not affect mobile', 'voxel-elementor' ),
+					'size_units' => [ 'px' ],
+					'range' => [
+						'px' => [
+							'min' => 200,
+							'max' => 800,
+							'step' => 1,
+						],
+					],
+					'selectors' => [
+						'.ts-search-portal{{WRAPPER}} .ts-field-popup' => 'max-width: {{SIZE}}{{UNIT}};',
+					],
+				]
+			);
+
+			$this->add_control(
+				'toggle_max_height',
+				[
+					'label' => __( 'Max height', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SLIDER,
+					'description' => __( 'Does not affect mobile', 'voxel-elementor' ),
+					'size_units' => [ 'px' ],
+					'range' => [
+						'px' => [
+							'min' => 0,
+							'max' => 800,
+							'step' => 1,
+						],
+					],
+					'selectors' => [
+						'.ts-search-portal{{WRAPPER}} .ts-popup-content-wrapper' => 'max-height: {{SIZE}}{{UNIT}};',
+					],
+				]
+			);
+
+			$this->add_responsive_control(
+				'toggle_spacing_value',
+				[
+					'label' => __( 'Spacing', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SLIDER,
+					'size_units' => [ 'px'],
+					'range' => [
+						'px' => [
+							'min' => 0,
+							'max' => 50,
+							'step' => 1,
+						],
+					],
+					'selectors' => [
+						'.ts-search-portal{{WRAPPER}} .toggle-sf > .ts-filter-wrapper > .ts-form-group' => 'padding: {{SIZE}}{{UNIT}} !important;',
+
+						'.ts-search-portal{{WRAPPER}}  .toggle-sf' => 'margin: -{{SIZE}}{{UNIT}} !important;',
+
+					],
+
+				]
+			);
+
+
+		$this->end_controls_section();
 
 		$this->start_controls_section(
 			'ts_input_suffix',
@@ -3852,33 +4013,16 @@ class Search_Form extends Base_Widget {
 					$this->add_control(
 						'ts_freset_container',
 						[
-							'label' => __( 'Position', 'voxel-elementor' ),
+							'label' => __( 'Container', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::HEADING,
 							'separator' => 'before',
-						]
-					);
-
-					$this->add_control(
-						'ts_freset_justify',
-						[
-							'label' => __( 'Align button', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SELECT,
-							'options' => [
-								'flex-start'  => __( 'Left', 'voxel-elementor' ),
-								'center' => __( 'Center', 'voxel-elementor' ),
-								'flex-end' => __( 'Right', 'voxel-elementor' ),
-							],
-
-							'selectors' => [
-								'{{WRAPPER}} .ts-switcher-btn' => 'justify-content: {{VALUE}}',
-							],
 						]
 					);
 
 					$this->add_responsive_control(
 						'm_freset_spacing',
 						[
-							'label' => __( 'Bottom margin', 'voxel-elementor' ),
+							'label' => __( 'Bottom', 'voxel-elementor' ),
 							'description' => __( 'Distance from bottom of the screen', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::SLIDER,
 							'size_units' => [ 'px'],
@@ -3910,12 +4054,27 @@ class Search_Form extends Base_Widget {
 								],
 							],
 							'selectors' => [
-								'{{WRAPPER}} .ts-switcher-btn' => 'padding-left: {{SIZE}}{{UNIT}};padding-right: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-switcher-btn' => 'margin-left: {{SIZE}}{{UNIT}};margin-right: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
 
+					$this->add_control(
+						'ts_freset_justify',
+						[
+							'label' => __( 'Justify', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SELECT,
+							'options' => [
+								'flex-start'  => __( 'Left', 'voxel-elementor' ),
+								'center' => __( 'Center', 'voxel-elementor' ),
+								'flex-end' => __( 'Right', 'voxel-elementor' ),
+							],
 
+							'selectors' => [
+								'{{WRAPPER}} .ts-switcher-btn' => 'justify-content: {{VALUE}}',
+							],
+						]
+					);
 
 					$this->add_control(
 						'ts_freset_button',
@@ -4300,226 +4459,6 @@ class Search_Form extends Base_Widget {
 			);
 
 		$this->end_controls_section();
-
-		$this->start_controls_section(
-			'ts_tertiary_btn',
-			[
-				'label' => __( 'Go back button', 'voxel-elementor' ),
-				'tab' => 'tab_inline',
-			]
-		);
-
-			$this->start_controls_tabs(
-				'tertiary_btn_tabs'
-			);
-
-				/* Normal tab */
-
-				$this->start_controls_tab(
-					'tertiary_btn_normal',
-					[
-						'label' => __( 'Normal', 'voxel-elementor' ),
-					]
-				);
-
-					$this->add_control(
-						'tertiary_btn_icon_color',
-						[
-							'label' => __( 'Button icon color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4 i' => 'color: {{VALUE}}',
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4 svg' => 'fill: {{VALUE}}',
-							],
-
-						]
-					);
-
-					$this->add_responsive_control(
-						'tertiary_btn_icon_size',
-						[
-							'label' => __( 'Button icon size', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px', '%' ],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 100,
-									'step' => 1,
-								],
-								'%' => [
-									'min' => 0,
-									'max' => 100,
-								],
-							],
-							'selectors' => [
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4 i' => 'font-size: {{SIZE}}{{UNIT}};',
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4 svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
-							],
-						]
-					);
-
-					$this->add_responsive_control(
-						'tertiary_btn_height',
-						[
-							'label' => __( 'Button Height', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px', '%' ],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 100,
-									'step' => 1,
-								],
-								'%' => [
-									'min' => 0,
-									'max' => 100,
-								],
-							],
-							'selectors' => [
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4' => 'height: {{SIZE}}{{UNIT}};',
-							],
-						]
-					);
-
-					$this->add_control(
-						'tertiary_btn_bg',
-						[
-							'label' => __( 'Button background', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4'
-								=> 'background-color: {{VALUE}}',
-							],
-
-						]
-					);
-
-					$this->add_group_control(
-						\Elementor\Group_Control_Border::get_type(),
-						[
-							'name' => 'tertiary_btn_border',
-							'label' => __( 'Button border', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .inline-multilevel .ts-btn-4',
-						]
-					);
-
-					$this->add_responsive_control(
-						'tertiary_btn_radius',
-						[
-							'label' => __( 'Button border radius', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px', '%' ],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 100,
-									'step' => 1,
-								],
-								'%' => [
-									'min' => 0,
-									'max' => 100,
-								],
-							],
-							'selectors' => [
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4' => 'border-radius: {{SIZE}}{{UNIT}};',
-							],
-						]
-					);
-
-					$this->add_group_control(
-						\Elementor\Group_Control_Typography::get_type(),
-						[
-							'name' => 'tertiary_btn_text',
-							'label' => __( 'Typography' ),
-							'selector' => '{{WRAPPER}} .inline-multilevel .ts-btn-4',
-						]
-					);
-
-					$this->add_control(
-						'tertiary_btn_text_color',
-						[
-							'label' => __( 'Text color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4'
-								=> 'color: {{VALUE}}',
-							],
-
-						]
-					);
-
-
-				$this->end_controls_tab();
-
-
-				/* Hover tab */
-
-				$this->start_controls_tab(
-					'tertiary_btn_hover',
-					[
-						'label' => __( 'Hover', 'voxel-elementor' ),
-					]
-				);
-
-					$this->add_control(
-						'tertiary_btn_icon_color_h',
-						[
-							'label' => __( 'Button icon color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4:hover i' => 'color: {{VALUE}}',
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4:hover svg' => 'fill: {{VALUE}}',
-							],
-
-						]
-					);
-
-					$this->add_control(
-						'tertiary_btn_bg_h',
-						[
-							'label' => __( 'Button background', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4:hover'
-								=> 'background-color: {{VALUE}}',
-							],
-
-						]
-					);
-
-					$this->add_control(
-						'tertiary_btn_border_h',
-						[
-							'label' => __( 'Border color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4:hover'
-								=> 'border-color: {{VALUE}}',
-							],
-
-						]
-					);
-
-					$this->add_control(
-						'tertiary_btn_text_color_h',
-						[
-							'label' => __( 'Text color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .inline-multilevel .ts-btn-4:hover'
-								=> 'color: {{VALUE}}',
-							],
-
-						]
-					);
-
-
-				$this->end_controls_tab();
-
-			$this->end_controls_tabs();
-
-		$this->end_controls_section();
 	}
 
 	protected function render( $instance = [] ) {
@@ -4551,6 +4490,7 @@ class Search_Form extends Base_Widget {
 			'onSubmit' => [],
 			'searchOn' => \Voxel\from_list( $this->get_settings_for_display('ts_search_on'), [ 'submit', 'filter_update' ], 'submit' ),
 			'portal' => [
+				'desktop' => $this->get_settings_for_display('form_toggle_desktop') === 'yes',
 				'tablet' => $this->get_settings_for_display('form_toggle_tablet') === 'yes',
 				'mobile' => $this->get_settings_for_display('form_toggle_mobile') === 'yes',
 			],
@@ -4767,7 +4707,14 @@ class Search_Form extends Base_Widget {
 			'type' => \Elementor\Controls_Manager::NUMBER,
 		] );
 
-
+		$this->add_control(
+			'form_toggle_desktop',
+			[
+				'label' => __( 'Enable on desktop', 'voxel-elementor' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'return_value' => 'yes',
+			]
+		);
 
 		$this->add_control(
 			'form_toggle_tablet',
@@ -5059,6 +5006,13 @@ class Search_Form extends Base_Widget {
 			]
 		);
 
+		$this->add_control(
+			'ts_sf_wrap_desktop',
+			[
+				'label' => __( 'Enable horizontal scroll)', 'voxel-elementor' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+			]
+		);
 	}
 
 	public function register_instance_controls( $settings ) {

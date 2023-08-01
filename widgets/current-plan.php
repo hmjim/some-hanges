@@ -27,56 +27,10 @@ class Current_Plan extends Base_Widget {
 	protected function register_controls() {
 
 		$this->start_controls_section(
-			'ts_general',
-			[
-				'label' => __( 'General', 'voxel-elementor' ),
-				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
-				'skin' => 'inline',
-				'label_block' => false,
-			]
-		);
-
-			$this->add_control(
-				'ts_show_plans',
-				[
-
-					'label' => __( 'Display plan panel', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SWITCHER,
-					'label_on' => __( 'Hide', 'voxel-elementor' ),
-					'label_off' => __( 'Show', 'voxel-elementor' ),
-					'return_value' => 'yes',
-
-					'selectors' => [
-						'{{WRAPPER}} .plan-panel' => 'display: none;',
-					],
-				]
-			);
-
-			$this->add_control(
-				'ts_show_roles',
-				[
-
-					'label' => __( 'Display role panel', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SWITCHER,
-					'label_on' => __( 'Hide', 'voxel-elementor' ),
-					'label_off' => __( 'Show', 'voxel-elementor' ),
-					'return_value' => 'yes',
-
-					'selectors' => [
-						'{{WRAPPER}} .role-panel' => 'display: none;',
-					],
-				]
-			);
-
-		$this->end_controls_section();
-
-		$this->start_controls_section(
 			'ts_ui_icons',
 			[
 				'label' => __( 'Icons', 'voxel-elementor' ),
 				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
-				'skin' => 'inline',
-				'label_block' => false,
 			]
 		);
 
@@ -85,41 +39,6 @@ class Current_Plan extends Base_Widget {
 				[
 					'label' => __( 'Plan icon', 'text-domain' ),
 					'type' => \Elementor\Controls_Manager::ICONS,
-					'skin' => 'inline',
-					'label_block' => false,
-
-				]
-			);
-
-			$this->add_control(
-				'ts_viewplan_ico',
-				[
-					'label' => __( 'View plans icon', 'text-domain' ),
-					'type' => \Elementor\Controls_Manager::ICONS,
-					'skin' => 'inline',
-					'label_block' => false,
-
-				]
-			);
-
-			$this->add_control(
-				'ts_configure_ico',
-				[
-					'label' => __( 'Customize plan icon', 'text-domain' ),
-					'type' => \Elementor\Controls_Manager::ICONS,
-					'skin' => 'inline',
-					'label_block' => false,
-
-				]
-			);
-
-			$this->add_control(
-				'ts_role_ico',
-				[
-					'label' => __( 'Role icon', 'text-domain' ),
-					'type' => \Elementor\Controls_Manager::ICONS,
-					'skin' => 'inline',
-					'label_block' => false,
 
 				]
 			);
@@ -129,8 +48,6 @@ class Current_Plan extends Base_Widget {
 				[
 					'label' => __( 'Switch icon', 'text-domain' ),
 					'type' => \Elementor\Controls_Manager::ICONS,
-					'skin' => 'inline',
-					'label_block' => false,
 
 				]
 			);
@@ -140,8 +57,6 @@ class Current_Plan extends Base_Widget {
 				[
 					'label' => __( 'Cancel icon', 'text-domain' ),
 					'type' => \Elementor\Controls_Manager::ICONS,
-					'skin' => 'inline',
-					'label_block' => false,
 
 				]
 			);
@@ -151,8 +66,6 @@ class Current_Plan extends Base_Widget {
 				[
 					'label' => __( 'Portal icon', 'text-domain' ),
 					'type' => \Elementor\Controls_Manager::ICONS,
-					'skin' => 'inline',
-					'label_block' => false,
 
 				]
 			);
@@ -166,25 +79,6 @@ class Current_Plan extends Base_Widget {
 				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
 			]
 		);
-
-			$this->add_responsive_control(
-				'panels_spacing',
-				[
-					'label' => __( 'Panel gap', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SLIDER,
-					'size_units' => [ 'px' ],
-					'range' => [
-						'px' => [
-							'min' => 0,
-							'max' => 100,
-							'step' => 1,
-						],
-					],
-					'selectors' => [
-						'{{WRAPPER}} .plan-panel' => 'margin-bottom: {{SIZE}}{{UNIT}};',
-					],
-				]
-			);
 
 			$this->add_group_control(
 				\Elementor\Group_Control_Border::get_type(),
@@ -237,117 +131,6 @@ class Current_Plan extends Base_Widget {
 					'name' => 'panel_shadow',
 					'label' => __( 'Box Shadow', 'voxel-elementor' ),
 					'selector' => '{{WRAPPER}} .ts-panel',
-				]
-			);
-
-			$this->add_control(
-				'panel_head',
-				[
-					'label' => __( 'Panel head', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::HEADING,
-					'separator' => 'before',
-				]
-			);
-
-			$this->add_responsive_control(
-				'head_padding',
-				[
-					'label' => __( 'Padding', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::DIMENSIONS,
-					'size_units' => [ 'px', '%', 'em' ],
-					'selectors' => [
-						'{{WRAPPER}} .ac-head' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-					],
-				]
-			);
-
-			$this->add_responsive_control(
-				'head_ico_size',
-				[
-					'label' => __( 'Icon size', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SLIDER,
-					'size_units' => [ 'px' ],
-					'range' => [
-						'px' => [
-							'min' => 0,
-							'max' => 100,
-							'step' => 1,
-						],
-						'%' => [
-							'min' => 0,
-							'max' => 100,
-						],
-					],
-					'selectors' => [
-						'{{WRAPPER}} .ts-panel .ac-head i' => 'font-size: {{SIZE}}{{UNIT}};',
-						'{{WRAPPER}} .ts-panel .ac-head svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
-					],
-				]
-			);
-
-			$this->add_responsive_control(
-				'head_ico_margin',
-				[
-					'label' => __( 'Icon right margin', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SLIDER,
-					'size_units' => [ 'px' ],
-					'range' => [
-						'px' => [
-							'min' => 0,
-							'max' => 100,
-							'step' => 1,
-						],
-					],
-					'selectors' => [
-						'{{WRAPPER}} .ts-panel .ac-head i' => 'margin-right: {{SIZE}}{{UNIT}};',
-						'{{WRAPPER}} .ts-panel .ac-head svg' => 'margin-right: {{SIZE}}{{UNIT}};',
-					],
-				]
-			);
-
-			$this->add_responsive_control(
-				'head_ico_col',
-				[
-					'label' => __( 'Icon color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}} .ts-panel .ac-head i' => 'color: {{VALUE}}',
-						'{{WRAPPER}} .ts-panel .ac-head svg' => 'fill: {{VALUE}}',
-					],
-
-				]
-			);
-
-			$this->add_group_control(
-				\Elementor\Group_Control_Typography::get_type(),
-				[
-					'name' => 'head_typo',
-					'label' => __( 'Typography', 'voxel-elementor' ),
-					'selector' => '{{WRAPPER}} .ts-panel .ac-head p',
-				]
-			);
-
-			$this->add_responsive_control(
-				'head_typo_col',
-				[
-					'label' => __( 'Text color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}} .ts-panel .ac-head p' => 'color: {{VALUE}}',
-					],
-
-				]
-			);
-
-			$this->add_responsive_control(
-				'head_border_col',
-				[
-					'label' => __( 'Separator color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}} .ts-panel .ac-head' => 'border-color: {{VALUE}}',
-					],
-
 				]
 			);
 
@@ -419,8 +202,6 @@ class Current_Plan extends Base_Widget {
 
 				]
 			);
-
-
 
 			$this->add_control(
 				'panel_body',
@@ -540,7 +321,116 @@ class Current_Plan extends Base_Widget {
 				]
 			);
 
+			$this->add_control(
+				'panel_head',
+				[
+					'label' => __( 'Panel head', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::HEADING,
+					'separator' => 'before',
+				]
+			);
 
+			$this->add_responsive_control(
+				'head_padding',
+				[
+					'label' => __( 'Padding', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::DIMENSIONS,
+					'size_units' => [ 'px', '%', 'em' ],
+					'selectors' => [
+						'{{WRAPPER}} .ac-head' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					],
+				]
+			);
+
+			$this->add_responsive_control(
+				'head_ico_size',
+				[
+					'label' => __( 'Icon size', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SLIDER,
+					'size_units' => [ 'px' ],
+					'range' => [
+						'px' => [
+							'min' => 0,
+							'max' => 100,
+							'step' => 1,
+						],
+						'%' => [
+							'min' => 0,
+							'max' => 100,
+						],
+					],
+					'selectors' => [
+						'{{WRAPPER}} .ts-panel .ac-head i' => 'font-size: {{SIZE}}{{UNIT}};',
+						'{{WRAPPER}} .ts-panel .ac-head svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+					],
+				]
+			);
+
+			$this->add_responsive_control(
+				'head_ico_margin',
+				[
+					'label' => __( 'Icon right margin', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SLIDER,
+					'size_units' => [ 'px' ],
+					'range' => [
+						'px' => [
+							'min' => 0,
+							'max' => 100,
+							'step' => 1,
+						],
+					],
+					'selectors' => [
+						'{{WRAPPER}} .ts-panel .ac-head i' => 'margin-right: {{SIZE}}{{UNIT}};',
+						'{{WRAPPER}} .ts-panel .ac-head svg' => 'margin-right: {{SIZE}}{{UNIT}};',
+					],
+				]
+			);
+
+			$this->add_responsive_control(
+				'head_ico_col',
+				[
+					'label' => __( 'Icon color', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::COLOR,
+					'selectors' => [
+						'{{WRAPPER}} .ts-panel .ac-head i' => 'color: {{VALUE}}',
+						'{{WRAPPER}} .ts-panel .ac-head svg' => 'fill: {{VALUE}}',
+					],
+
+				]
+			);
+
+			$this->add_group_control(
+				\Elementor\Group_Control_Typography::get_type(),
+				[
+					'name' => 'head_typo',
+					'label' => __( 'Typography', 'voxel-elementor' ),
+					'selector' => '{{WRAPPER}} .ts-panel .ac-head p',
+				]
+			);
+
+			$this->add_responsive_control(
+				'head_typo_col',
+				[
+					'label' => __( 'Text color', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::COLOR,
+					'selectors' => [
+						'{{WRAPPER}} .ts-panel .ac-head p' => 'color: {{VALUE}}',
+					],
+
+				]
+			);
+
+			$this->add_responsive_control(
+				'head_border_col',
+				[
+					'label' => __( 'Separator color', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::COLOR,
+					'selectors' => [
+						'{{WRAPPER}} .ts-panel .ac-head' => 'border-color: {{VALUE}}',
+					],
+
+				]
+			);
 
 			$this->add_control(
 				'panel_buttons',
@@ -552,6 +442,20 @@ class Current_Plan extends Base_Widget {
 			);
 
 
+			$this->add_responsive_control(
+				'panel_buttons_grid',
+				[
+					'label' => __( 'Number of columns', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::NUMBER,
+					'min' => 1,
+					'max' => 6,
+					'step' => 1,
+					'default' => 3,
+					'selectors' => [
+						'{{WRAPPER}} .current-plan-btn' => 'grid-template-columns: repeat({{VALUE}}, 1fr);',
+					],
+				]
+			);
 
 			$this->add_responsive_control(
 				'panel_buttons_gap',
@@ -837,8 +741,9 @@ class Current_Plan extends Base_Widget {
 			return;
 		}
 
-		$user = \Voxel\current_user();
-		$membership = $user->get_membership();
+		$current_user = \Voxel\current_user();
+		$membership = $current_user->get_membership();
+		$switch_url = get_permalink( \Voxel\get( 'templates.pricing' ) );
 		$portal_url = home_url( '/?vx=1&action=stripe.customer.portal' );
 		$retry_payment_url = null;
 		$reactivate_url = null;
@@ -858,16 +763,6 @@ class Current_Plan extends Base_Widget {
 			$cancel_url = wp_nonce_url( home_url( '/?vx=1&action=plans.cancel_plan' ), 'vx_cancel_plan' );
 		}
 
-		$switchable_roles = $user->get_switchable_roles();
-		$current_roles = $user->get_roles();
-		$modify_url = get_permalink( \Voxel\get( 'templates.configure_plan' ) );
-
-		$role = $current_roles[0] ?? null;
-		$switch_url = get_permalink( \Voxel\Role::get('subscriber')->get_pricing_page_id() );
-		if ( $role && ! ( $user->has_role('administrator') || $user->has_role('editor') ) ) {
-			$switch_url = get_permalink( $role->get_pricing_page_id() );
-		}
-
 		wp_print_styles( $this->get_style_depends() );
 		require locate_template( 'templates/widgets/current-plan.php' );
 	}
@@ -879,5 +774,41 @@ class Current_Plan extends Base_Widget {
 	protected function content_template() {}
 	public function render_plain_content( $instance = [] ) {}
 
+	protected function register_runtime_controls() {
+		$this->add_control(
+			'ts_plan_ico',
+			[
+				'label' => __( 'Plan icon', 'text-domain' ),
+				'type' => \Elementor\Controls_Manager::ICONS,
 
+			]
+		);
+
+		$this->add_control(
+			'ts_switch_ico',
+			[
+				'label' => __( 'Switch icon', 'text-domain' ),
+				'type' => \Elementor\Controls_Manager::ICONS,
+
+			]
+		);
+
+		$this->add_control(
+			'ts_cancel_ico',
+			[
+				'label' => __( 'Cancel icon', 'text-domain' ),
+				'type' => \Elementor\Controls_Manager::ICONS,
+
+			]
+		);
+
+		$this->add_control(
+			'ts_stripe_ico',
+			[
+				'label' => __( 'Portal icon', 'text-domain' ),
+				'type' => \Elementor\Controls_Manager::ICONS,
+
+			]
+		);
+	}
 }

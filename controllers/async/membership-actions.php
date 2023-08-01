@@ -21,11 +21,6 @@ class Membership_Actions extends \Voxel\Controllers\Base_Controller {
 		$this->on( 'voxel_ajax_membership.toggle_price', '@toggle_price' );
 		$this->on( 'voxel_ajax_membership.setup_pricing', '@setup_pricing' );
 
-		// role pricing templates
-		$this->on( 'voxel_ajax_membership.create_pricing_template', '@create_pricing_template' );
-		$this->on( 'voxel_ajax_membership.delete_pricing_template', '@delete_pricing_template' );
-		$this->on( 'voxel_ajax_membership.update_pricing_template', '@update_pricing_template' );
-
 		// admin as customer actions
 		$this->on( 'voxel_ajax_orders.admin.cancel', '@admin_cancel_order' );
 		$this->on( 'voxel_ajax_orders.admin.request_refund', '@admin_request_refund' );
@@ -42,25 +37,24 @@ class Membership_Actions extends \Voxel\Controllers\Base_Controller {
 
 	protected function update_plan() {
 		try {
-			$data = json_decode( stripslashes( $_POST['plan'] ), true );
+			$data = $_POST['plan'] ?? [];
 			$key = sanitize_text_field( trim( $data['key'] ?? '' ) );
-			$plan = \Voxel\Plan::get( $key );
+			$plan = \Voxel\Membership\Plan::get( $key );
 			if ( ! $plan ) {
 				throw new \Exception( __( 'Plan not found.', 'voxel-backend' ) );
 			}
 
 			$submissions = [];
-			foreach ( (array) ( $data['submissions'] ?? [] ) as $post_type_key => $limit ) {
+			foreach ( (array) ( $data['submissions'] ?? [] ) as $post_type_key => $post_type_limit ) {
 				if ( post_type_exists( $post_type_key ) ) {
-					$submissions[ $post_type_key ] = (array) $limit;
+					$submissions[ $post_type_key ] = absint( $post_type_limit );
 				}
 			}
 
 			$plan->update( [
 				'label' => sanitize_text_field( trim( $data['label'] ) ),
-				'description' => wp_kses_post( trim( $data['description'] ) ),
+				'description' => sanitize_textarea_field( $data['description'] ),
 				'submissions' => $submissions,
-				'settings' => $data['settings'] ?? [],
 			] );
 
 			return wp_send_json( [
@@ -78,7 +72,7 @@ class Membership_Actions extends \Voxel\Controllers\Base_Controller {
 		try {
 			$data = $_POST['plan'] ?? [];
 			$key = sanitize_text_field( trim( $data['key'] ?? '' ) );
-			$plan = \Voxel\Plan::get( $key );
+			$plan = \Voxel\Membership\Plan::get( $key );
 			if ( ! $plan ) {
 				throw new \Exception( __( 'Plan not found.', 'voxel-backend' ) );
 			}
@@ -100,7 +94,7 @@ class Membership_Actions extends \Voxel\Controllers\Base_Controller {
 		try {
 			$data = $_POST['plan'] ?? [];
 			$key = sanitize_text_field( trim( $data['key'] ?? '' ) );
-			$plan = \Voxel\Plan::get( $key );
+			$plan = \Voxel\Membership\Plan::get( $key );
 			if ( ! $plan ) {
 				throw new \Exception( __( 'Plan not found.', 'voxel-backend' ) );
 			}
@@ -123,7 +117,7 @@ class Membership_Actions extends \Voxel\Controllers\Base_Controller {
 
 	protected function create_price() {
 		try {
-			$plan = \Voxel\Plan::get( $_POST['plan'] );
+			$plan = \Voxel\Membership\Plan::get( $_POST['plan'] );
 			if ( ! $plan ) {
 				throw new \Exception( __( 'Plan not found.', 'voxel-backend' ) );
 			}
@@ -225,7 +219,7 @@ class Membership_Actions extends \Voxel\Controllers\Base_Controller {
 
 	protected function sync_prices() {
 		try {
-			$plan = \Voxel\Plan::get( $_GET['plan'] );
+			$plan = \Voxel\Membership\Plan::get( $_GET['plan'] );
 			if ( ! $plan ) {
 				throw new \Exception( __( 'Plan not found.', 'voxel-backend' ) );
 			}
@@ -276,7 +270,7 @@ class Membership_Actions extends \Voxel\Controllers\Base_Controller {
 
 	protected function toggle_price() {
 		try {
-			$plan = \Voxel\Plan::get( $_GET['plan'] );
+			$plan = \Voxel\Membership\Plan::get( $_GET['plan'] );
 			if ( ! $plan ) {
 				throw new \Exception( __( 'Plan not found.', 'voxel-backend' ) );
 			}
@@ -315,7 +309,7 @@ class Membership_Actions extends \Voxel\Controllers\Base_Controller {
 
 	protected function setup_pricing() {
 		try {
-			$plan = \Voxel\Plan::get( $_GET['plan'] );
+			$plan = \Voxel\Membership\Plan::get( $_GET['plan'] );
 			if ( ! $plan ) {
 				throw new \Exception( __( 'Plan not found.', 'voxel-backend' ) );
 			}
@@ -667,103 +661,6 @@ class Membership_Actions extends \Voxel\Controllers\Base_Controller {
 			exit;
 		} catch ( \Exception $e ) {
 			return call_user_func( apply_filters( 'wp_die_handler', '_default_wp_die_handler' ), $e->getMessage(), '', [ 'back_link' => true ] );
-		}
-	}
-
-	protected function create_pricing_template() {
-		try {
-			$role = \Voxel\Role::get( sanitize_text_field( $_REQUEST['role_key'] ) );
-			if ( ! ( $role && $role->is_managed_by_voxel() && $role->_is_safe_for_registration() ) ) {
-				throw new \Exception( __( 'Invalid request.', 'voxel-backend' ) );
-			}
-
-			if ( $role->get_pricing_page_id() ) {
-				throw new \Exception( __( 'Invalid request.', 'voxel-backend' ) );
-			}
-
-			$template_id = \Voxel\create_page(
-				sprintf( _x( '%s pricing', 'pricing page title', 'voxel-backend' ), $role->get_label() ),
-				sprintf( '%s-pricing', $role->get_key() )
-			);
-
-			if ( is_wp_error( $template_id ) ) {
-				throw new \Exception( __( 'Could not create page.', 'voxel-backend' ) );
-			}
-
-			$settings = $role->get_editor_config()['settings'];
-			$settings['templates']['pricing'] = $template_id;
-
-			$role->set_config( [
-				'settings' => $settings,
-			] );
-
-			return wp_send_json( [
-				'success' => true,
-				'template_id'=> $template_id,
-			] );
-		} catch ( \Exception $e ) {
-			return wp_send_json( [
-				'success' => false,
-				'message' => $e->getMessage(),
-			] );
-		}
-	}
-
-	protected function delete_pricing_template() {
-		try {
-			$role = \Voxel\Role::get( sanitize_text_field( $_REQUEST['role_key'] ) );
-			if ( ! ( $role && $role->is_managed_by_voxel() && $role->_is_safe_for_registration() ) ) {
-				throw new \Exception( __( 'Invalid request.', 'voxel-backend' ) );
-			}
-
-			wp_delete_post( $role->get_pricing_page_id() );
-
-			$settings = $role->get_editor_config()['settings'];
-			$settings['templates']['pricing'] = null;
-
-			$role->set_config( [
-				'settings' => $settings,
-			] );
-
-			return wp_send_json( [
-				'success' => true,
-			] );
-		} catch ( \Exception $e ) {
-			return wp_send_json( [
-				'success' => false,
-				'message' => $e->getMessage(),
-			] );
-		}
-	}
-
-	protected function update_pricing_template() {
-		try {
-			$role = \Voxel\Role::get( sanitize_text_field( $_REQUEST['role_key'] ) );
-			if ( ! ( $role && $role->is_managed_by_voxel() && $role->_is_safe_for_registration() ) ) {
-				throw new \Exception( __( 'Invalid request.', 'voxel-backend' ) );
-			}
-
-			$new_template_id = absint( $_REQUEST['template_id'] ?? null );
-			if ( ! \Voxel\page_exists( $new_template_id ) ) {
-				throw new \Exception( __( 'Provided page template does not exist.', 'voxel-backend' ) );
-			}
-
-			$settings = $role->get_editor_config()['settings'];
-			$settings['templates']['pricing'] = $new_template_id;
-
-			$role->set_config( [
-				'settings' => $settings,
-			] );
-
-			return wp_send_json( [
-				'success' => true,
-				'template_id' => $new_template_id,
-			] );
-		} catch ( \Exception $e ) {
-			return wp_send_json( [
-				'success' => false,
-				'message' => $e->getMessage(),
-			] );
 		}
 	}
 }

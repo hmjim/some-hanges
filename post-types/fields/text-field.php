@@ -26,14 +26,13 @@ class Text_Field extends Base_Post_Field {
 			'label' => $this->get_label_model(),
 			'key' => $this->get_key_model(),
 			'placeholder' => $this->get_placeholder_model(),
+			'description' => $this->get_description_model(),
 			'suffix' => [
 				'type' => Form_Models\Text_Model::class,
 				'label' => 'Suffix',
-				'classes' => 'x-col-4',
 			],
-			'minlength' => $this->get_model( 'minlength', [ 'classes' => 'x-col-4' ]),
-			'maxlength' => $this->get_model( 'maxlength', [ 'classes' => 'x-col-4' ]),
-			'description' => $this->get_description_model(),
+			'minlength' => $this->get_minlength_model(),
+			'maxlength' => $this->get_maxlength_model(),
 			'required' => $this->get_required_model(),
 		];
 	}

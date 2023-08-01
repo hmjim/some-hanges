@@ -78,64 +78,12 @@ class User {
 		return $this->wp_user->last_name;
 	}
 
-	public function get_role_keys() {
+	public function get_roles() {
 		return $this->wp_user->roles;
 	}
 
-	/**
-	 * Get list of roles assigned to this user.
-	 *
-	 * @since 1.2
-	 * @return \Voxel\Role[]
-	 */
-	public function get_roles(): array {
-		return array_filter( array_map( function( $role_key ) {
-			return \Voxel\Role::get( $role_key );
-		}, $this->get_role_keys() ) );
-	}
-
-	/**
-	 * Get list of roles that this user is allowed to switch to
-	 * through the frontend interface.
-	 *
-	 * @since 1.2
-	 * @return \Voxel\Role[]
-	 */
-	public function get_switchable_roles(): array {
-		return array_filter( \Voxel\Role::get_voxel_roles(), function( $role ) {
-			if ( ! $role->is_switching_enabled() ) {
-				return false;
-			}
-
-			if ( in_array( $role->get_key(), $this->get_role_keys() ) ) {
-				return false;
-			}
-
-			/**
-			 * Edge case: Users with a paid plan are not allowed to switch to a role
-			 * that does not support any plans. They need to cancel their current plan
-			 * for the role to become available.
-			 */
-			$membership = $this->get_membership();
-			if ( $membership->plan->get_key() !== 'default' && ! $role->has_plans_enabled() ) {
-				return false;
-			}
-
-			return true;
-		} );
-	}
-
-	public function has_role( $role ): bool {
-		return in_array( $role, $this->get_role_keys(), true );
-	}
-
-	public function set_role( $role_key, $force = false ) {
-		// safeguard admin and editor roles
-		if ( ! $force && in_array( $role_key, [ 'administrator', 'editor' ], true ) ) {
-			return;
-		}
-
-		$this->wp_user->set_role( $role_key );
+	public function has_role( $role ) {
+		return in_array( $role, $this->get_roles(), true );
 	}
 
 	public function get_avatar_id() {
@@ -163,129 +111,40 @@ class User {
 		return get_edit_user_link( $this->get_id() );
 	}
 
-	/**
-	 * Plan is considered modifiable if the submission limit of at least one
-	 * post type can be modified.
-	 *
-	 * @since 1.2
-	 */
-	public function can_modify_current_plan(): bool {
-		$membership = $this->get_membership();
-		$plan = $membership->plan;
-
-		if ( ! $membership->is_active() ) {
-			return false;
-		}
-
-		if ( in_array( $membership->get_type(), [ 'subscription', 'payment' ], true ) ) {
-			try {
-				$price = new \Voxel\Plan_Price( [
-					'id' => $membership->get_price_id(),
-					'mode' => \Voxel\Stripe::is_test_mode() ? 'test' : 'live',
-					'plan' => $plan->get_key(),
-				] );
-			} catch ( \Exception $e ) {
-				return false;
-			}
-
-			foreach ( $plan->get_submission_limits() as $post_type_key => $limit_config ) {
-				if ( $price->supports_addition( $post_type_key ) ) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Determine if user can modify the post submission limits for
-	 * their active plan.
-	 *
-	 * @since 1.2
-	 */
-	public function can_modify_limits_for_post_type( $post_type_key ): bool {
-		$membership = $this->get_membership();
-		$plan = $membership->plan;
-
-		if ( ! $membership->is_active() ) {
-			return false;
-		}
-
-		if ( in_array( $membership->get_type(), [ 'subscription', 'payment' ], true ) ) {
-			try {
-				$price = new \Voxel\Plan_Price( [
-					'id' => $membership->get_price_id(),
-					'mode' => \Voxel\Stripe::is_test_mode() ? 'test' : 'live',
-					'plan' => $plan->get_key(),
-				] );
-
-				return $price->supports_addition( $post_type_key );
-			} catch ( \Exception $e ) {
-				//
-			}
-		}
-
-		return false;
-	}
-
-	public function get_submission_limit_for_all_post_types() {
-		$membership = $this->get_membership();
-		$plan = $membership->plan;
-		$post_types = [];
-		if ( ! $plan ) {
-			return $post_types;
-		}
-
-		$limits = $plan->get_submission_limits();
-		$additional_limits = $membership->get_additional_limits();
-		foreach ( $limits as $post_type_key => $limit ) {
-			$post_type = \Voxel\Post_Type::get( $post_type_key );
-			if ( ! $post_type ) {
-				continue;
-			}
-
-			$limit['count'] = absint( $limit['count'] ) + ( $additional_limits[ $post_type->get_key() ] ?? 0 );
-			$post_types[ $post_type->get_key() ] = new \Voxel\Submission_Limit( $this, $post_type, $limit, $plan );
-		}
-
-		return $post_types;
-	}
-
-	public function get_submission_limit_for_post_type( $post_type_key ) {
-		$membership = $this->get_membership();
-		$plan = $membership->plan;
-		if ( ! $plan ) {
-			return null;
-		}
-
-		$limits = $plan->get_submission_limits();
-		$additional_limits = $membership->get_additional_limits();
-		if ( ! isset( $limits[ $post_type_key ] ) ) {
-			return null;
-		}
-
-		$post_type = \Voxel\Post_Type::get( $post_type_key );
-		if ( ! $post_type ) {
-			return null;
-		}
-
-		$limit = $limits[ $post_type_key ];
-		$limit['count'] = absint( $limit['count'] ) + ( $additional_limits[ $post_type->get_key() ] ?? 0 );
-		return new \Voxel\Submission_Limit( $this, $post_type, $limit, $plan );
-	}
-
 	public function can_create_post( string $post_type_key ): bool {
 		if ( current_user_can('administrator') || current_user_can('editor') ) {
 			return true;
 		}
 
-		$limit = $this->get_submission_limit_for_post_type( $post_type_key );
-		if ( $limit === null ) {
+		$post_type = \Voxel\Post_Type::get( $post_type_key );
+		if ( ! $post_type ) {
 			return false;
 		}
 
-		return $limit->can_create_post();
+		$membership = $this->get_membership();
+		$plan = $membership->plan;
+		if ( ! $plan ) {
+			return false;
+		}
+
+		$config = $plan->get_config();
+		$submissions = (array) ( $config['submissions'] ?? [] );
+
+		if ( ! isset( $submissions[ $post_type->get_key() ] ) ) {
+			return false;
+		}
+
+		$limit = absint( $submissions[ $post_type->get_key() ] );
+		if ( $limit < 1 ) {
+			return false;
+		}
+
+		$stats = $this->get_post_stats();
+
+		// count of pending+publish posts
+		$total_count = ( $stats[ $post_type->get_key() ]['publish'] ?? 0 ) + ( $stats[ $post_type->get_key() ]['pending'] ?? 0 );
+
+		return $total_count < $limit;
 	}
 
 	public function get_profile_id() {

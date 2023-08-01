@@ -27,7 +27,7 @@ class Author_Role_Is extends Base_Visibility_Rule {
 			'value' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => _x( 'Value', 'visibility rules', 'voxel-backend' ),
-				'classes' => 'x-col-3 x-grow',
+				'width' => '1/2',
 				'choices' => array_map( function( $role ) {
 					return $role['name'];
 				}, wp_roles()->roles ),

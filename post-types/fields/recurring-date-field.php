@@ -23,34 +23,30 @@ class Recurring_Date_Field extends Base_Post_Field {
 
 	public function get_models(): array {
 		return [
-			'label' => $this->get_model( 'label', [ 'classes' => 'x-col-6' ]),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'label' => $this->get_label_model(),
+			'key' => $this->get_key_model(),
 			'description' => $this->get_description_model(),
+			'required' => $this->get_required_model(),
 			'allow_multiple' => [
 				'type' => Form_Models\Switcher_Model::class,
 				'label' => 'Enable multiple dates',
 				'description' => 'Allow users to enter multiple dates',
-				'classes' => 'x-col-12',
 			],
 			'max_date_count' => [
 				'v-if' => 'field.allow_multiple',
 				'type' => Form_Models\Number_Model::class,
 				'label' => 'Maximum number of dates allowed',
-				'classes' => 'x-col-12',
 			],
 			'allow_recurrence' => [
 				'type' => Form_Models\Switcher_Model::class,
 				'label' => 'Enable recurring dates',
 				'description' => 'Allow users to repeat a date at regular intervals (e.g. every 2 weeks, every 6 months, etc.)',
-				'classes' => 'x-col-12',
 			],
 			'enable_timepicker' => [
 				'type' => Form_Models\Switcher_Model::class,
 				'label' => 'Enable timepicker',
 				'description' => 'Set whether users can also select the time of day when adding a date.',
-				'classes' => 'x-col-12',
 			],
-			'required' => $this->get_required_model(),
 		];
 	}
 
@@ -360,8 +356,8 @@ class Recurring_Date_Field extends Base_Post_Field {
 							'callback' => function( $index ) {
 								$start = $this->get_upcoming()[ $index ]['start'] ?? null;
 								$end = $this->get_upcoming()[ $index ]['end'] ?? null;
-								$now = current_time('timestamp');
-								return ( $start && $end && ( strtotime( $start ) <= $now ) && ( strtotime( $end ) >= $now ) ) ? '1' : '';
+								$now = \Voxel\now()->getTimestamp();
+								return ( $start && $end && strtotime( $start ) <= $now && strtotime( $end ) >= $now ) ? '1' : '';
 							},
 						],
 					],

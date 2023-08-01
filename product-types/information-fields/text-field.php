@@ -19,12 +19,12 @@ class Text_Field extends Base_Information_Field {
 
 	public function get_models(): array {
 		return [
-			'label' => $this->get_model( 'label', [ 'classes' => 'x-col-6' ]),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
-			'placeholder' => $this->get_model( 'placeholder', [ 'classes' => 'x-col-12' ]),
+			'label' => $this->get_label_model(),
+			'key' => $this->get_key_model(),
+			'placeholder' => $this->get_placeholder_model(),
 			'description' => $this->get_description_model(),
-			'minlength' => $this->get_model( 'minlength', [ 'classes' => 'x-col-6' ]),
-			'maxlength' => $this->get_model( 'maxlength', [ 'classes' => 'x-col-6' ]),
+			'minlength' => $this->get_minlength_model(),
+			'maxlength' => $this->get_maxlength_model(),
 			'required' => $this->get_required_model(),
 		];
 	}

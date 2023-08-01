@@ -53,11 +53,7 @@ trait Numeric_Filter_Helpers {
 	}
 
 	public function _get_value_multiplier() {
-		if ( ! is_numeric( $this->props['step_size'] ) ) {
-			return 1;
-		}
-
-		$step = abs( (float) $this->props['step_size'] );
+		$step = (float) abs( (float) $this->props['step_size'] );
 		$precision = strlen( substr( strrchr( $step, '.' ), 1 ) );
 
 		return pow( 10, $precision );
@@ -86,7 +82,7 @@ trait Numeric_Filter_Helpers {
 
 	public function _get_source_model() {
 		return function() { ?>
-			<div class="ts-form-group x-col-6">
+			<div class="ts-form-group ts-col-1-1">
 				<label>Data source:</label>
 				<select v-model="filter.source">
 					<option v-for="field in $root.getFieldsByType('number')" :value="field.key">

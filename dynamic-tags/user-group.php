@@ -70,38 +70,6 @@ class User_Group extends Base_Group {
 							return $stats[ $post_type->get_key() ]['pending'] ?? 0;
 						},
 					],
-					'unpublished' => [
-						'label' => 'Unpublished count',
-						'type' => \Voxel\T_NUMBER,
-						'callback' => function() use ($post_type) {
-							$stats = $this->get_user()->get_post_stats();
-							return $stats[ $post_type->get_key() ]['unpublished'] ?? 0;
-						},
-					],
-					'expired' => [
-						'label' => 'Expired count',
-						'type' => \Voxel\T_NUMBER,
-						'callback' => function() use ($post_type) {
-							$stats = $this->get_user()->get_post_stats();
-							return $stats[ $post_type->get_key() ]['expired'] ?? 0;
-						},
-					],
-					'rejected' => [
-						'label' => 'Rejected count',
-						'type' => \Voxel\T_NUMBER,
-						'callback' => function() use ($post_type) {
-							$stats = $this->get_user()->get_post_stats();
-							return $stats[ $post_type->get_key() ]['rejected'] ?? 0;
-						},
-					],
-					'draft' => [
-						'label' => 'Draft count',
-						'type' => \Voxel\T_NUMBER,
-						'callback' => function() use ($post_type) {
-							$stats = $this->get_user()->get_post_stats();
-							return $stats[ $post_type->get_key() ]['draft'] ?? 0;
-						},
-					],
 					'archive' => [
 						'label' => 'Archive link',
 						'type' => \Voxel\T_URL,
@@ -421,7 +389,7 @@ class User_Group extends Base_Group {
 						'type' => \Voxel\T_STRING,
 						'callback' => function() {
 							$membership = $this->get_user()->get_membership();
-							$default_plan = \Voxel\Plan::get_or_create_default_plan();
+							$default_plan = \Voxel\Membership\Plan::get_or_create_default_plan();
 							return $membership->is_active() ? $membership->plan->get_label() : $default_plan->get_label();
 						},
 					],
@@ -430,7 +398,7 @@ class User_Group extends Base_Group {
 						'type' => \Voxel\T_STRING,
 						'callback' => function() {
 							$membership = $this->get_user()->get_membership();
-							$default_plan = \Voxel\Plan::get_or_create_default_plan();
+							$default_plan = \Voxel\Membership\Plan::get_or_create_default_plan();
 							return $membership->is_active() ? $membership->plan->get_description() : $default_plan->get_description();
 						},
 					],
@@ -459,7 +427,7 @@ class User_Group extends Base_Group {
 									if ( $membership->get_type() === 'subscription' ) {
 										return \Voxel\interval_format( $membership->get_interval(), $membership->get_interval_count() );
 									} elseif ( $membership->get_type() === 'payment' ) {
-										return _x( 'one time', 'price interval', 'voxel' );
+										return 'one time';
 									} else {
 										return '';
 									}

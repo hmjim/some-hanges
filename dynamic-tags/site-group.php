@@ -206,7 +206,6 @@ class Site_Group extends Base_Group {
 	protected function methods(): array {
 		return [
 			'option' => Methods\Site_Option::class,
-			'query_var' => Methods\Site_Query_Var::class,
 		];
 	}
 }

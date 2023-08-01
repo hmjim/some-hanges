@@ -386,7 +386,6 @@ class User_Bar extends Base_Widget {
 					'label' => __( 'Items', 'voxel-elementor' ),
 					'type' => \Elementor\Controls_Manager::REPEATER,
 					'fields' => $repeater->get_controls(),
-					'title_field' => '{{{ ts_component_type }}}',
 				]
 			);
 
@@ -863,7 +862,7 @@ class User_Bar extends Base_Widget {
 						[
 							'name' => 'ts_action_text',
 							'label' => __( 'Typography', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .ts-user-area .ts_comp_label',
+							'selector' => '{{WRAPPER}} .ts-user-area > ul > li > a > p',
 						]
 					);
 
@@ -873,7 +872,7 @@ class User_Bar extends Base_Widget {
 							'label' => __( 'Color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-user-area .ts_comp_label' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-user-area > ul > li > a > p' => 'color: {{VALUE}}',
 							],
 						]
 					);
@@ -894,7 +893,7 @@ class User_Bar extends Base_Widget {
 							'label' => __( 'Chevron color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-down-icon' => 'border-color: {{VALUE}}',
+								'{{WRAPPER}} .ts-down-icon' => 'border-top-color: {{VALUE}}',
 							],
 						]
 					);
@@ -973,7 +972,7 @@ class User_Bar extends Base_Widget {
 							'label' => __( 'Text color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-user-area > ul > li > a:hover .ts_comp_label' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-user-area > ul > li > a:hover p' => 'color: {{VALUE}}',
 							],
 						]
 					);
@@ -984,17 +983,6 @@ class User_Bar extends Base_Widget {
 							'name' => 'ts_navbar_link_shadow_h',
 							'label' => __( 'Box Shadow', 'voxel-elementor' ),
 							'selector' => '{{WRAPPER}} .ts-user-area > ul > li > a:hover',
-						]
-					);
-
-					$this->add_control(
-						'ts_dropdown_icon_color_h',
-						[
-							'label' => __( 'Chevron color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-user-area > ul > li > a:hover .ts-down-icon' => 'border-color: {{VALUE}}',
-							],
 						]
 					);
 

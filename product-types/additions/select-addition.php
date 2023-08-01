@@ -18,9 +18,9 @@ class Select_Addition extends Base_Addition {
 
 	public function get_models(): array {
 		return [
-			'label' => $this->get_model( 'label', [ 'classes' => 'x-col-6' ]),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
-
+			'label' => $this->get_label_model(),
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'description' => $this->get_description_model(),
 			'required' => $this->get_required_model(),
 			'repeat' => $this->get_repeat_model(),
@@ -28,15 +28,14 @@ class Select_Addition extends Base_Addition {
 				'type' => \Voxel\Form_Models\Switcher_Model::class,
 				'label' => 'Is required in checkout?',
 				'description' => 'Require buyers to insert a value in the booking form',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 			],
 			'choices' => function() { ?>
-				<div class="ts-form-group x-col-12">
+				<div class="ts-form-group ts-col-1-1">
 					<label>Choices</label>
 					<select-field-choices :field="addition"></select-field-choices>
 				</div>
 			<?php },
-			'icon' => $this->get_icon_model(),
 		];
 	}
 

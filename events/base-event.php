@@ -247,6 +247,7 @@ abstract class Base_Event {
 			'orders/vendor:files-delivered' => new \Voxel\Events\Orders\Vendor_Files_Delivered_Event,
 
 			'membership/user:registered' => new \Voxel\Events\Membership\User_Registered_Event,
+			'membership/user:confirmed' => new \Voxel\Events\Membership\User_Confirmed_Event,
 			'membership/plan:activated' => new \Voxel\Events\Membership\Plan_Activated_Event,
 			'membership/plan:switched' => new \Voxel\Events\Membership\Plan_Switched_Event,
 

@@ -19,7 +19,7 @@ trait Single_Value_Model {
 			'value' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'Value',
-				'classes' => 'x-col-4',
+				'width' => '1/2',
 			],
 		];
 	}

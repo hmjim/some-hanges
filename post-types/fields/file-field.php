@@ -119,12 +119,7 @@ class File_Field extends Base_Post_Field {
 			'type' => \Voxel\T_OBJECT,
 			'loopable' => true,
 			'loopcount' => function() {
-				$count = count( $this->get_value() );
-				if ( $count >= 1 ) {
-					return $count;
-				}
-
-				return $this->get_default() !== null ? 1 : 0;
+				return count( $this->get_value() );
 			},
 			'properties' => [
 				'id' => [

@@ -88,7 +88,7 @@ class Stripe_Controller extends Base_Controller {
 			$session = $stripe->billingPortal->sessions->create( [
 				'customer' => \Voxel\current_user()->get_stripe_customer_id(),
 				'configuration' => \Voxel\Stripe::get_portal_configuration_id(),
-				'return_url' => get_permalink( \Voxel\get( 'templates.current_plan' ) ) ?: home_url('/'),
+				'return_url' => get_permalink( \Voxel\get( 'templates.pricing' ) ) ?: home_url('/'),
 			] );
 
 			wp_redirect( $session->url );
@@ -169,8 +169,6 @@ class Stripe_Controller extends Base_Controller {
 						}
 					} elseif ( $payment_for === 'membership' ) {
 						do_action( 'voxel/membership/'.$payment_intent_event, $payment_intent );
-					} elseif ( $payment_for === 'membership' ) {
-						do_action( 'voxel/additional_submissions/'.$payment_intent_event, $payment_intent );
 					}
 				}
 			}

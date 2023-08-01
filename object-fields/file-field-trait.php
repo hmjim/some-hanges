@@ -12,25 +12,25 @@ trait File_Field_Trait {
 
 	public function get_models(): array {
 		return [
-			'label' => $this->get_model( 'label', [ 'classes' => 'x-col-6' ]),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'label' => $this->get_label_model(),
+			'key' => $this->get_model( 'key', [ 'width' => '1/1' ]),
 			'description' => $this->get_description_model(),
 			'allowed-types' => [
 				'type' => Form_Models\Checkboxes_Model::class,
 				'label' => 'Allowed file types',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 				'columns' => 'one',
 				'choices' => array_combine( get_allowed_mime_types(), get_allowed_mime_types() ),
 			],
 			'max-count' => [
 				'type' => Form_Models\Number_Model::class,
 				'label' => 'Maximum file count',
-				'classes' => 'x-col-6',
+				'width' => '1/1',
 			],
 			'max-size' => [
 				'type' => Form_Models\Number_Model::class,
 				'label' => 'Max file size (kB)',
-				'classes' => 'x-col-6',
+				'width' => '1/2',
 			],
 			'required' => $this->get_required_model(),
 		];

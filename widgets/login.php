@@ -32,7 +32,7 @@ class Login extends Base_Widget {
 		] );
 
 			$this->add_control( 'ts_view_screen', [
-				'label' => __( 'Preview screen', 'voxel-elementor' ),
+				'label' => __( 'View screen', 'voxel-elementor' ),
 				'type' => \Elementor\Controls_Manager::SELECT,
 				'default' => 'login',
 				'options' => [
@@ -156,40 +156,6 @@ class Login extends Base_Widget {
 
 		$this->end_controls_section();
 
-
-		$this->start_controls_section( 'auth_register', [
-			'label' => __( 'Registration', 'voxel-elementor' ),
-			'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
-		] );
-
-			$this->add_control( 'ts_role_source', [
-				'label' => __( 'Display registration roles', 'voxel-elementor' ),
-				'label_block' => true,
-				'type' => \Elementor\Controls_Manager::SELECT,
-				'default' => 'auto',
-				'options' => [
-					'auto'  => __( 'Auto: All roles enabled for registration in WP Admin > Membership > Roles', 'voxel-elementor' ),
-					'manual' => __( 'Manual: Choose and order registration roles manually', 'voxel-elementor' ),
-				],
-			] );
-
-			$this->add_control( 'manual_roles', [
-				'label' => __( 'Choose roles', 'voxel-elementor' ),
-				'label_block' => true,
-				'type' => \Elementor\Controls_Manager::SELECT2,
-				'multiple' => true,
-				'default' => 'login',
-				'options' => array_map( function( $role ) {
-					return $role->get_label();
-				}, \Voxel\Role::get_roles_supporting_registration() ),
-				'condition' => [ 'ts_role_source' => 'manual' ],
-			] );
-
-		$this->end_controls_section();
-
-
-
-
 		$this->start_controls_section( 'auth_icons', [
 			'label' => __( 'Icons', 'voxel-elementor' ),
 			'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
@@ -197,11 +163,6 @@ class Login extends Base_Widget {
 
 			$this->add_control( 'auth_google_ico', [
 				'label' => __( 'Google icon', 'text-domain' ),
-				'type' => \Elementor\Controls_Manager::ICONS,
-			] );
-
-			$this->add_control( 'auth_reg_ico', [
-				'label' => __( 'Sign up icon', 'text-domain' ),
 				'type' => \Elementor\Controls_Manager::ICONS,
 			] );
 
@@ -257,42 +218,8 @@ class Login extends Base_Widget {
 				]
 			);
 
-			$this->add_control(
-				'ts_phone_icon',
-				[
-					'label' => __( 'Phone icon', 'text-domain' ),
-					'type' => \Elementor\Controls_Manager::ICONS,
-
-				]
-			);
-
-			$this->add_control(
-				'ts_link_icon',
-				[
-					'label' => __( 'Link icon', 'text-domain' ),
-					'type' => \Elementor\Controls_Manager::ICONS,
-
-				]
-			);
-
-			$this->add_control(
-				'ts_calendar_icon',
-				[
-					'label' => __( 'Calendar icon', 'text-domain' ),
-					'type' => \Elementor\Controls_Manager::ICONS,
-
-				]
-			);
 
 
-			$this->add_control(
-				'ts_list_icon',
-				[
-					'label' => __( 'Taxonomy / Select icon', 'text-domain' ),
-					'type' => \Elementor\Controls_Manager::ICONS,
-
-				]
-			);
 
 		$this->end_controls_section();
 
@@ -325,57 +252,7 @@ class Login extends Base_Widget {
 			$this->add_responsive_control(
 				'ts_section_spacing',
 				[
-					'label' => __( 'Content spacing', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SLIDER,
-					'size_units' => [ 'px' ],
-					'range' => [
-						'px' => [
-							'min' => 0,
-							'max' => 100,
-							'step' => 1,
-						],
-					],
-					'selectors' => [
-						'{{WRAPPER}} .login-section,{{WRAPPER}} form' => 'grid-gap: {{SIZE}}{{UNIT}};',
-					],
-				]
-			);
-
-
-
-		$this->end_controls_section();
-
-		$this->start_controls_section(
-			'role_selection',
-			[
-				'label' => __( 'Role selection', 'voxel-elementor' ),
-				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
-			]
-		);
-
-			$this->add_responsive_control(
-				'rs_minwidth',
-				[
-					'label' => __( 'Minimum role width', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SLIDER,
-					'size_units' => [ 'px' ],
-					'range' => [
-						'px' => [
-							'min' => 0,
-							'max' => 500,
-							'step' => 1,
-						],
-					],
-					'selectors' => [
-						'{{WRAPPER}} .role-selection-hold ' => '--rolemin: {{SIZE}}{{UNIT}};',
-					],
-				]
-			);
-
-			$this->add_responsive_control(
-				'rs_radius',
-				[
-					'label' => __( 'Border radius', 'voxel-elementor' ),
+					'label' => __( 'Section spacing', 'voxel-elementor' ),
 					'type' => \Elementor\Controls_Manager::SLIDER,
 					'size_units' => [ 'px', '%' ],
 					'range' => [
@@ -390,99 +267,36 @@ class Login extends Base_Widget {
 						],
 					],
 					'selectors' => [
-						'{{WRAPPER}} .role-selection-hold' => 'border-radius: {{SIZE}}{{UNIT}};',
+						'{{WRAPPER}} .login-section' => 'margin-top: {{SIZE}}{{UNIT}};',
 					],
-				]
-			);
-
-			$this->add_group_control(
-				\Elementor\Group_Control_Border::get_type(),
-				[
-					'name' => 'rs_border',
-					'label' => __( 'Border', 'voxel-elementor' ),
-					'selector' => '{{WRAPPER}} .role-selection-hold',
-				]
-			);
-
-			$this->add_group_control(
-				\Elementor\Group_Control_Typography::get_type(),
-				[
-					'name' => 'ts_typo',
-					'label' => __( 'Typography', 'voxel-elementor' ),
-					'selector' => '{{WRAPPER}} .role-selection a',
 				]
 			);
 
 			$this->add_responsive_control(
-				'head_border_col',
+				'ts_fg_spacing',
 				[
-					'label' => __( 'Separator color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}} .role-selection a' => 'border-color: {{VALUE}}',
+					'label' => __( 'Field spacing', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::SLIDER,
+					'size_units' => [ 'px', '%' ],
+					'range' => [
+						'px' => [
+							'min' => 0,
+							'max' => 100,
+							'step' => 1,
+						],
+						'%' => [
+							'min' => 0,
+							'max' => 100,
+						],
 					],
-
-				]
-			);
-
-			$this->add_responsive_control(
-				'rs_color',
-				[
-					'label' => __( 'Text color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
 					'selectors' => [
-						'{{WRAPPER}}  .role-selection a' => 'color: {{VALUE}}',
+						'{{WRAPPER}} .ts-login .ts-form-group' => 'padding-bottom: {{SIZE}}{{UNIT}};',
 					],
-
-				]
-			);
-
-			$this->add_responsive_control(
-				'rs_bg',
-				[
-					'label' => __( 'Background color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}}  .role-selection a' => 'background: {{VALUE}}',
-					],
-
-				]
-			);
-
-			$this->add_group_control(
-				\Elementor\Group_Control_Typography::get_type(),
-				[
-					'name' => 'ts_typo_active',
-					'label' => __( 'Typography (Active)', 'voxel-elementor' ),
-					'selector' => '{{WRAPPER}} .role-selection a.selected-role',
-				]
-			);
-
-			$this->add_responsive_control(
-				'rs_color_active',
-				[
-					'label' => __( 'Text color (Active)', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}}  .role-selection a.selected-role' => 'color: {{VALUE}}',
-					],
-
-				]
-			);
-
-			$this->add_responsive_control(
-				'rs_bg_active',
-				[
-					'label' => __( 'Background color (Active)', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}}  .role-selection a.selected-role' => 'background: {{VALUE}}',
-					],
-
 				]
 			);
 
 		$this->end_controls_section();
+
 		$this->start_controls_section(
 			'auth_primary_btn',
 			[
@@ -532,6 +346,10 @@ class Login extends Base_Widget {
 									'min' => 0,
 									'max' => 100,
 								],
+							],
+							'default' => [
+								'unit' => 'px',
+								'size' => 5,
 							],
 							'selectors' => [
 								'{{WRAPPER}} .ts-login .ts-btn-2' => 'border-radius: {{SIZE}}{{UNIT}};',
@@ -986,155 +804,6 @@ class Login extends Base_Widget {
 		$this->end_controls_section();
 
 		$this->start_controls_section(
-			'auth_label_section',
-			[
-				'label' => __( 'Label and description', 'voxel-elementor' ),
-				'tab' => 'tab_fields',
-			]
-		);
-
-			$this->add_control(
-				'auth_label',
-				[
-					'label' => __( 'Label', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::HEADING,
-					'separator' => 'before',
-				]
-			);
-
-
-			$this->add_group_control(
-				\Elementor\Group_Control_Typography::get_type(),
-				[
-					'name' => 'auth_label_typo',
-					'label' => __( 'Typography' ),
-					'selector' => '{{WRAPPER}} .ts-form-group label, {{WRAPPER}} .field-info',
-				]
-			);
-
-
-			$this->add_responsive_control(
-				'auth_label_col',
-				[
-					'label' => __( 'Color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}} .ts-form-group label,{{WRAPPER}} .field-info' => 'color: {{VALUE}}',
-					],
-
-				]
-			);
-
-			$this->add_control(
-				'label_padding',
-				[
-					'label' => __( 'Label padding', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::DIMENSIONS,
-					'size_units' => [ 'px'],
-					'selectors' => [
-						'{{WRAPPER}}  .ts-form-group > label' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-					],
-				]
-			);
-
-			$this->add_control(
-				'auth_desc',
-				[
-					'label' => __( 'Description', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::HEADING,
-					'separator' => 'before',
-				]
-			);
-
-
-			$this->add_group_control(
-				\Elementor\Group_Control_Typography::get_type(),
-				[
-					'name' => 'auth_desc_t',
-					'label' => __( 'Typography' ),
-					'selector' => '{{WRAPPER}} .ts-form-group small',
-				]
-			);
-
-
-			$this->add_responsive_control(
-				'auth_desc_col',
-				[
-					'label' => __( 'Color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}}  .ts-form-group small' => 'color: {{VALUE}}',
-					],
-
-				]
-			);
-
-			$this->add_control(
-				'auth_link',
-				[
-					'label' => __( 'Link', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::HEADING,
-					'separator' => 'before',
-				]
-			);
-
-			$this->add_group_control(
-				\Elementor\Group_Control_Typography::get_type(),
-				[
-					'name' => 'auth_link_t',
-					'label' => __( 'Typography' ),
-					'selector' => '{{WRAPPER}} .ts-form-group label a, {{WRAPPER}} .field-info a',
-				]
-			);
-
-
-			$this->add_responsive_control(
-				'auth_link_col',
-				[
-					'label' => __( 'Color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}}  .ts-form-group label a, {{WRAPPER}} .field-info a' => 'color: {{VALUE}}',
-					],
-
-				]
-			);
-
-			$this->add_control(
-				'ts1_field_req_h',
-				[
-					'label' => __( 'Field required', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::HEADING,
-					'separator' => 'before',
-				]
-			);
-
-
-			$this->add_group_control(
-				\Elementor\Group_Control_Typography::get_type(),
-				[
-					'name' => 'ts1_field_req_t',
-					'label' => __( 'Typography' ),
-					'selector' => '{{WRAPPER}} span.is-required',
-				]
-			);
-
-
-			$this->add_responsive_control(
-				'ts1_field_req_col',
-				[
-					'label' => __( 'Color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}} span.is-required' => 'color: {{VALUE}}',
-					],
-
-				]
-			);
-
-		$this->end_controls_section();
-
-		$this->start_controls_section(
 			'auth_google_btn',
 			[
 				'label' => __( 'Google button', 'voxel-elementor' ),
@@ -1388,303 +1057,31 @@ class Login extends Base_Widget {
 		$this->end_controls_section();
 
 		$this->start_controls_section(
-			'section_separator',
+			'auth_input',
 			[
-				'label' => __( 'Section divider', 'voxel-elementor' ),
+				'label' => __( 'Input', 'voxel-elementor' ),
 				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
 			]
 		);
 
-			$this->add_group_control(
-				\Elementor\Group_Control_Typography::get_type(),
-				[
-					'name' => 'sd_typo',
-					'label' => __( 'Typography', 'voxel-elementor' ),
-					'selector' => '{{WRAPPER}} .or-group .or-text',
-				]
-			);
-
-			$this->add_responsive_control(
-				'sd_color',
-				[
-					'label' => __( 'Text color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}} .or-group .or-text' => 'color: {{VALUE}}',
-					],
-
-				]
-			);
-
-			$this->add_responsive_control(
-				'sd_div_color',
-				[
-					'label' => __( 'Divider color', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::COLOR,
-					'selectors' => [
-						'{{WRAPPER}} .or-group .or-line' => 'background-color: {{VALUE}}',
-					],
-
-				]
-			);
-
-			$this->add_control(
-				'sd_div_height',
-				[
-					'label' => __( 'Divider height', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SLIDER,
-					'size_units' => [ 'px' ],
-					'range' => [
-						'px' => [
-							'min' => 0,
-							'max' => 100,
-							'step' => 1,
-						],
-					],
-					'selectors' => [
-						'{{WRAPPER}} .or-group .or-line' => 'height: {{SIZE}}{{UNIT}};',
-					],
-				]
-			);
-
-
-		$this->end_controls_section();
-
-		$this->start_controls_section(
-			'ts_sf_intxt',
-			[
-				'label' => __( 'Form: Input & Textarea', 'voxel-elementor' ),
-				'tab' => 'tab_fields',
-			]
-		);
-
 			$this->start_controls_tabs(
-				'ts_intxt_tabs'
+				'auth_input_tabs'
 			);
+
 				/* Normal tab */
 
 				$this->start_controls_tab(
-					'ts_intxt_normal',
+					'auth_input_normal',
 					[
 						'label' => __( 'Normal', 'voxel-elementor' ),
 					]
 				);
 
-					$this->add_control(
-						'ts_intxt_placeholde_heading',
-						[
-							'label' => __( 'Placeholder', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::HEADING,
-							'separator' => 'before',
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_intxt_placeholder',
-						[
-							'label' => __( 'Placeholder color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-form input.ts-filter::placeholder' => 'color: {{VALUE}}',
-								'{{WRAPPER}} .ts-form textarea.ts-filter::placeholder' => 'color: {{VALUE}}',
-
-							],
-
-						]
-					);
-
-					$this->add_group_control(
-						\Elementor\Group_Control_Typography::get_type(),
-						[
-							'name' => 'ts_intxt_input_input_typo',
-							'label' => __( 'Typography' ),
-							'selector' =>
-								'{{WRAPPER}} .ts-form input.ts-filter::placeholder, .ts-form textarea.ts-filter::placeholder',
-						]
-					);
 
 					$this->add_control(
-						'ts_intxt_text',
+						'auth_input_height',
 						[
-							'label' => __( 'Value', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::HEADING,
-							'separator' => 'before',
-						]
-					);
-
-
-
-					$this->add_responsive_control(
-						'ts_intxt_value_color',
-						[
-							'label' => __( 'Text color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-form input.ts-filter' => 'color: {{VALUE}};',
-								'{{WRAPPER}} .ts-form textarea.ts-filter' => 'color: {{VALUE}};',
-							],
-
-						]
-					);
-
-
-
-					$this->add_group_control(
-						\Elementor\Group_Control_Typography::get_type(),
-						[
-							'name' => 'ts_intxt_value_typo',
-							'label' => __( 'Typography' ),
-
-							'selector' => '{{WRAPPER}} .ts-form input.ts-filter, {{WRAPPER}} .ts-form textarea.ts-filter',
-
-
-						]
-					);
-
-
-					$this->add_control(
-						'ts_intxt_general',
-						[
-							'label' => __( 'General', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::HEADING,
-							'separator' => 'before',
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_intxt_bg',
-						[
-							'label' => __( 'Background color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-form textarea.ts-filter' => 'background: {{VALUE}}',
-								'{{WRAPPER}} .ts-form input.ts-filter' => 'background: {{VALUE}}',
-							],
-
-						]
-					);
-
-
-
-
-					$this->add_group_control(
-						\Elementor\Group_Control_Border::get_type(),
-						[
-							'name' => 'ts_intxt_border',
-							'label' => __( 'Border', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .ts-form textarea.ts-filter, {{WRAPPER}} .ts-form input.ts-filter',
-
-
-						]
-					);
-
-					$this->add_control(
-						'ts_intxt_input_heading',
-						[
-							'label' => __( 'Input', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::HEADING,
-							'separator' => 'before',
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_intxt_padding',
-						[
-							'label' => __( 'Padding', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::DIMENSIONS,
-							'size_units' => [ 'px', '%', 'em' ],
-							'selectors' => [
-								'{{WRAPPER}} .ts-form input.ts-filter' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-							],
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_intxt_input_height',
-						[
-							'label' => __( 'Height', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px', '%' ],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 100,
-									'step' => 1,
-								],
-								'%' => [
-									'min' => 0,
-									'max' => 100,
-								],
-							],
-							'selectors' => [
-								'{{WRAPPER}}  .ts-form input.ts-filter' => 'height: {{SIZE}}{{UNIT}};',
-							],
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_intxt_input_radius',
-						[
-							'label' => __( 'Border radius', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px', '%' ],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 100,
-									'step' => 1,
-								],
-								'%' => [
-									'min' => 0,
-									'max' => 100,
-								],
-							],
-							'selectors' => [
-								'{{WRAPPER}} .ts-form input.ts-filter' => 'border-radius: {{SIZE}}{{UNIT}};',
-							],
-						]
-					);
-
-					$this->add_control(
-						'ts_input2_icon_heading',
-						[
-							'label' => __( 'Input with icon', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::HEADING,
-							'separator' => 'before',
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_input2_padding',
-						[
-							'label' => __( 'Padding', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::DIMENSIONS,
-							'size_units' => [ 'px', '%', 'em' ],
-							'selectors' => [
-								'{{WRAPPER}} .ts-input-icon input.ts-filter' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-							],
-						]
-					);
-
-
-
-					$this->add_responsive_control(
-						'ts_input2_icon_col',
-						[
-							'label' => __( 'Icon color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-input-icon i' => 'color: {{VALUE}}',
-								'{{WRAPPER}} .ts-input-icon svg' => 'fill: {{VALUE}}',
-							],
-
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_intxt_icon_size',
-						[
-							'label' => __( 'Icon size', 'voxel-elementor' ),
+							'label' => __( 'Input height', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::SLIDER,
 							'size_units' => [ 'px' ],
 							'range' => [
@@ -1695,92 +1092,134 @@ class Login extends Base_Widget {
 								],
 							],
 							'selectors' => [
-								'{{WRAPPER}} .ts-input-icon i' => 'font-size: {{SIZE}}{{UNIT}};',
-								'{{WRAPPER}} .ts-input-icon svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-form input' => 'height: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
 
 					$this->add_responsive_control(
-						'ts_intxt_icon_margin',
-						[
-							'label' => __( 'Icon side padding', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px', '%' ],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 100,
-									'step' => 1,
-								],
-								'%' => [
-									'min' => 0,
-									'max' => 100,
-								],
-							],
-							'selectors' => [
-								'{{WRAPPER}} .ts-input-icon i' => !is_rtl() ? 'left: {{SIZE}}{{UNIT}};' : 'right: {{SIZE}}{{UNIT}};',
-								'{{WRAPPER}} .ts-input-icon svg' => !is_rtl() ? 'left: {{SIZE}}{{UNIT}};' : 'right: {{SIZE}}{{UNIT}};',
-							],
-						]
-					);
-
-
-
-					$this->add_control(
-						'ts_intxt_textarea_heading',
-						[
-							'label' => __( 'Textarea', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::HEADING,
-							'separator' => 'before',
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_txt_padding',
-						[
-							'label' => __( 'Padding', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::DIMENSIONS,
-							'size_units' => [ 'px', '%', 'em' ],
-							'selectors' => [
-								'{{WRAPPER}} .ts-form textarea.ts-filter' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-							],
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_intxt_textarea_height',
-						[
-							'label' => __( 'Height', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px', '%' ],
-							'range' => [
-								'px' => [
-									'min' => 0,
-									'max' => 1500,
-									'step' => 1,
-								],
-								'%' => [
-									'min' => 0,
-									'max' => 100,
-								],
-							],
-							'selectors' => [
-								'{{WRAPPER}}  .ts-form textarea.ts-filter' => 'min-height: {{SIZE}}{{UNIT}};',
-							],
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_intxt_textarea_radius',
+						'auth_input_radius',
 						[
 							'label' => __( 'Border radius', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::SLIDER,
-							'size_units' => [ 'px', '%' ],
+							'size_units' => [ 'px'],
 							'range' => [
 								'px' => [
 									'min' => 0,
 									'max' => 100,
+									'step' => 1,
+								],
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form input' => 'border-radius: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Typography::get_type(),
+						[
+							'name' => 'auth_input_font',
+							'label' => __( 'Typography' ),
+							'selector' => '{{WRAPPER}} .ts-form input',
+						]
+					);
+
+					$this->add_control(
+						'auth_input_padding',
+						[
+							'label' => __( 'Input padding', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::DIMENSIONS,
+							'size_units' => [ 'px', '%', 'em' ],
+							'selectors' => [
+								'{{WRAPPER}} .ts-form input' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+							],
+						]
+					);
+
+					$this->add_group_control(
+						\Elementor\Group_Control_Border::get_type(),
+						[
+							'name' => 'auth_input_border',
+							'label' => __( 'Border', 'voxel-elementor' ),
+							'selector' => '{{WRAPPER}} .ts-form input',
+						]
+					);
+
+					$this->add_control(
+						'auth_input_bg',
+						[
+							'label' => __( 'Input background color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form input' => 'background: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_control(
+						'auth_input_background_filled',
+						[
+							'label' => __( 'Input background color (Focus)', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form input:focus' => 'background-color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_control(
+						'auth_input_value_col',
+						[
+							'label' => __( 'Input value color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form input' => 'color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_control(
+						'auth_input_placeholder_color',
+						[
+							'label' => __( 'Input placeholder color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-form input::-webkit-input-placeholder' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-form input:-moz-placeholder' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-form input::-moz-placeholder' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-form input:-ms-input-placeholder' => 'color: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_control(
+						'auth_input_icon_c',
+						[
+							'label' => __( 'Icon color', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::COLOR,
+							'selectors' => [
+								'{{WRAPPER}} .ts-input-icon > i' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-input-icon > svg' => 'fill: {{VALUE}}',
+							],
+
+						]
+					);
+
+					$this->add_control(
+						'auth_input_icon_size',
+						[
+							'label' => __( 'Input icon size', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px', '%' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 40,
 									'step' => 1,
 								],
 								'%' => [
@@ -1788,157 +1227,90 @@ class Login extends Base_Widget {
 									'max' => 100,
 								],
 							],
+							'default' => [
+								'unit' => 'px',
+								'size' => 22,
+							],
 							'selectors' => [
-								'{{WRAPPER}} .ts-form textarea.ts-filter' => 'border-radius: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-input-icon > i' => 'font-size: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-input-icon > svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
 							],
 						]
 					);
 
-
+					$this->add_control(
+						'auth_input_icon_margin',
+						[
+							'label' => __( 'Input icon left margin', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::SLIDER,
+							'size_units' => [ 'px', '%' ],
+							'range' => [
+								'px' => [
+									'min' => 0,
+									'max' => 40,
+									'step' => 1,
+								],
+								'%' => [
+									'min' => 0,
+									'max' => 100,
+								],
+							],
+							'default' => [
+								'unit' => 'px',
+								'size' => 15,
+							],
+							'selectors' => [
+								'{{WRAPPER}} .ts-input-icon > i' => 'left: {{SIZE}}{{UNIT}};',
+								'{{WRAPPER}} .ts-input-icon > svg' => 'left: {{SIZE}}{{UNIT}};',
+							],
+						]
+					);
 
 				$this->end_controls_tab();
 
-				/* Hover */
+
+				/* Hover tab */
 
 				$this->start_controls_tab(
-					'ts_intxt_hover',
+					'auth_input_hover',
 					[
 						'label' => __( 'Hover', 'voxel-elementor' ),
 					]
 				);
 
-					$this->add_responsive_control(
-						'ts_intxt_bg_h',
+
+					$this->add_control(
+						'auth_input_h',
 						[
-							'label' => __( 'Background color', 'voxel-elementor' ),
+							'label' => __( 'Input', 'voxel-elementor' ),
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'separator' => 'before',
+						]
+					);
+
+					$this->add_control(
+						'auth_input_bg_h',
+						[
+							'label' => __( 'Input background color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-form textarea.ts-filter:hover' => 'background: {{VALUE}}',
-								'{{WRAPPER}} .ts-form input.ts-filter:hover' => 'background: {{VALUE}}',
+								'{{WRAPPER}} .ts-form input:hover' => 'background: {{VALUE}}',
 							],
 
 						]
 					);
 
-					$this->add_responsive_control(
-						'ts_intxt_border_h',
+					$this->add_control(
+						'auth_input_h_border',
 						[
-							'label' => __( 'Border color', 'voxel-elementor' ),
+							'label' => __( 'Input border color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-form textarea.ts-filter:hover' => 'border-color: {{VALUE}}',
-								'{{WRAPPER}} .ts-form input.ts-filter:hover' => 'border-color: {{VALUE}}',
+								'{{WRAPPER}} .ts-form input:hover' => 'border-color: {{VALUE}}',
 							],
 
 						]
 					);
-
-					$this->add_responsive_control(
-						'ts_intxt_placeholder_h',
-						[
-							'label' => __( 'Placeholder color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-form input.ts-filter:hover::placeholder' => 'color: {{VALUE}}',
-							],
-
-						]
-
-					);
-
-					$this->add_responsive_control(
-						'ts_intxt_value_color_h',
-						[
-							'label' => __( 'Text color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-form input.ts-filter:hover' => 'color: {{VALUE}};',
-								'{{WRAPPER}} .ts-form textarea.ts-filter:hover' => 'color: {{VALUE}};',
-							],
-
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_input2_icon_col_h',
-						[
-							'label' => __( 'Icon color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-input-icon:hover i' => 'color: {{VALUE}}',
-								'{{WRAPPER}} .ts-input-icon:hover svg' => 'fill: {{VALUE}}',
-							],
-
-						]
-					);
-
-
-
-				$this->end_controls_tab();
-
-				/* Filled */
-
-				$this->start_controls_tab(
-					'ts_intxt_filled',
-					[
-						'label' => __( 'Active', 'voxel-elementor' ),
-					]
-				);
-
-					$this->add_responsive_control(
-						'ts_intxt_bg_a',
-						[
-							'label' => __( 'Background color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-form textarea.ts-filter:focus' => 'background: {{VALUE}}',
-								'{{WRAPPER}} .ts-form input.ts-filter:focus' => 'background: {{VALUE}}',
-							],
-
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_intxt_border_a',
-						[
-							'label' => __( 'Border color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-form textarea.ts-filter:focus' => 'border-color: {{VALUE}}',
-								'{{WRAPPER}} .ts-form input.ts-filter:focus' => 'border-color: {{VALUE}}',
-							],
-
-						]
-					);
-
-					$this->add_responsive_control(
-						'ts_intxt_placeholder_a',
-						[
-							'label' => __( 'Placeholder color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-form input.ts-filter:active::placeholder' => 'color: {{VALUE}}',
-								'{{WRAPPER}} .ts-form textarea.ts-filter:active::placeholder' => 'color: {{VALUE}}',
-
-							],
-
-						]
-
-					);
-
-					$this->add_responsive_control(
-						'ts_intxt_value_color_a',
-						[
-							'label' => __( 'Text color', 'voxel-elementor' ),
-							'type' => \Elementor\Controls_Manager::COLOR,
-							'selectors' => [
-								'{{WRAPPER}} .ts-form input.ts-filter:focus' => 'color: {{VALUE}};',
-								'{{WRAPPER}} .ts-form textarea.ts-filter:focus' => 'color: {{VALUE}};',
-							],
-
-						]
-					);
-
 
 
 				$this->end_controls_tab();
@@ -1948,467 +1320,109 @@ class Login extends Base_Widget {
 		$this->end_controls_section();
 
 		$this->start_controls_section(
-				'ts_sf_styling_filters',
+			'auth_label_section',
+			[
+				'label' => __( 'Label and description', 'voxel-elementor' ),
+				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+			]
+		);
+
+			$this->add_control(
+				'auth_label',
 				[
-					'label' => __( 'Form: Popup button', 'voxel-elementor' ),
-					'tab' => 'tab_fields',
+					'label' => __( 'Label', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::HEADING,
+					'separator' => 'before',
 				]
 			);
 
-				$this->start_controls_tabs(
-					'ts_sf_filters_tabs'
-				);
 
-					/* Normal tab */
-
-					$this->start_controls_tab(
-						'ts_sf_normal',
-						[
-							'label' => __( 'Normal', 'voxel-elementor' ),
-						]
-					);
-
-
-						$this->add_control(
-							'ts_sf_input',
-							[
-								'label' => __( 'Style', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::HEADING,
-								'separator' => 'before',
-							]
-						);
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Typography::get_type(),
-							[
-								'name' => 'ts_sf_input_input_typo',
-								'label' => __( 'Typography' ),
-								'selector' => '{{WRAPPER}} .ts-form div.ts-filter',
-							]
-						);
-
-
-
-						$this->add_responsive_control(
-							'ts_sf_input_padding',
-							[
-								'label' => __( 'Padding', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::DIMENSIONS,
-								'size_units' => [ 'px', '%', 'em' ],
-								'selectors' => [
-									'{{WRAPPER}} .ts-form div.ts-filter' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-								],
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_input_height',
-							[
-								'label' => __( 'Height', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::SLIDER,
-								'size_units' => [ 'px', '%' ],
-								'range' => [
-									'px' => [
-										'min' => 0,
-										'max' => 100,
-										'step' => 1,
-									],
-									'%' => [
-										'min' => 0,
-										'max' => 100,
-									],
-								],
-								'selectors' => [
-									'{{WRAPPER}} div.ts-filter' => 'height: {{SIZE}}{{UNIT}};',
-								],
-							]
-						);
-
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Box_Shadow::get_type(),
-							[
-								'name' => 'ts_sf_input_shadow',
-								'label' => __( 'Box Shadow', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} div.ts-filter',
-							]
-						);
-
-
-
-
-						$this->add_responsive_control(
-							'ts_sf_input_bg',
-							[
-								'label' => __( 'Background color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form div.ts-filter' => 'background: {{VALUE}}',
-								],
-
-							]
-						);
-
-
-						$this->add_responsive_control(
-							'ts_sf_input_value_col',
-							[
-								'label' => __( 'Text color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form div.ts-filter-text' => 'color: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Border::get_type(),
-							[
-								'name' => 'ts_sf_input_border',
-								'label' => __( 'Border', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} div.ts-filter',
-							]
-						);
-
-
-
-
-						$this->add_responsive_control(
-							'ts_sf_input_radius',
-							[
-								'label' => __( 'Border radius', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::SLIDER,
-								'size_units' => [ 'px', '%' ],
-								'range' => [
-									'px' => [
-										'min' => 0,
-										'max' => 100,
-										'step' => 1,
-									],
-									'%' => [
-										'min' => 0,
-										'max' => 100,
-									],
-								],
-								'selectors' => [
-									'{{WRAPPER}} .ts-form div.ts-filter' => 'border-radius: {{SIZE}}{{UNIT}};',
-								],
-							]
-						);
-
-
-
-
-
-
-						$this->add_control(
-							'ts_icon_filters',
-							[
-								'label' => __( 'Icons', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::HEADING,
-								'separator' => 'before',
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_input_icon_col',
-							[
-								'label' => __( 'Icon color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} div.ts-filter i' => 'color: {{VALUE}}',
-									'{{WRAPPER}} div.ts-filter svg' => 'fill: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_input_icon_size',
-							[
-								'label' => __( 'Icon size', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::SLIDER,
-								'size_units' => [ 'px', '%' ],
-								'range' => [
-									'px' => [
-										'min' => 0,
-										'max' => 100,
-										'step' => 1,
-									],
-									'%' => [
-										'min' => 0,
-										'max' => 100,
-									],
-								],
-								'default' => [
-									'unit' => 'px',
-									'size' => 24,
-								],
-								'selectors' => [
-									'{{WRAPPER}} div.ts-filter i' => 'font-size: {{SIZE}}{{UNIT}};',
-									'{{WRAPPER}} div.ts-filter svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};min-width: {{SIZE}}{{UNIT}};',
-								],
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_input_icon_margin',
-							[
-								'label' => __( 'Icon/Text spacing', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::SLIDER,
-								'size_units' => [ 'px'],
-								'range' => [
-									'px' => [
-										'min' => 0,
-										'max' => 100,
-										'step' => 1,
-									],
-								],
-								'default' => [
-									'unit' => 'px',
-									'size' => 10,
-								],
-								'selectors' => [
-									'{{WRAPPER}} div.ts-filter' => 'grid-gap: {{SIZE}}{{UNIT}};',
-								],
-							]
-						);
-
-						$this->add_control(
-							'ts_chevron',
-							[
-								'label' => __( 'Chevron', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::HEADING,
-								'separator' => 'before',
-							]
-						);
-
-						$this->add_control(
-							'ts_hide_chevron',
-							[
-
-								'label' => __( 'Hide chevron', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::SWITCHER,
-								'label_on' => __( 'Hide', 'voxel-elementor' ),
-								'label_off' => __( 'Show', 'voxel-elementor' ),
-								'return_value' => 'yes',
-
-								'selectors' => [
-									'{{WRAPPER}} div.ts-filter .ts-down-icon' => 'display: none !important;',
-								],
-							]
-						);
-
-						$this->add_control(
-							'ts_chevron_btn_color',
-							[
-								'label' => __( 'Chevron color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} div.ts-filter .ts-down-icon' => 'border-color: {{VALUE}}',
-								],
-							]
-						);
-
-
-					$this->end_controls_tab();
-
-
-					/* Hover tab */
-
-					$this->start_controls_tab(
-						'ts_sf_hover',
-						[
-							'label' => __( 'Hover', 'voxel-elementor' ),
-						]
-					);
-
-						$this->add_control(
-							'ts_sf_input_h',
-							[
-								'label' => __( 'Style', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::HEADING,
-								'separator' => 'before',
-							]
-						);
-
-						$this->add_control(
-							'ts_sf_input_bg_h',
-							[
-								'label' => __( 'Background color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form div.ts-filter:hover' => 'background: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_input_value_col_h',
-							[
-								'label' => __( 'Text color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form div.ts-filter:hover .ts-filter-text' => 'color: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_control(
-							'ts_sf_input_border_h',
-							[
-								'label' => __( 'Border color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form .ts-filter:hover' => 'border-color: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_input_icon_col_h',
-							[
-								'label' => __( 'Icon color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} div.ts-filter:hover i' => 'color: {{VALUE}}',
-									'{{WRAPPER}} div.ts-filter:hover svg' => 'fill: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Box_Shadow::get_type(),
-							[
-								'name' => 'ts_sf_input_shadow_hover',
-								'label' => __( 'Box Shadow', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} div.ts-filter:hover',
-							]
-						);
-
-
-
-					$this->end_controls_tab();
-
-					/* Hover tab */
-
-					$this->start_controls_tab(
-						'ts_sf_filled',
-						[
-							'label' => __( 'Filled', 'voxel-elementor' ),
-						]
-					);
-
-						$this->add_control(
-							'ts_sf_input_filled',
-							[
-								'label' => __( 'Style (Filled)', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::HEADING,
-								'separator' => 'before',
-							]
-						);
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Typography::get_type(),
-							[
-								'name' => 'ts_sf_input_typo_filled',
-								'label' => __( 'Typography', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} div.ts-filter.ts-filled',
-							]
-						);
-
-						$this->add_control(
-							'ts_sf_input_background_filled',
-							[
-								'label' => __( 'Background', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form div.ts-filter.ts-filled' => 'background-color: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_input_value_col_filled',
-							[
-								'label' => __( 'Text color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} div.ts-filter.ts-filled .ts-filter-text' => 'color: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_responsive_control(
-							'ts_sf_input_icon_col_filled',
-							[
-								'label' => __( 'Icon color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} div.ts-filter.ts-filled i' => 'color: {{VALUE}}',
-									'{{WRAPPER}} div.ts-filter.ts-filled svg' => 'fill: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_control(
-							'ts_sf_input_border_filled',
-							[
-								'label' => __( 'Border color', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::COLOR,
-								'selectors' => [
-									'{{WRAPPER}} .ts-form div.ts-filter.ts-filled' => 'border-color: {{VALUE}}',
-								],
-
-							]
-						);
-
-						$this->add_control(
-							'ts_sf_border_filled_width',
-							[
-								'label' => __( 'Border width', 'voxel-elementor' ),
-								'type' => \Elementor\Controls_Manager::SLIDER,
-								'size_units' => [ 'px' ],
-								'range' => [
-									'px' => [
-										'min' => 0,
-										'max' => 100,
-										'step' => 1,
-									],
-								],
-								'selectors' => [
-									'{{WRAPPER}} .ts-form div.ts-filter.ts-filled' => 'border-width: {{SIZE}}{{UNIT}};',
-								],
-							]
-						);
-
-						$this->add_group_control(
-							\Elementor\Group_Control_Box_Shadow::get_type(),
-							[
-								'name' => 'ts_sf_input_shadow_active',
-								'label' => __( 'Box Shadow', 'voxel-elementor' ),
-								'selector' => '{{WRAPPER}} div.ts-filter.ts-filled',
-							]
-						);
-
-
-
-
-					$this->end_controls_tab();
-
-				$this->end_controls_tabs();
+			$this->add_group_control(
+				\Elementor\Group_Control_Typography::get_type(),
+				[
+					'name' => 'auth_label_typo',
+					'label' => __( 'Typography' ),
+					'selector' => '{{WRAPPER}} .ts-form-group label, {{WRAPPER}} .container-checkbox p',
+				]
+			);
+
+
+			$this->add_responsive_control(
+				'auth_label_col',
+				[
+					'label' => __( 'Color', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::COLOR,
+					'selectors' => [
+						'{{WRAPPER}} .ts-form-group label,{{WRAPPER}} .container-checkbox p' => 'color: {{VALUE}}',
+					],
+
+				]
+			);
+
+			$this->add_control(
+				'auth_desc',
+				[
+					'label' => __( 'Description', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::HEADING,
+					'separator' => 'before',
+				]
+			);
+
+
+			$this->add_group_control(
+				\Elementor\Group_Control_Typography::get_type(),
+				[
+					'name' => 'auth_desc_t',
+					'label' => __( 'Typography' ),
+					'selector' => '{{WRAPPER}} .ts-form-group small',
+				]
+			);
+
+
+			$this->add_responsive_control(
+				'auth_desc_col',
+				[
+					'label' => __( 'Color', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::COLOR,
+					'selectors' => [
+						'{{WRAPPER}}  .ts-form-group small' => 'color: {{VALUE}}',
+					],
+
+				]
+			);
+
+			$this->add_control(
+				'auth_link',
+				[
+					'label' => __( 'Link', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::HEADING,
+					'separator' => 'before',
+				]
+			);
+
+			$this->add_group_control(
+				\Elementor\Group_Control_Typography::get_type(),
+				[
+					'name' => 'auth_link_t',
+					'label' => __( 'Typography' ),
+					'selector' => '{{WRAPPER}} .ts-form-group label a',
+				]
+			);
+
+
+			$this->add_responsive_control(
+				'auth_link_col',
+				[
+					'label' => __( 'Color', 'voxel-elementor' ),
+					'type' => \Elementor\Controls_Manager::COLOR,
+					'selectors' => [
+						'{{WRAPPER}}  .ts-form-group label a' => 'color: {{VALUE}}',
+					],
+
+				]
+			);
 
 		$this->end_controls_section();
-
-
 
 		$this->start_controls_section(
 			'auth_welcome_section',
@@ -2550,68 +1564,10 @@ class Login extends Base_Widget {
 		$this->end_controls_section();
 
 		$this->start_controls_section(
-			'ts_sf_field_switch',
-			[
-				'label' => __( 'Form: Switcher', 'voxel-elementor' ),
-				'tab' => 'tab_fields',
-			]
-		);
-
-				$this->add_control(
-					'ts_field_switch',
-					[
-						'label' => __( 'Switch slider', 'voxel-elementor' ),
-						'type' => \Elementor\Controls_Manager::HEADING,
-						'separator' => 'before',
-					]
-				);
-
-				$this->add_control(
-					'ts_field_switch_bg',
-					[
-						'label' => __( 'Background (Inactive)', 'voxel-elementor' ),
-						'type' => \Elementor\Controls_Manager::COLOR,
-						'selectors' => [
-							'{{WRAPPER}} .onoffswitch .onoffswitch-label'
-							=> 'background-color: {{VALUE}}',
-						],
-
-					]
-				);
-
-				$this->add_control(
-					'ts_field_switch_bg_active',
-					[
-						'label' => __( 'Background (Active)', 'voxel-elementor' ),
-						'type' => \Elementor\Controls_Manager::COLOR,
-						'selectors' => [
-							'{{WRAPPER}} .onoffswitch .onoffswitch-checkbox:checked + .onoffswitch-label'
-							=> 'background-color: {{VALUE}}',
-						],
-
-					]
-				);
-
-				$this->add_control(
-					'ts_field_switch_bg_handle',
-					[
-						'label' => __( 'Handle background', 'voxel-elementor' ),
-						'type' => \Elementor\Controls_Manager::COLOR,
-						'selectors' => [
-							'{{WRAPPER}} .onoffswitch .onoffswitch-label:before'
-							=> 'background-color: {{VALUE}}',
-						],
-
-					]
-				);
-
-		$this->end_controls_section();
-
-		$this->start_controls_section(
 			'auth_checkbox_section',
 			[
 				'label' => __( 'Checkbox', 'voxel-elementor' ),
-				'tab' => 'tab_fields',
+				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
 			]
 		);
 
@@ -2701,7 +1657,6 @@ class Login extends Base_Widget {
 
 
 		$this->end_controls_section();
-		$this->apply_controls( Option_Groups\File_Field::class );
 	}
 
 	protected function render( $instance = [] ) {
@@ -2709,14 +1664,10 @@ class Login extends Base_Widget {
 			'screen' => 'login',
 			'nonce' => wp_create_nonce( 'vx_auth' ),
 			'redirectUrl' => \Voxel\get_redirect_url(),
+			'register_enabled' => \Voxel\get( 'settings.membership.enabled', true ),
 			'recaptcha' => [
 				'enabled' => \Voxel\get('settings.recaptcha.enabled'),
 				'key' => \Voxel\get('settings.recaptcha.key'),
-			],
-			'errors' => [
-				'social_login_requires_account' => [
-					'message' => _x( 'You must register first in order to use Google Sign-In', 'auth', 'voxel' ),
-				],
 			],
 		];
 
@@ -2737,45 +1688,10 @@ class Login extends Base_Widget {
 			} else {
 				$config['screen'] = 'security';
 			}
-		} elseif ( isset( $_GET['register'] ) ) {
+		} elseif ( isset( $_GET['register'] ) && \Voxel\get( 'settings.membership.enabled', true ) ) {
 			$config['screen'] = 'register';
 		} else {
 			$config['screen'] = 'login';
-		}
-
-		if ( $this->get_settings('ts_role_source') === 'manual' ) {
-			$role_keys = (array) $this->get_settings('manual_roles');
-		} else {
-			$role_keys = array_keys( \Voxel\Role::get_roles_supporting_registration() );
-		}
-
-		$roles = [];
-		foreach ( $role_keys as $role_key ) {
-			$role = \Voxel\Role::get( $role_key );
-			if ( ! ( $role && $role->is_registration_enabled() ) ) {
-				continue;
-			}
-
-			$roles[ $role->get_key() ] = [
-				'key' => $role->get_key(),
-				'label' => $role->get_label(),
-				'allow_social_login' => $role->is_social_login_allowed(),
-				'social_login' => [
-					'google' => \Voxel\get_google_auth_link( $role->get_key() ),
-				],
-				'fields' => array_map( function( $field ) {
-					return $field->get_frontend_config();
-				}, $role->get_fields() ),
-			];
-		}
-
-		$config['registration'] = [
-			'roles' => $roles,
-			'default_role' => null,
-		];
-
-		if ( ! empty( $_GET['register'] ) && isset( $roles[ $_GET['register'] ] ) ) {
-			$config['registration']['default_role'] = $roles[ $_GET['register'] ]['key'];
 		}
 
 		wp_print_styles( $this->get_style_depends() );
@@ -2964,24 +1880,5 @@ class Login extends Base_Widget {
 			]
 		);
 
-		$this->add_control( 'ts_role_source', [
-			'label' => __( 'Display registration roles', 'voxel-elementor' ),
-			'label_block' => true,
-			'type' => \Elementor\Controls_Manager::SELECT,
-			'default' => 'auto',
-			'options' => [
-				'auto'  => __( 'Auto: All roles enabled for registration in WP Admin > Membership > Roles', 'voxel-elementor' ),
-				'manual' => __( 'Manual: Choose and order registration roles manually', 'voxel-elementor' ),
-			],
-		] );
-
-		$this->add_control( 'manual_roles', [
-			'label' => __( 'Choose roles', 'voxel-elementor' ),
-			'label_block' => true,
-			'type' => \Elementor\Controls_Manager::SELECT2,
-			'multiple' => true,
-			'default' => 'login',
-			'condition' => [ 'ts_role_source' => 'manual' ],
-		] );
 	}
 }

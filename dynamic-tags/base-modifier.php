@@ -33,7 +33,7 @@ abstract class Base_Modifier {
 			$settings[] = [
 				'type' => \Voxel\Form_Models\Info_Model::class,
 				'label' => _x( 'No additional settings.', 'modifiers', 'voxel-backend' ),
-				'classes' => 'x-col-12',
+				'classes' => 'alt-label',
 			];
 		}
 

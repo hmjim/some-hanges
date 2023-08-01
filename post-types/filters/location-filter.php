@@ -24,25 +24,23 @@ class Location_Filter extends Base_Filter {
 		return [
 			'label' => $this->get_label_model(),
 			'placeholder' => $this->get_placeholder_model(),
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'source' => $this->get_source_model( 'location' ),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
-
-
-			// 'radius_settings' => [
-			// 	'type' => \Voxel\Form_Models\Info_Model::class,
-			// 	'label' => 'Radius search',
-			// 	'classes' => 'x-col-12',
-			// ],
+			'radius_settings' => [
+				'type' => \Voxel\Form_Models\Info_Model::class,
+				'label' => 'Radius search',
+			],
 			'radius_default' => [
 				'type' => \Voxel\Form_Models\Number_Model::class,
-				'label' => 'Radius default value',
-				'classes' => 'x-col-6',
+				'label' => 'Default value',
+				'width' => '1/2',
 				'step' => 'any',
 			],
 			'radius_units' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Units',
-				'classes' => 'x-col-6',
+				'width' => '1/2',
 				'choices' => [
 					'km' => 'Kilometers',
 					'mi' => 'Miles',
@@ -51,22 +49,21 @@ class Location_Filter extends Base_Filter {
 			'radius_min' => [
 				'type' => \Voxel\Form_Models\Number_Model::class,
 				'label' => 'Min',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 				'step' => 'any',
 			],
 			'radius_max' => [
 				'type' => \Voxel\Form_Models\Number_Model::class,
 				'label' => 'Max',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 				'step' => 'any',
 			],
 			'radius_step' => [
 				'type' => \Voxel\Form_Models\Number_Model::class,
 				'label' => 'Step size',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 				'step' => 'any',
 			],
-			'icon' => $this->get_icon_model(),
 		];
 	}
 

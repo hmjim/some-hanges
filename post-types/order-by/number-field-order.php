@@ -115,7 +115,7 @@ class Number_Field_Order extends Base_Search_Order {
 
 	public function _get_source_model() {
 		return function() { ?>
-			<div class="ts-form-group x-col-12">
+			<div class="ts-form-group ts-col-1-1">
 				<label>Data source:</label>
 				<select v-model="clause.source">
 					<option v-for="field in $root.getFieldsByType('number')" :value="field.key">

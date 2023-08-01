@@ -27,18 +27,17 @@ class Texteditor_Field extends Base_Post_Field {
 			'label' => $this->get_label_model(),
 			'key' => $this->get_key_model(),
 			'placeholder' => $this->get_placeholder_model(),
-			'editor-type' => $this->get_model( 'editor_type', [ 'classes' => 'x-col-6', ] ),
-			'minlength' => $this->get_minlength_model(),
-			'maxlength' => $this->get_maxlength_model(),
 			'description' => $this->get_description_model(),
+			'editor-type' => $this->get_model( 'editor_type', [ 'width' => '1/2' ] ),
 			'allow-shortcodes' => [
 				'type' => Form_Models\Switcher_Model::class,
 				'label' => 'Allow shortcodes',
 				'description' => 'Set whether to render shortcodes added by the user',
-				'classes' => 'x-col-12',
+				'width' => '1/2',
 			],
+			'minlength' => $this->get_minlength_model(),
+			'maxlength' => $this->get_maxlength_model(),
 			'required' => $this->get_required_model(),
-
 		];
 	}
 

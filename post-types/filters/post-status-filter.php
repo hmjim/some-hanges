@@ -16,9 +16,9 @@ class Post_Status_Filter extends Base_Filter {
 
 	public function get_models(): array {
 		return [
-			'label' => $this->get_model( 'label', [ 'classes' => 'x-col-12' ]),
+			'label' => $this->get_label_model(),
 			'placeholder' => $this->get_placeholder_model(),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'key' => $this->get_key_model(),
 			'icon' => $this->get_icon_model(),
 		];
 	}

@@ -201,11 +201,6 @@ class Post_Type_Repository {
 
 		if ( $create_if_not_exists ) {
 			foreach ( $templates as $location => $template_id ) {
-				// allow passing an array as parameter to only create certain templates
-				if ( is_array( $create_if_not_exists ) && ! in_array( $location, $create_if_not_exists, true ) ) {
-					continue;
-				}
-
 				if ( $location === 'form' ) {
 					if ( \Voxel\page_exists( absint( $template_id ) ) ) {
 						continue;
@@ -245,24 +240,15 @@ class Post_Type_Repository {
 		$groups = [
 			'card' => [],
 			'single' => [],
-			'single_post' => [],
 		];
-		
+
 		foreach ( (array) ( $this->config['custom_templates'] ?? [] ) as $group => $templates ) {
-			foreach ( (array) $templates as $template ) {
+			foreach ( $templates as $template ) {
 				if ( isset( $template['id'], $template['label'] ) && is_numeric( $template['id'] ) ) {
-					if ( $group == 'single_post' ) {
-						$groups[ $group ][] = [
-							'label' => $template['label'],
-							'id' => absint( $template['id'] ),
-							'visibility_rules'	=> $template['visibility_rules'] ?? [],
-						];
-					} else {
-						$groups[ $group ][] = [
-							'label' => $template['label'],
-							'id' => absint( $template['id'] ),
-						];
-					}
+					$groups[ $group ][] = [
+						'label' => $template['label'],
+						'id' => absint( $template['id'] ),
+					];
 				}
 			}
 		}
@@ -368,9 +354,6 @@ class Post_Type_Repository {
 					'excerpt' => $settings['options']['excerpt'] ?? 'auto', // enabled|auto
 					'export_to_personal_data' => $settings['options']['export_to_personal_data'] ?? false,
 					'delete_with_user' => $settings['options']['delete_with_user'] ?? 'auto', // auto|enabled|disabled
-				],
-				'expiration' => [
-					'rules' => $settings['expiration']['rules'] ?? [],
 				],
 			],
 			'fields' => array_map( function( $field ) {
@@ -484,39 +467,5 @@ class Post_Type_Repository {
 
 	public function revision_key() {
 		return sprintf( 'voxel:post-type-%s:revisions', $this->post_type->get_key() );
-	}
-
-	public function get_expiration_rules() {
-		$rules = $this->config['settings']['expiration']['rules'] ?? [];
-		if ( ! is_array( $rules ) ) {
-			return [];
-		}
-
-		$valid_rules = [];
-
-		foreach ( $rules as $rule ) {
-			if ( empty( $rule['type'] ) ) {
-				continue;
-			}
-
-			if ( $rule['type'] === 'fixed' ) {
-				if ( ( $rule['amount'] ?? 0 ) >= 1 ) {
-					$valid_rules[] = [
-						'type' => 'fixed',
-						'amount' => absint( $rule['amount'] ),
-					];
-				}
-			} elseif ( $rule['type'] === 'field' ) {
-				$field = $this->get_field( $rule['field'] ?? null );
-				if ( $field && in_array( $field->get_type(), [ 'recurring-date', 'date' ], true ) ) {
-					$valid_rules[] = [
-						'type' => 'field',
-						'field' => $field->get_key(),
-					];
-				}
-			}
-		}
-
-		return $valid_rules;
 	}
 }

@@ -32,8 +32,8 @@ class Post_Types_Controller extends Base_Controller {
 		$post_types = \Voxel\get( 'post_types', [] );
 
 		$key = sanitize_key( $_POST['post_type']['key'] ?? '' );
-		$singular_name = sanitize_text_field( wp_unslash( $_POST['post_type']['singular_name'] ?? '' ) );
-		$plural_name = sanitize_text_field( wp_unslash( $_POST['post_type']['plural_name'] ?? '' ) );
+		$singular_name = sanitize_text_field( $_POST['post_type']['singular_name'] ?? '' );
+		$plural_name = sanitize_text_field( $_POST['post_type']['plural_name'] ?? '' );
 
 		if ( $key && $singular_name && $plural_name && ! isset( $post_types[ $key ] ) ) {
 			$post_types[ $key ] = [
@@ -114,25 +114,10 @@ class Post_Types_Controller extends Base_Controller {
 
 	protected function register_post_statuses() {
 		register_post_status( 'rejected', [
-			'label' => _x( 'Rejected', 'post statuses', 'voxel' ),
+			'label' => _x( 'Rejected', 'post statuses', 'voxel-backend' ),
 			'internal' => false,
-			'protected' => true,
+			'public' => false,
 			'label_count'  => _n_noop( 'Rejected <span class="count">(%s)</span>', 'Rejected <span class="count">(%s)</span>', 'voxel-backend' ),
-			'date_floating' => true,
-		] );
-
-		register_post_status( 'expired', [
-			'label' => _x( 'Expired', 'post statuses', 'voxel' ),
-			'internal' => false,
-			'protected' => true,
-			'label_count'  => _n_noop( 'Expired <span class="count">(%s)</span>', 'Expired <span class="count">(%s)</span>', 'voxel-backend' ),
-		] );
-
-		register_post_status( 'unpublished', [
-			'label' => _x( 'Unpublished', 'post statuses', 'voxel' ),
-			'internal' => false,
-			'protected' => true,
-			'label_count'  => _n_noop( 'Unpublished <span class="count">(%s)</span>', 'Unpublished <span class="count">(%s)</span>', 'voxel-backend' ),
 		] );
 
 		add_action( 'admin_footer-post.php', function() {
@@ -148,16 +133,6 @@ class Post_Types_Controller extends Base_Controller {
 				$('select#post_status').append('<option value="rejected" <?= $status === 'rejected' ? 'selected' : '' ?>>'+<?= wp_json_encode( _x( 'Rejected', 'post statuses', 'voxel-backend' ) ) ?>+'</option>');
 				<?php if ( $status === 'rejected' ): ?>
 					$('#post-status-display').text( <?= wp_json_encode( _x( 'Rejected', 'post statuses', 'voxel-backend' ) ) ?> );
-				<?php endif ?>
-
-				$('select#post_status').append('<option value="expired" <?= $status === 'expired' ? 'selected' : '' ?>>'+<?= wp_json_encode( _x( 'Expired', 'post statuses', 'voxel-backend' ) ) ?>+'</option>');
-				<?php if ( $status === 'expired' ): ?>
-					$('#post-status-display').text( <?= wp_json_encode( _x( 'Expired', 'post statuses', 'voxel-backend' ) ) ?> );
-				<?php endif ?>
-
-				$('select#post_status').append('<option value="unpublished" <?= $status === 'unpublished' ? 'selected' : '' ?>>'+<?= wp_json_encode( _x( 'Unpublished', 'post statuses', 'voxel-backend' ) ) ?>+'</option>');
-				<?php if ( $status === 'unpublished' ): ?>
-					$('#post-status-display').text( <?= wp_json_encode( _x( 'Unpublished', 'post statuses', 'voxel-backend' ) ) ?> );
 				<?php endif ?>
 			} );
 			</script>
@@ -261,27 +236,6 @@ class Post_Types_Controller extends Base_Controller {
 			$classes .= ' vx-dark-mode ';
 		}
 
-		if ( str_starts_with( ( $_GET['page'] ?? '' ), 'vx-templates-' ) ) {
-			$classes .= ' vx-dark-mode ';
-		}
-
-		$vx_dark_mode = [
-			'voxel-post-types',
-			'voxel-templates',
-			'voxel-product-types',
-			'voxel-settings',
-			'voxel-onboarding',
-			'voxel-membership',
-			'voxel-events',
-			'voxel-library',
-			'voxel-roles',
-			'voxel-taxonomies',
-		];
-
-		if ( in_array( $_GET['page'] ?? '', $vx_dark_mode, true ) ) {
-			$classes .= ' vx-dark-mode ';
-		}
-
 		return $classes;
 	}
 
@@ -289,25 +243,6 @@ class Post_Types_Controller extends Base_Controller {
 		$add_type_url = admin_url('admin.php?page=voxel-post-types&action=create-type');
 		$voxel_types = \Voxel\Post_Type::get_voxel_types();
 		$other_types = \Voxel\Post_Type::get_other_types();
-
-		$hidden_post_types = [
-			'revision',
-			'nav_menu_item',
-			'custom_css',
-			'customize_changeset',
-			'oembed_cache',
-			'user_request',
-			'wp_block',
-			'wp_template',
-			'wp_template_part',
-			'wp_global_styles',
-			'wp_navigation',
-		];
-
-		foreach ( $hidden_post_types as $post_type_key ) {
-			unset( $other_types[ $post_type_key ] );
-		}
-
 		require locate_template( 'templates/backend/post-types/view-post-types.php' );
 	}
 

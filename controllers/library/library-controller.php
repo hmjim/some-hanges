@@ -32,13 +32,12 @@ class Library_Controller extends \Voxel\Controllers\Base_Controller {
 	}
 
 	protected function hooks() {
-		$this->on( 'admin_menu', '@add_menu_page', 25 );
+		$this->on( 'admin_menu', '@add_menu_page' );
 		$this->on( 'voxel_ajax_backend.library.get_package_list', '@get_package_list' );
 	}
 
 	protected function add_menu_page() {
-		add_submenu_page(
-			'voxel-settings',
+		add_menu_page(
 			__( 'Library', 'voxel-backend' ),
 			__( 'Library', 'voxel-backend' ),
 			'manage_options',
@@ -125,7 +124,9 @@ class Library_Controller extends \Voxel\Controllers\Base_Controller {
 
 				wp_enqueue_script( 'vx:library.js' );
 				require locate_template( 'templates/backend/library/library.php' );
-			}
+			},
+			\Voxel\get_image('post-types/library.png'),
+			'0.390'
 		);
 	}
 

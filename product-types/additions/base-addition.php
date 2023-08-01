@@ -34,7 +34,7 @@ abstract class Base_Addition extends \Voxel\Object_Fields\Base_Field  {
 			'type' => \Voxel\Form_Models\Switcher_Model::class,
 			'v-if' => '$root.config.calendar.type === \'booking\' && $root.config.calendar.format === \'days\' && $root.config.calendar.allow_range',
 			'label' => 'Apply pricing to each day in booked day range',
-			'classes' => 'x-col-12',
+			'width' => '1/1',
 		];
 	}
 

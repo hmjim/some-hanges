@@ -26,12 +26,10 @@ class Currency_Format extends \Voxel\Dynamic_Tags\Base_Modifier {
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => _x( 'Currency', 'modifiers', 'voxel-backend' ),
 				'choices' => [ 'default' => 'Default platform currency' ] + \Voxel\Stripe\Currencies::all(),
-				'classes' => 'x-col-12',
 			],
 			'amount_is_in_cents' => [
 				'type' => \Voxel\Form_Models\Switcher_Model::class,
 				'label' => _x( 'Amount is in cents', 'modifiers', 'voxel-backend' ),
-				'classes' => 'x-col-12',
 			],
 		];
 	}

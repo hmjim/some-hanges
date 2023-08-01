@@ -175,7 +175,7 @@ class General_Actions extends \Voxel\Controllers\Base_Controller {
 						'id' => $user->get_id(),
 						'avatar' => $user->get_avatar_markup(),
 						'display_name' => $user->get_display_name(),
-						'roles' => $user->get_role_keys(),
+						'roles' => $user->get_roles(),
 						'edit_link' => $user->get_edit_link(),
 					];
 				}

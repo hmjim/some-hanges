@@ -21,8 +21,7 @@ class Type_Subscription extends Base_Type {
 		$currency,
 		$interval,
 		$interval_count,
-		$created,
-		$metadata;
+		$created;
 
 	protected function init( array $config ) {
 		$this->subscription_id = $config['subscription_id'] ?? null;
@@ -36,7 +35,6 @@ class Type_Subscription extends Base_Type {
 		$this->interval = $config['interval'] ?? null;
 		$this->interval_count = $config['interval_count'] ?? null;
 		$this->created = $config['created'] ?? null;
-		$this->metadata = $config['metadata'] ?? null;
 	}
 
 	public function is_active() {
@@ -48,41 +46,7 @@ class Type_Subscription extends Base_Type {
 	}
 
 	public function get_price_id() {
-		if ( ! empty( $this->metadata['voxel:original_price_id'] ) ) {
-			return $this->metadata['voxel:original_price_id'];
-		}
-
 		return $this->price_id;
-	}
-
-	public function get_additional_limits() {
-		$limits = json_decode( $this->metadata['voxel:limits'] ?? '', true );
-		if ( ! is_array( $limits ) ) {
-			return [];
-		}
-
-		return array_filter( array_map( 'absint', $limits ) );
-	}
-
-	public function get_price_for_additional_posts() {
-		$prices = [];
-		$limits = $this->plan->get_submission_limits();
-		$mode = \Voxel\Stripe::is_test_mode() ? 'test' : 'live';
-		$is_zero_decimal = \Voxel\Stripe\Currencies::is_zero_decimal( strtoupper( $this->get_currency() ) );
-
-		foreach ( $limits as $post_type_key => $limit ) {
-			$price_per_addition = $limit['price_per_addition'][ $mode ][ $this->price_id ] ?? null;
-			if ( $price_per_addition !== null && is_numeric( $price_per_addition['amount'] ?? null ) ) {
-				$amount = abs( (float) $price_per_addition['amount'] );
-				if ( ! $is_zero_decimal ) {
-					$amount *= 100;
-				}
-
-				$prices[ $post_type_key ] = $amount;
-			}
-		}
-
-		return $prices;
 	}
 
 	public function get_status() {
@@ -123,9 +87,5 @@ class Type_Subscription extends Base_Type {
 
 	public function get_created_at() {
 		return $this->created;
-	}
-
-	public function get_metadata() {
-		return $this->metadata;
 	}
 }

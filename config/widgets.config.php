@@ -35,5 +35,4 @@ return [
 	\Voxel\Widgets\Template_Tabs::class,
 	\Voxel\Widgets\Messages::class,
 	\Voxel\Widgets\Countdown::class,
-	\Voxel\Widgets\Configure_Plan::class,
 ];

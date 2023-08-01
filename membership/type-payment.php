@@ -16,9 +16,7 @@ class Type_Payment extends Base_Type {
 		$currency,
 		$price_id,
 		$status,
-		$created,
-		$metadata,
-		$additional_submissions;
+		$created;
 
 	protected function init( array $config ) {
 		$this->payment_intent = $config['payment_intent'] ?? null;
@@ -27,8 +25,6 @@ class Type_Payment extends Base_Type {
 		$this->price_id = $config['price_id'] ?? null;
 		$this->status = $config['status'] ?? null;
 		$this->created = $config['created'] ?? null;
-		$this->metadata = $config['metadata'] ?? null;
-		$this->additional_submissions = $config['additional_submissions'] ?? null;
 	}
 
 	public function is_active() {
@@ -40,10 +36,6 @@ class Type_Payment extends Base_Type {
 	}
 
 	public function get_price_id() {
-		if ( ! empty( $this->metadata['voxel:original_price_id'] ) ) {
-			return $this->metadata['voxel:original_price_id'];
-		}
-
 		return $this->price_id;
 	}
 
@@ -61,30 +53,5 @@ class Type_Payment extends Base_Type {
 
 	public function get_created_at() {
 		return $this->created;
-	}
-
-	public function get_metadata() {
-		return $this->metadata;
-	}
-
-	public function get_additional_limits() {
-		$limits = json_decode( $this->metadata['voxel:limits'] ?? '', true );
-		if ( ! is_array( $limits ) ) {
-			$limits = [];
-		}
-
-		if ( is_array( $this->additional_submissions ) && ! empty( $this->additional_submissions ) ) {
-			foreach ( $this->additional_submissions as $payment_intent_id => $additional_limits ) {
-				foreach ( $additional_limits as $post_type_key => $post_type_limit ) {
-					if ( ! isset( $limits[ $post_type_key ] ) ) {
-						$limits[ $post_type_key ] = 0;
-					}
-
-					$limits[ $post_type_key ] += $post_type_limit;
-				}
-			}
-		}
-
-		return array_filter( array_map( 'absint', $limits ) );
 	}
 }

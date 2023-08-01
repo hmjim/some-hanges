@@ -72,7 +72,6 @@ class Navbar extends Base_Widget {
 				'ts_choose_menu',
 				[
 					'label' => __( 'Choose menu', 'voxel-elementor' ),
-					'description' => 'Choose the navigation menu to display',
 					'type' => \Elementor\Controls_Manager::SELECT,
 					'condition' => [ 'navbar_choose_source' => 'select_wp_menu' ],
 					'options' => get_registered_nav_menus(),
@@ -83,8 +82,7 @@ class Navbar extends Base_Widget {
 			$this->add_control(
 				'ts_choose_mobile_menu',
 				[
-					'label' => __( 'Hamburger menu', 'voxel-elementor' ),
-					'description' => 'Choose the menu which is displayed when hamburger icon is clicked',
+					'label' => __( 'Choose mobile menu', 'voxel-elementor' ),
 					'type' => \Elementor\Controls_Manager::SELECT,
 					'condition' => [ 'navbar_choose_source' => 'select_wp_menu' ],
 					'options' => get_registered_nav_menus(),
@@ -417,7 +415,6 @@ class Navbar extends Base_Widget {
 					'label' => __( 'Items', 'voxel-elementor' ),
 					'type' => \Elementor\Controls_Manager::REPEATER,
 					'fields' => $repeater->get_controls(),
-					'title_field' => '{{{ ts_navbar_item_text }}}',
 				]
 			);
 
@@ -468,7 +465,7 @@ class Navbar extends Base_Widget {
 						[
 							'name' => 'ts_content_typography',
 							'label' => __( 'Typography', 'voxel-elementor' ),
-							'selector' => '{{WRAPPER}} .ts-item-link > p',
+							'selector' => '{{WRAPPER}} .ts-item-link p',
 						]
 					);
 
@@ -478,7 +475,7 @@ class Navbar extends Base_Widget {
 							'label' => __( 'Color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-item-link > p' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-item-link p' => 'color: {{VALUE}}',
 							],
 						]
 					);
@@ -766,7 +763,7 @@ class Navbar extends Base_Widget {
 							'label' => __( 'Chevron color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-down-icon' => 'border-color: {{VALUE}}',
+								'{{WRAPPER}} .ts-down-icon' => 'border-top-color: {{VALUE}}',
 
 							],
 						]
@@ -802,7 +799,7 @@ class Navbar extends Base_Widget {
 							'label' => __( 'Color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-item-link:hover > p' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .ts-item-link:hover p' => 'color: {{VALUE}}',
 							],
 						]
 					);
@@ -829,15 +826,14 @@ class Navbar extends Base_Widget {
 						]
 					);
 
-
-
 					$this->add_control(
 						'ts_dropdown_icon_color_hover',
 						[
 							'label' => __( 'Chevron color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ts-item-link:hover .ts-down-icon' => 'border-color: {{VALUE}}',
+								'{{WRAPPER}} .ts-item-link:hover .ts-has-children-icon' => 'color: {{VALUE}}',
+								'{{WRAPPER}} .menu-item-has-children .ts-item-link:hover > svg' => 'fill: {{VALUE}}',
 							],
 						]
 					);
@@ -901,7 +897,7 @@ class Navbar extends Base_Widget {
 							'name' => 'ts_content_typography_c',
 							'label' => __( 'Typography', 'voxel-elementor' ),
 							'scheme' => \Elementor\Core\Schemes\Typography::TYPOGRAPHY_3,
-							'selector' => '{{WRAPPER}} li.current-menu-item > .ts-item-link > p',
+							'selector' => '{{WRAPPER}} li.current-menu-item > .ts-item-link p',
 						]
 					);
 
@@ -911,7 +907,7 @@ class Navbar extends Base_Widget {
 							'label' => __( 'Color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}}  .current-menu-item .ts-item-link > p' => 'color: {{VALUE}}',
+								'{{WRAPPER}}  .current-menu-item .ts-item-link p' => 'color: {{VALUE}}',
 							],
 						]
 					);

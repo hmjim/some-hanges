@@ -311,8 +311,8 @@ class Popup_Menu {
 							'label' => __( 'Chevron color', 'voxel-elementor' ),
 							'type' => \Elementor\Controls_Manager::COLOR,
 							'selectors' => [
-								'.ts-field-popup .ts-right-icon' => 'border-color: {{VALUE}}',
-								'.ts-field-popup .pika-label:after' => 'border-color: {{VALUE}}',
+								'.ts-field-popup .ts-right-icon' => 'border-left-color: {{VALUE}}',
+								'.ts-field-popup .pika-label:after' => 'border-top-color: {{VALUE}}',
 							],
 						]
 					);

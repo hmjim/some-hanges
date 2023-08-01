@@ -20,17 +20,6 @@ class Taxonomy_Controller extends Base_Controller {
 			return;
 		}
 
-		if ( ! $taxonomy->is_managed_by_voxel() ) {
-			$taxonomy->update( [
-				'settings' => [
-					'key' => $taxonomy->get_key(),
-					'singular' => $taxonomy->get_singular_name(),
-					'plural' => $taxonomy->get_plural_name(),
-					'post_type' => $taxonomy->get_post_types(),
-				],
-			] );
-		}
-
 		$templates = $taxonomy->get_templates( $create_if_not_exists = true );
 		require locate_template( 'templates/backend/taxonomies/edit-taxonomy.php' );
 	}

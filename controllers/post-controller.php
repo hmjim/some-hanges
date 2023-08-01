@@ -13,10 +13,8 @@ class Post_Controller extends Base_Controller {
 		$this->on( 'save_post', '@save_post', 1000, 2 );
 		$this->on( 'add_meta_boxes', '@add_verification_metabox', 70 );
 		$this->on( 'add_meta_boxes', '@add_author_metabox', 80 );
-		$this->on( 'add_meta_boxes', '@add_expiry_metabox', 90 );
 		$this->on( 'voxel/admin/save_post', '@save_verification_status' );
 		$this->on( 'voxel/admin/save_post', '@save_author' );
-		$this->on( 'voxel/admin/save_post', '@save_expiration_date' );
 		$this->on( 'voxel/admin/save_post', '@backend_index_post', 1000 );
 		$this->on( 'voxel/admin/save_post', '@send_notifications', 1500 );
 		$this->on( 'trashed_post', '@unindex_on_trash' );
@@ -179,7 +177,7 @@ class Post_Controller extends Base_Controller {
 		);
 	}
 
-	protected function add_author_metabox() {
+	public function add_author_metabox() {
 		$post = \Voxel\Post::get( get_post() );
 		if ( ! ( $post && $post->is_managed_by_voxel() ) ) {
 			return;
@@ -198,7 +196,7 @@ class Post_Controller extends Base_Controller {
 							'id' => $author->get_id(),
 							'avatar' => $author->get_avatar_markup(),
 							'display_name' => $author->get_display_name(),
-							'roles' => $author->get_role_keys(),
+							'roles' => $author->get_roles(),
 							'edit_link' => $author->get_edit_link(),
 						],
 					];
@@ -206,69 +204,6 @@ class Post_Controller extends Base_Controller {
 
 				wp_nonce_field( 'vx_admin_save_post_nonce', 'vx_admin_save_post_nonce' );
 				require locate_template( 'templates/backend/author-metabox.php' );
-			},
-			null,
-			'side',
-		);
-	}
-
-	protected function add_expiry_metabox() {
-		$post = \Voxel\Post::get( get_post() );
-		if ( ! ( $post && $post->is_managed_by_voxel() ) ) {
-			return;
-		}
-
-		add_meta_box(
-			'vx_expiry',
-			_x( 'Expiration date', 'expiry metabox', 'voxel-backend' ),
-			function() use ( $post ) {
-				$rules = $post->post_type->repository->get_expiration_rules();
-				$rule_expirations = [];
-
-				foreach ( $rules as $rule ) {
-					if ( $rule['type'] === 'fixed' ) {
-						$post_date = $post->get_date();
-						if ( $post_date === '0000-00-00 00:00:00' ) {
-							$post_date = date( 'Y-m-d H:i:s', time() );
-						}
-
-						$rule_expirations[] = strtotime( $post_date ) + ( $rule['amount'] * DAY_IN_SECONDS );
-					} elseif ( $rule['type'] === 'field' ) {
-						$field = $post->get_field( $rule['field'] );
-						if ( $field->get_type() === 'recurring-date' ) {
-							$value = $field->get_value();
-							$timestamp = null;
-							foreach ( (array) $value as $date ) {
-								$ts = strtotime( $date['until'] ?? $date['end'] );
-								if ( $ts && ( $timestamp === null || $ts < $timestamp ) ) {
-									$timestamp = $ts;
-								}
-							}
-
-							if ( $timestamp ) {
-								$rule_expirations[] = $timestamp;
-							}
-						} elseif ( $field->get_type() === 'date' ) {
-							if ( $timestamp = strtotime( $field->get_value() ) ) {
-								$rule_expirations[] = $timestamp;
-							}
-						}
-					}
-				}
-
-				$custom_expiry = (string) get_post_meta( $post->get_id(), 'voxel:expiry_date', true );
-				$has_custom_expiry = !! strtotime( $custom_expiry );
-
-				$config = [
-					'expiry_mode' => $has_custom_expiry
-						? ( $custom_expiry === '9999-01-01 00:00:00' ? 'never' : 'custom' )
-						: 'follow_rules',
-					'custom_expiry' => ( $has_custom_expiry && $custom_expiry !== '9999-01-01 00:00:00' )
-						? $custom_expiry
-						: '',
-				];
-
-				require locate_template( 'templates/backend/expiry-metabox.php' );
 			},
 			null,
 			'side',
@@ -294,24 +229,6 @@ class Post_Controller extends Base_Controller {
 
 		if ( $post->post_type->get_key() === 'profile' ) {
 			update_user_meta( isset( $new_author ) ? $new_author->get_id() : $post->get_author_id(), 'voxel:profile_id', $post->get_id() );
-		}
-	}
-
-	protected function save_expiration_date( $post ) {
-		if ( ! ( $post && $post->is_managed_by_voxel() ) ) {
-			return;
-		}
-
-		$expiry_mode = $_POST['vx_expiry_mode'] ?? null;
-		if ( $expiry_mode === 'follow_rules' ) {
-			delete_post_meta( $post->get_id(), 'voxel:expiry_date' );
-		} elseif ( $expiry_mode === 'custom' ) {
-			$expiry_date = strtotime( (string) ( $_POST['vx_expiry_custom'] ?? '' ) );
-			if ( $expiry_date ) {
-				update_post_meta( $post->get_id(), 'voxel:expiry_date', date( 'Y-m-d H:i:s', $expiry_date ) );
-			}
-		} elseif ( $expiry_mode === 'never' ) {
-			update_post_meta( $post->get_id(), 'voxel:expiry_date', '9999-01-01 00:00:00' );
 		}
 	}
 

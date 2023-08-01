@@ -13,9 +13,7 @@ class Cron_Controller extends Base_Controller {
 		$this->on( 'init', '@register_background_processes' );
 		$this->on( 'voxel/schedule:daily', '@cleanup_notifications' );
 		$this->on( 'voxel/schedule:daily', '@cleanup_orders' );
-		$this->on( 'voxel/schedule:daily', '@cleanup_auth_codes' );
 		$this->on( 'voxel/schedule:cleanup_messages', '@cleanup_messages' );
-		$this->on( 'voxel/schedule:check_for_expired_posts', '@check_for_expired_posts' );
 	}
 
 	protected function schedule_cron_jobs() {
@@ -25,10 +23,6 @@ class Cron_Controller extends Base_Controller {
 
 		if ( ! wp_next_scheduled( 'voxel/schedule:cleanup_messages' ) ) {
 			wp_schedule_event( time(), 'daily', 'voxel/schedule:cleanup_messages' );
-		}
-
-		if ( ! wp_next_scheduled( 'voxel/schedule:check_for_expired_posts' ) ) {
-			wp_schedule_event( time(), 'daily', 'voxel/schedule:check_for_expired_posts' );
 		}
 	}
 
@@ -59,16 +53,6 @@ class Cron_Controller extends Base_Controller {
 				AND `object_id` IS NULL
 				AND `created_at` < %s
 		SQL, date( 'Y-m-d H:i:s', strtotime( '-'.$persist_hours.' hours' ) ) ) );
-	}
-
-	protected function cleanup_auth_codes() {
-		global $wpdb;
-
-		$persist_hours = 12;
-		$wpdb->query( $wpdb->prepare(
-			"DELETE FROM {$wpdb->prefix}voxel_auth_codes WHERE `created_at` < %s",
-			date( 'Y-m-d H:i:s', strtotime( '-'.$persist_hours.' hours' ) )
-		) );
 	}
 
 	protected function cleanup_messages() {
@@ -124,88 +108,5 @@ class Cron_Controller extends Base_Controller {
 				OR ( followers.object_type = 'user' AND user.ID IS NULL )
 				OR ( followers.follower_type = 'user' AND follower_user.ID IS NULL )
 		SQL );
-	}
-
-	protected function check_for_expired_posts() {
-		global $wpdb;
-
-		$expired_posts_map = [];
-
-		// posts expired by custom expiry date
-		$expired_ids = $wpdb->get_col(
-			$wpdb->prepare( <<<SQL
-				SELECT ID FROM {$wpdb->posts} AS p
-				INNER JOIN {$wpdb->postmeta} AS pm ON ( p.ID = pm.post_id )
-				WHERE post_status = 'publish' AND pm.meta_key = 'voxel:expiry_date' AND pm.meta_value < %s
-			SQL, current_time( 'mysql' ) )
-		);
-
-		foreach ( $expired_ids as $post_id ) {
-			$expired_posts_map[ absint( $post_id ) ] = absint( $post_id );
-		}
-
-		// run through post type expiration rules
-		foreach ( \Voxel\Post_Type::get_voxel_types() as $post_type ) {
-			$rules = $post_type->repository->get_expiration_rules();
-			if ( empty( $rules ) ) {
-				continue;
-			}
-
-			foreach ( $rules as $rule ) {
-				if ( $rule['type'] === 'fixed' ) {
-					$expired_ids = $wpdb->get_col(
-						$wpdb->prepare( <<<SQL
-							SELECT ID FROM {$wpdb->posts}
-							WHERE post_type = %s AND post_status = 'publish'
-								AND ( DATE_ADD( post_date_gmt, INTERVAL %d DAY ) < %s )
-						SQL, $post_type->get_key(), absint( $rule['amount'] ), date( 'Y-m-d H:i:s', time() ) )
-					);
-
-					foreach ( $expired_ids as $post_id ) {
-						$expired_posts_map[ absint( $post_id ) ] = absint( $post_id );
-					}
-				} elseif ( $rule['type'] === 'field' ) {
-					$field = $post_type->get_field( $rule['field'] );
-
-					if ( $field->get_type() === 'date' ) {
-						$expired_ids = $wpdb->get_col(
-							$wpdb->prepare( <<<SQL
-								SELECT ID FROM {$wpdb->posts} AS p
-								INNER JOIN {$wpdb->postmeta} AS pm ON ( p.ID = pm.post_id )
-								WHERE post_type = %s AND post_status = 'publish'
-									AND pm.meta_key = %s AND pm.meta_value < %s
-							SQL, $post_type->get_key(), $field->get_key(), current_time( 'mysql' ) )
-						);
-
-						foreach ( $expired_ids as $post_id ) {
-							$expired_posts_map[ absint( $post_id ) ] = absint( $post_id );
-						}
-					} elseif ( $field->get_type() === 'recurring-date' ) {
-						$expired_ids = $wpdb->get_col(
-							$wpdb->prepare( <<<SQL
-								SELECT r.post_id, MAX( IFNULL( r.until, r.end ) ) AS finish_date
-								FROM {$wpdb->prefix}voxel_recurring_dates AS r
-								LEFT JOIN {$wpdb->posts} AS p ON ( r.post_id = p.ID )
-								WHERE r.post_type = %s AND r.field_key = %s AND p.post_status = 'publish'
-								GROUP BY r.post_id
-								HAVING finish_date < %s
-							SQL, $post_type->get_key(), $field->get_key(), current_time( 'mysql' ) )
-						);
-
-						foreach ( $expired_ids as $post_id ) {
-							$expired_posts_map[ absint( $post_id ) ] = absint( $post_id );
-						}
-					}
-				}
-			}
-		}
-
-		// run through all found post ids and change status to expired
-		foreach ( $expired_posts_map as $post_id ) {
-			wp_update_post( [
-				'ID' => $post_id,
-				'post_status' => 'expired',
-			] );
-		}
 	}
 }

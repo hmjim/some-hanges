@@ -13,9 +13,9 @@ abstract class Base_Type {
 	protected $type;
 
 	public function __construct( array $config ) {
-		$this->plan = \Voxel\Plan::get( $config['plan'] ?? null );
+		$this->plan = \Voxel\Membership\Plan::get( $config['plan'] ?? null );
 		if ( ! $this->plan ) {
-			$this->plan = \Voxel\Plan::get( 'default' );
+			$this->plan = \Voxel\Membership\Plan::get( 'default' );
 		}
 
 		$this->init( $config );
@@ -35,9 +35,5 @@ abstract class Base_Type {
 
 	public function get_created_at() {
 		return null;
-	}
-
-	public function get_additional_limits() {
-		return [];
 	}
 }

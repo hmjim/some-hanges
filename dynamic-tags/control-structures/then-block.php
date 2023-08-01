@@ -21,7 +21,6 @@ class Then_Block extends Base_Control_Structure {
 			'text' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => _x( 'Text', 'modifiers', 'voxel-backend' ),
-				'classes' => 'x-col-12',
 			],
 		];
 	}

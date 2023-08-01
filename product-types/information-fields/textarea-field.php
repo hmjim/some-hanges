@@ -23,8 +23,8 @@ class Textarea_Field extends Base_Information_Field {
 			'key' => $this->get_key_model(),
 			'placeholder' => $this->get_placeholder_model(),
 			'description' => $this->get_description_model(),
-			'minlength' => $this->get_model( 'minlength', [ 'classes' => 'x-col-6' ]),
-			'maxlength' => $this->get_model( 'maxlength', [ 'classes' => 'x-col-6' ]),
+			'minlength' => $this->get_minlength_model(),
+			'maxlength' => $this->get_maxlength_model(),
 			'required' => $this->get_required_model(),
 		];
 	}

@@ -35,7 +35,6 @@ return [
 		'preview.css',
 		'messages.css',
 		'countdown.css',
-		'configure-plan.css',
 	],
 
 	'scripts' => [
@@ -43,10 +42,8 @@ return [
 		'dynamic-tags.js',
 		'elementor.js',
 		'membership-editor.js',
-		'role-editor.js',
 		'app-events.js',
 		'template-manager.js',
-		'taxonomies-editor.js',
 		'post-type-editor.js',
 		'product-type-editor.js',
 		'general-settings.js',
@@ -69,6 +66,5 @@ return [
 		[ 'src' => 'collections.js', 'deps' => [ 'vx:commons.js' ] ],
 		[ 'src' => 'countdown.js', 'deps' => [ 'vx:commons.js' ] ],
 		[ 'src' => 'share.js', 'deps' => [ 'vx:commons.js' ] ],
-		[ 'src' => 'configure-plan.js', 'deps' => [ 'vx:commons.js' ] ],
 	],
 ];

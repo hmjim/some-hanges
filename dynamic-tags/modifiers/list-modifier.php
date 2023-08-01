@@ -25,22 +25,18 @@ class List_Modifier extends \Voxel\Dynamic_Tags\Base_Modifier {
 			'separator' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => _x( 'Item separator', 'modifiers', 'voxel-backend' ),
-				'classes' => 'x-col-6',
 			],
 			'last_separator' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => _x( 'Last item separator', 'modifiers', 'voxel-backend' ),
-				'classes' => 'x-col-6',
 			],
 			'prefix' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => _x( 'Item prefix', 'modifiers', 'voxel-backend' ),
-				'classes' => 'x-col-6',
 			],
 			'suffix' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => _x( 'Item suffix', 'modifiers', 'voxel-backend' ),
-				'classes' => 'x-col-6',
 			],
 		];
 	}

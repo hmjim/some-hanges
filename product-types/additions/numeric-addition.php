@@ -17,9 +17,9 @@ class Numeric_Addition extends Base_Addition {
 
 	public function get_models(): array {
 		return [
-			'label' => $this->get_model( 'label', [ 'classes' => 'x-col-6' ]),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
-
+			'label' => $this->get_label_model(),
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'description' => $this->get_description_model(),
 			'required' => $this->get_required_model(),
 			'repeat' => $this->get_repeat_model(),
@@ -27,9 +27,8 @@ class Numeric_Addition extends Base_Addition {
 				'type' => \Voxel\Form_Models\Switcher_Model::class,
 				'label' => 'Is required in checkout?',
 				'description' => 'Require buyers to insert a value in the booking form',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 			],
-			'icon' => $this->get_icon_model(),
 		];
 	}
 

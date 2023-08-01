@@ -14,14 +14,14 @@ class Google_Controller extends \Voxel\Controllers\Base_Controller {
 
 	protected function login_with_google() {
 		try {
-			$state = json_decode( base64_decode( $_REQUEST['state'] ?? '' ), true );
-			\Voxel\verify_nonce( $state['_wpnonce'] ?? '', 'vx_auth_google' );
+			$state = explode( '..', $_REQUEST['state'] ?? '', 2 );
+			\Voxel\verify_nonce( $state[0], 'vx_auth_google' );
 			if ( empty( $_GET['code'] ) || ! \Voxel\get( 'settings.auth.google.enabled' ) ) {
 				throw new \Exception( _x( 'Invalid request.', 'login with google', 'voxel' ) );
 			}
 
 			$code = $_GET['code'];
-			$redirect_url = ! empty( $state['redirect_to'] ) ? $state['redirect_to'] : home_url('/');
+			$redirect_url = ! empty( $state[1] ) ? $state[1] : home_url('/');
 
 			$client_id = \Voxel\get( 'settings.auth.google.client_id' );
 			$client_secret = \Voxel\get( 'settings.auth.google.client_secret' );
@@ -83,25 +83,13 @@ class Google_Controller extends \Voxel\Controllers\Base_Controller {
 				exit;
 			}
 
-			/* Create a new account */
-			$role = \Voxel\Role::get( sanitize_key( wp_unslash( ! empty( $state['role'] ) ? $state['role'] : apply_filters( 'voxel/social-login/default-role', 'subscriber' ) ) ) );
-
-			if ( ! ( $role && $role->is_registration_enabled() && $role->is_social_login_allowed() ) ) {
-				$auth_link = get_permalink( \Voxel\get( 'templates.auth' ) ) ?: home_url('/');
-				wp_safe_redirect( add_query_arg( [
-					'redirect_to' => $redirect_url,
-					'err' => 'social_login_requires_account',
-				], $auth_link ) );
-				exit;
-			}
-
 			// otherwise, insert a new user
 			$email_parts = explode( '@', $email );
 			$args = [
 				'user_login' => $email_parts[0],
 				'user_email' => $email,
 				'user_pass'  => wp_generate_password(16),
-				'role' => $role->get_key(),
+				'role' => apply_filters( 'voxel/default-role', 'subscriber' ),
 			];
 
 			// if this user login is taken, append a random id for uniqueness
@@ -122,29 +110,14 @@ class Google_Controller extends \Voxel\Controllers\Base_Controller {
 			wp_set_auth_cookie( $user_id );
 
 			// redirect to plans or welcome page
-			if ( $role->has_plans_enabled() && $role->config( 'registration.show_plans_on_signup', true ) ) {
-				$plans_page = get_permalink( $role->get_pricing_page_id() ) ?: home_url('/');
-				$redirect_to = add_query_arg( [
-					'redirect_to' => rawurlencode( $redirect_url ),
-					'context' => 'signup',
-				], $plans_page );
-				wp_safe_redirect( $redirect_to );
-				exit;
-			}
-
-			$after_registration = $role->config( 'registration.after_registration', 'welcome_step' );
-			if ( $after_registration === 'welcome_step' ) {
+			if ( \Voxel\get( 'settings.membership.plans_enabled' ) && \Voxel\get( 'settings.membership.show_plans_on_signup' ) ) {
+				$plans_page = get_permalink( \Voxel\get( 'templates.pricing' ) ) ?: home_url('/');
+				$redirect_to = add_query_arg( 'redirect_to', rawurlencode( $redirect_url ), $plans_page );
+			} else {
 				$redirect_to = add_query_arg( [
 					'welcome' => '',
-					'redirect_to' => $redirect_url,
+					'redirect_to' => rawurlencode( $redirect_url ),
 				], get_permalink( \Voxel\get( 'templates.auth' ) ) ?: home_url('/') );
-			} elseif ( $after_registration === 'custom_redirect' ) {
-				$redirect_to = \Voxel\render( $role->config( 'registration.custom_redirect', '' ), [
-					[ 'type' => \Voxel\Dynamic_Tags\Site_Group::class ],
-					[ 'type' => \Voxel\Dynamic_Tags\User_Group::class ],
-				] );
-			} else {
-				$redirect_to = $redirect_url;
 			}
 
 			wp_safe_redirect( $redirect_to );

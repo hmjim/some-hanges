@@ -20,7 +20,7 @@ class Relevance_Order extends Base_Search_Order {
 	public function get_models(): array {
 		return [
 			'source' => function() { ?>
-				<div class="ts-form-group x-col-12">
+				<div class="ts-form-group ts-col-1-1">
 					<label>Keywords filter:</label>
 					<select v-model="clause.source">
 						<option v-for="filter in $root.getFiltersByType('keywords')" :value="filter.key">

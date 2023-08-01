@@ -25,7 +25,6 @@ class Number_Format extends \Voxel\Dynamic_Tags\Base_Modifier {
 			'decimals' => [
 				'type' => \Voxel\Form_Models\Number_Model::class,
 				'label' => _x( 'Decimals', 'modifiers', 'voxel-backend' ),
-				'classes' => 'x-col-12',
 				'description' => _x( 'Precision of the number of decimal places. Default 0.', 'modifiers', 'voxel-backend' ),
 			],
 		];

@@ -25,7 +25,6 @@ class Date_Format extends \Voxel\Dynamic_Tags\Base_Modifier {
 			'format' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => _x( 'Date format', 'modifiers', 'voxel-backend' ),
-				'classes' => 'x-col-12',
 				'description' => _x( 'Leave empty to use the format set in site options', 'modifiers', 'voxel-backend' ),
 			],
 		];

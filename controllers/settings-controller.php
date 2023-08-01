@@ -12,7 +12,6 @@ class Settings_Controller extends Base_Controller {
 		$this->on( 'admin_menu', '@add_menu_page' );
 		$this->on( 'admin_menu', '@reorder_menu_items', 1000 );
 		$this->on( 'admin_post_voxel_save_general_settings', '@save_settings' );
-		$this->on( 'admin_head', '@enqueue_custom_font' );
 	}
 
 	protected function add_menu_page() {
@@ -71,7 +70,11 @@ class Settings_Controller extends Base_Controller {
 						],
 					],
 					'membership' => [
+						'enabled' => true,
+						'after_registration' => 'welcome_step', // welcome_step|redirect_back
 						'require_verification' => true,
+						'plans_enabled' => true,
+						'show_plans_on_signup' => true,
 						'trial' => [
 							'enabled' => false,
 							'period_days' => 0,
@@ -223,25 +226,11 @@ class Settings_Controller extends Base_Controller {
 
 		if ( isset( $submenu['voxel-settings'] ) ) {
 			$submenu['voxel-settings'][0][0] = 'Settings';
-		}
-
-		if ( isset( $submenu['voxel-membership'] ) ) {
-			$submenu['voxel-membership'][0][0] = 'Plans';
-		}
-
-		if ( isset( $submenu['voxel-templates'] ) ) {
-			$submenu['voxel-templates'][0][0] = 'General';
-
-			foreach ( $submenu['voxel-templates'] as $i => $item ) {
-				if ( str_starts_with( $item[2], 'vx-templates-post-type-' ) ) {
-					$post_type_key = substr( $item[2], 23 );
-					$submenu['voxel-templates'][$i][2] = ( $post_type_key === 'post' )
-						? 'edit.php?page=edit-post-type-post&tab=templates.base-templates'
-						: sprintf(
-						'edit.php?post_type=%s&page=edit-post-type-%s&tab=templates.base-templates',
-						$post_type_key,
-						$post_type_key
-					);
+			if ( ! empty( $submenu['voxel-settings'] ?? [] ) ) {
+				foreach ( $submenu['voxel-settings'] as $k => $v ) {
+					if ( ( $v[2] ?? null ) === 'voxel-settings' ) {
+						$submenu['voxel-settings'][$k][0] = __( 'Settings', 'voxel-backend' );
+					}
 				}
 			}
 		}
@@ -330,7 +319,11 @@ class Settings_Controller extends Base_Controller {
 			],
 
 			'membership' => [
+				'enabled' => $membership['enabled'] ?? true,
+				'after_registration' => \Voxel\from_list( $membership['after_registration'], [ 'welcome_step', 'redirect_back' ], 'welcome_step' ),
 				'require_verification' => $membership['require_verification'] ?? true,
+				'plans_enabled' => $membership['plans_enabled'] ?? true,
+				'show_plans_on_signup' => $membership['show_plans_on_signup'] ?? true,
 				'trial' => [
 					'enabled' => $membership['trial']['enabled'] ?? false,
 					'period_days' => $membership['trial']['period_days'] ?? 0,
@@ -635,9 +628,5 @@ class Settings_Controller extends Base_Controller {
 				'invoice_history' => [ 'enabled' => $portal['invoice_history'] ?? true ],
 			],
 		];
-	}
-
-	protected function enqueue_custom_font() {
-		echo '<link href="https://fonts.googleapis.com/css2?family=Almarai&display=swap" rel="stylesheet">';
 	}
 }

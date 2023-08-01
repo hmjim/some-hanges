@@ -14,7 +14,7 @@ trait Base_Model_Helpers {
 		return [
 			'type' => Form_Models\Text_Model::class,
 			'label' => 'Field Name',
-			'classes' => 'x-col-4',
+			'width' => '1/1',
 		];
 	}
 
@@ -22,7 +22,7 @@ trait Base_Model_Helpers {
 		return [
 			'type' => Form_Models\Text_Model::class,
 			'label' => 'Placeholder',
-			'classes' => 'x-col-4',
+			'width' => '1/2',
 		];
 	}
 
@@ -31,7 +31,8 @@ trait Base_Model_Helpers {
 			'type' => Form_Models\Key_Model::class,
 			'label' => 'Field Key',
 			'description' => 'Enter a unique field key',
-			'classes' => 'x-col-4',
+			'width' => '1/2',
+			'classes' => 'field-key-wrapper ',
 			'ref' => 'keyInput',
 		];
 	}
@@ -40,17 +41,23 @@ trait Base_Model_Helpers {
 		return [
 			'type' => Form_Models\Switcher_Model::class,
 			'label' => 'Is required?',
-			'classes' => 'x-col-12',
+			'width' => '1/1',
 		];
 	}
 
-
+	protected function get_description_model() {
+		return [
+			'type' => Form_Models\Textarea_Model::class,
+			'label' => 'Description',
+			'width' => '1/1',
+		];
+	}
 
 	protected function get_minlength_model() {
 		return [
 			'type' => Form_Models\Number_Model::class,
 			'label' => 'Minlength',
-			'classes' => 'x-col-3',
+			'width' => '1/2',
 			'min' => 0,
 		];
 	}
@@ -59,7 +66,7 @@ trait Base_Model_Helpers {
 		return [
 			'type' => Form_Models\Number_Model::class,
 			'label' => 'Maxlength',
-			'classes' => 'x-col-3',
+			'width' => '1/2',
 			'min' => 0,
 		];
 	}
@@ -81,15 +88,7 @@ trait Base_Model_Helpers {
 		return [
 			'type' => Form_Models\Icon_Model::class,
 			'label' => 'Icon',
-			'classes' => 'x-col-12',
-		];
-	}
-
-	protected function get_description_model() {
-		return [
-			'type' => Form_Models\Textarea_Model::class,
-			'label' => 'Description',
-			'classes' => 'x-col-12',
+			'width' => '1/2',
 		];
 	}
 

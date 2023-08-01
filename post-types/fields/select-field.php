@@ -27,7 +27,7 @@ class Select_Field extends Base_Post_Field {
 			'description' => $this->get_description_model(),
 			'required' => $this->get_required_model(),
 			'choices' => function() { ?>
-				<div class="ts-form-group x-col-12">
+				<div class="ts-form-group ts-col-1-1">
 					<label>Choices</label>
 					<select-field-choices :field="field"></select-field-choices>
 				</div>

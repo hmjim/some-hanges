@@ -193,7 +193,7 @@ class User_Controller extends Base_Controller {
 		$user = \Voxel\User::get( $user_id );
 
 		if ( isset( $data['plan'] ) ) {
-			if ( $plan = \Voxel\Plan::get( $data['plan'] ) ) {
+			if ( $plan = \Voxel\Membership\Plan::get( $data['plan'] ) ) {
 				$meta_key = \Voxel\Stripe::is_test_mode() ? 'voxel:test_plan' : 'voxel:plan';
 				$details = (array) json_decode( get_user_meta( $user->get_id(), $meta_key, true ), ARRAY_A );
 				$details['plan'] = $plan->get_key();

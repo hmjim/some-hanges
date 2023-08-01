@@ -25,7 +25,6 @@ class Post_Meta extends Base_Method {
 			'key' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => _x( 'Meta key', 'modifiers', 'voxel-backend' ),
-				'classes' => 'x-col-12',
 			],
 		];
 	}

@@ -21,7 +21,6 @@ class Db_Controller extends Base_Controller {
 		$this->on( 'after_setup_theme', '@modify_terms_table', 0 );
 		$this->on( 'after_setup_theme', '@modify_posts_table', 0 );
 		$this->on( 'after_setup_theme', '@modify_users_table', 0 );
-		$this->on( 'after_setup_theme', '@create_auth_codes_table', 0 );
 	}
 
 	protected function prepare_db() {
@@ -625,31 +624,5 @@ class Db_Controller extends Base_Controller {
 		}
 
 		\Voxel\set( 'versions.users_table', $table_version );
-	}
-
-	protected function create_auth_codes_table() {
-		$table_version = '0.7';
-		$current_version = \Voxel\get( 'versions.auth_codes' );
-		if ( $table_version === $current_version ) {
-			return;
-		}
-
-		global $wpdb;
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
-		$table_name = $wpdb->prefix . 'voxel_auth_codes';
-		$sql = <<<SQL
-			CREATE TABLE IF NOT EXISTS $table_name (
-				`user_login` VARCHAR(60) NOT NULL,
-				`code` VARCHAR(32) NOT NULL,
-				`created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				PRIMARY KEY (`user_login`),
-				KEY (`code`),
-				KEY (`created_at`)
-			) ENGINE = InnoDB {$wpdb->get_charset_collate()};
-		SQL;
-		dbDelta( $sql );
-
-		\Voxel\set( 'versions.auth_codes', $table_version );
 	}
 }

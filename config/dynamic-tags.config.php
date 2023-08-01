@@ -55,14 +55,6 @@ return [
 		'author:role' => \Voxel\Dynamic_Tags\Visibility_Rules\Author_Role_Is::class,
 		'author:is_verified' => \Voxel\Dynamic_Tags\Visibility_Rules\Author_Is_Verified::class,
 
-		'template:is_page' => \Voxel\Dynamic_Tags\Visibility_Rules\Template_Is_Page::class,
-		'template:is_single_post' => \Voxel\Dynamic_Tags\Visibility_Rules\Template_Is_Single_Post::class,
-		'template:is_post_type_archive' => \Voxel\Dynamic_Tags\Visibility_Rules\Template_Is_Post_Type_Archive::class,
-		'template:is_author' => \Voxel\Dynamic_Tags\Visibility_Rules\Template_Is_Author::class,
-		'template:is_single_term' => \Voxel\Dynamic_Tags\Visibility_Rules\Template_Is_Single_Term::class,
-		'template:is_homepage' => \Voxel\Dynamic_Tags\Visibility_Rules\Template_Is_Homepage::class,
-		'template:is_404' => \Voxel\Dynamic_Tags\Visibility_Rules\Template_Is_404::class,
-
 		'post:is_verified' => \Voxel\Dynamic_Tags\Visibility_Rules\Post_Is_Verified::class,
 	] ),
 ];

@@ -27,7 +27,7 @@ class User_Can_Create_Post extends Base_Visibility_Rule {
 			'value' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => _x( 'Post type', 'visibility rules', 'voxel-backend' ),
-				'classes' => 'x-col-3 x-grow',
+				'width' => '1/2',
 				'choices' => array_map( function( $post_type ) {
 					return $post_type->get_label();
 				}, \Voxel\Post_Type::get_voxel_types() ),

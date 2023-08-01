@@ -32,15 +32,15 @@ class Product_Field extends Base_Post_Field {
 		}
 
 		return [
-			'label' => $this->get_model( 'label', [ 'classes' => 'x-col-6' ]),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'label' => $this->get_label_model(),
+			'key' => $this->get_key_model(),
+			'description' => $this->get_description_model(),
 			'product-type' => [
 				'type' => Form_Models\Select_Model::class,
 				'label' => 'Product type',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 				'choices' => $choices,
 			],
-			'description' => $this->get_description_model(),
 			'recurring-date-field' => function() { ?>
 				<div class="ts-form-group ts-col-1-1" v-if="$root.options.product_types[ field['product-type'] ]?.calendar_type === 'recurring-date'">
 					<label>Get bookable instances from field:</label>
@@ -653,19 +653,6 @@ class Product_Field extends Base_Post_Field {
 						}
 
 						return $amount;
-					},
-				],
-				'period' => [
-					'label' => 'Period',
-					'type' => \Voxel\T_STRING,
-					'callback' => function() {
-						$product_type = $this->get_product_type();
-						if ( $product_type && $product_type->get_payment_mode() === 'subscription' ) {
-							$value = $this->get_value();
-							return \Voxel\interval_format( $value['interval']['unit'] ?? '', $value['interval']['count'] ?? '' );
-						} else {
-							return _x( 'one time', 'price interval', 'voxel' );
-						}
 					},
 				],
 				'additions' => [

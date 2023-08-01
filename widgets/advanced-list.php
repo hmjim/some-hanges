@@ -64,11 +64,7 @@ class Advanced_List extends Base_Widget {
 						'direct_message_user' => __( 'Message post author', 'voxel-elementor' ),
 						'edit_post' => __( 'Edit post', 'voxel-elementor' ),
 						'delete_post' => __( 'Delete post', 'voxel-elementor' ),
-						'unpublish_post' => __( 'Unpublish post', 'voxel-elementor' ),
-						'publish_post' => __( 'Publish post', 'voxel-elementor' ),
-						'relist_post' => __( 'Relist expired post', 'voxel-elementor' ),
 						'share_post' => __( 'Share post', 'voxel-elementor' ),
-						'go_back' => __( 'Go back', 'voxel-elementor' ),
 						'select_addition' => __( 'Select addition', 'voxel-elementor' ),
 						'back_to_top' => __( 'Back to top', 'voxel-elementor' ),
 						'scroll_to_section' => __( 'Scroll to section', 'voxel-elementor' ),
@@ -595,7 +591,6 @@ class Advanced_List extends Base_Widget {
 					'label' => __( 'Items', 'voxel-elementor' ),
 					'type' => \Elementor\Controls_Manager::REPEATER,
 					'fields' => $repeater->get_controls(),
-					'title_field' => '{{{ ts_action_type }}}',
 				]
 			);
 
@@ -642,7 +637,13 @@ class Advanced_List extends Base_Widget {
 				]
 			);
 
-
+			$this->add_control(
+				'ts_step_ico',
+				[
+					'label' => __( 'Edit step icon', 'text-domain' ),
+					'type' => \Elementor\Controls_Manager::ICONS,
+				]
+			);
 
 
 

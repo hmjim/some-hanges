@@ -13,7 +13,7 @@ class Orders extends Base_Widget {
 	}
 
 	public function get_title() {
-		return __( 'Orders (VX)', 'voxel-elementor' );
+		return __( 'Requests and orders (VX)', 'voxel-elementor' );
 	}
 
 	public function get_icon() {
@@ -703,7 +703,7 @@ class Orders extends Base_Widget {
 
 
 
-				$this->add_responsive_control(
+				$this->add_control(
 					'ts_ostatus_padding',
 					[
 						'label' => __( 'Padding', 'voxel-elementor' ),

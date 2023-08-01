@@ -27,17 +27,17 @@ class Number_Field extends Base_Information_Field {
 			'min' => [
 				'type' => Form_Models\Number_Model::class,
 				'label' => 'Minimum value',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 			],
 			'max' => [
 				'type' => Form_Models\Number_Model::class,
 				'label' => 'Maximum value',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 			],
 			'step' => [
 				'type' => Form_Models\Number_Model::class,
 				'label' => 'Step size',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 			],
 			'required' => $this->get_required_model(),
 		];

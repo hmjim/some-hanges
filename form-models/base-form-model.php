@@ -17,6 +17,7 @@ abstract class Base_Form_Model {
 			'sublabel' => '',
 			'footnote' => '',
 			'required' => false,
+			'width' => '1/1',
 			'classes' => [],
 			'v-model' => '',
 			'v-if' => '',
@@ -44,7 +45,8 @@ abstract class Base_Form_Model {
 
 	protected function get_wrapper_classes(): string {
 		return sprintf(
-			'ts-form-group %s',
+			'ts-form-group ts-col-%s %s',
+			str_replace( '/', '-', $this->args['width'] ),
 			join( ' ', $this->args['classes'] )
 		);
 	}

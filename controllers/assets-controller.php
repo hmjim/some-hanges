@@ -39,7 +39,6 @@ class Assets_Controller extends Base_Controller {
 		'vx:collections.js' => true,
 		'vx:countdown.js' => true,
 		'vx:share.js' => true,
-		'vx:configure-plan.js' => true,
 	];
 
 	/**

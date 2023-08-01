@@ -13,7 +13,7 @@ class Onboarding_Controller extends \Voxel\Controllers\Base_Controller {
 	}
 
 	protected function hooks() {
-		$this->on( 'admin_menu', '@add_menu_page', 39 );
+		$this->on( 'admin_menu', '@add_menu_page' );
 		$this->on( 'after_switch_theme', '@start_onboarding' );
 		$this->on( 'voxel_ajax_onboarding.verify_license', '@verify_license' );
 		$this->on( 'voxel_ajax_onboarding.prepare_install', '@prepare_install' );
@@ -33,7 +33,8 @@ class Onboarding_Controller extends \Voxel\Controllers\Base_Controller {
 			function() {
 				wp_enqueue_script( 'vx:onboarding.js' );
 				require locate_template( 'templates/backend/onboarding/onboarding.php' );
-			}
+			},
+			2
 		);
 	}
 

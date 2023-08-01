@@ -15,8 +15,8 @@ class Membership_Controller extends Base_Controller {
 
 	protected function add_menu_page() {
 		add_menu_page(
-			__( 'Membership', 'voxel-backend' ),
-			__( 'Membership', 'voxel-backend' ),
+			__( 'Plans', 'voxel-backend' ),
+			__( 'Plans', 'voxel-backend' ),
 			'manage_options',
 			'voxel-membership',
 			function() {
@@ -25,18 +25,14 @@ class Membership_Controller extends Base_Controller {
 				if ( $action === 'create-plan' ) {
 					require locate_template( 'templates/backend/membership/create-plan.php' );
 				} elseif ( $action === 'edit-plan' ) {
-					$plan = \Voxel\Plan::get( $_GET['plan'] ?? '' );
+					$plan = \Voxel\Membership\Plan::get( $_GET['plan'] ?? '' );
 					if ( ! $plan ) {
 						return;
 					}
 
 					$post_types = [];
 					foreach ( \Voxel\Post_Type::get_voxel_types() as $post_type ) {
-						$post_types[ $post_type->get_key() ] = [
-							'key' => $post_type->get_key(),
-							'label' => $post_type->get_label(),
-							'submittable' => ! in_array( $post_type->get_key(), [ 'profile' ], true ),
-						];
+						$post_types[ $post_type->get_key() ] = $post_type->get_label();
 					}
 
 					$config = [
@@ -47,9 +43,9 @@ class Membership_Controller extends Base_Controller {
 					wp_enqueue_script( 'vx:membership-editor.js' );
 					require locate_template( 'templates/backend/membership/edit-plan.php' );
 				} else {
-					$default_plan = \Voxel\Plan::get_or_create_default_plan();
-					$active_plans = \Voxel\Plan::active();
-					$archived_plans = \Voxel\Plan::archived();
+					$default_plan = \Voxel\Membership\Plan::get_or_create_default_plan();
+					$active_plans = \Voxel\Membership\Plan::active();
+					$archived_plans = \Voxel\Membership\Plan::archived();
 					$add_plan_url = admin_url('admin.php?page=voxel-membership&action=create-plan');
 
 					require locate_template( 'templates/backend/membership/view-plans.php' );
@@ -82,7 +78,7 @@ class Membership_Controller extends Base_Controller {
 					require locate_template( 'templates/backend/membership/customers.php' );
 				}
 			},
-			'2.0'
+			10
 		);
 	}
 
@@ -101,7 +97,7 @@ class Membership_Controller extends Base_Controller {
 		$description = sanitize_textarea_field( $_POST['membership_plan']['description'] ?? '' );
 
 		try {
-			$plan = \Voxel\Plan::create( [
+			$plan = \Voxel\Membership\Plan::create( [
 				'key' => $key,
 				'label' => $label,
 				'description' => $description,

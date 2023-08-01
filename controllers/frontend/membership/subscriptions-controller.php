@@ -17,7 +17,7 @@ class Subscriptions_Controller extends \Voxel\Controllers\Base_Controller {
 
 	protected function subscription_updated( $subscription ) {
 		$plan_key = $subscription->metadata['voxel:plan'];
-		$plan = \Voxel\Plan::get( $plan_key );
+		$plan = \Voxel\Membership\Plan::get( $plan_key );
 		if ( ! $plan ) {
 			throw new \Exception( sprintf( 'Plan "%s" not found for subscription "%s"', $plan_key, $subscription->id ) );
 		}
@@ -25,25 +25,6 @@ class Subscriptions_Controller extends \Voxel\Controllers\Base_Controller {
 		$user = \Voxel\User::get_by_customer_id( $subscription->customer );
 		if ( ! $user ) {
 			throw new \Exception( sprintf( 'Customer ID "%s" does not belong to any registered user (subscription "%s")', $subscription->customer, $subscription->id ) );
-		}
-
-		$membership = $user->get_membership();
-
-		/**
-		 * Edge case: If user was on an active subscription and then switched to a
-		 * non-subscription plan (either fallback plan, or a $0 one time payment plan),
-		 * the subscription gets canceled right-away and the user is assigned the new
-		 * plan details on that same request.
-		 *
-		 * However, the Stripe webhook for the canceled subscription will arrive a few
-		 * moments later, and would override the new plan details, re-assigning the user
-		 * their old subscription (with the status set to canceled). On this specific
-		 * scenario, we stop processing the webhook to get around this.
-		 *
-		 * @since 1.2
-		 */
-		if ( $subscription->status === 'canceled' && $membership->get_type() !== 'subscription' ) {
-			return;
 		}
 
 		// $subscription->status: trialing, active, incomplete, incomplete_expired, past_due, canceled, unpaid
@@ -62,23 +43,8 @@ class Subscriptions_Controller extends \Voxel\Controllers\Base_Controller {
 			'interval' => $subscription->plan->interval,
 			'interval_count' => $subscription->plan->interval_count,
 			'created' => date( 'Y-m-d H:i:s', $subscription->created ),
-			'metadata' => $subscription->metadata,
 		] ) ) );
-
-		do_action(
-			'voxel/membership/pricing-plan-updated',
-			$user,
-			$user->get_membership(),
-			$user->get_membership( $refresh_cache = true )
-		);
-
-		if ( in_array( $subscription->status, [ 'trialing', 'active' ], true ) ) {
-			// the payment is complete and subscription is active,
-			// we can safely process "voxel:switch_role" if requested
-			if ( ! empty( $subscription->metadata['voxel:switch_role'] ) ) {
-				$this->_maybe_switch_role( $user, $subscription->metadata['voxel:switch_role'] );
-			}
-		}
+		do_action( 'voxel/membership/pricing-plan-updated', $user, $user->get_membership(), $user->get_membership( $refresh_cache = true ) );
 	}
 
 	protected function retry_payment() {
@@ -176,42 +142,5 @@ class Subscriptions_Controller extends \Voxel\Controllers\Base_Controller {
 				'message' => $e->getMessage(),
 			] );
 		}
-	}
-
-	/**
-	 * Handle requests to switch user role upon successful payment.
-	 *
-	 * @since 1.2
-	 */
-	protected function _maybe_switch_role( $user, $new_role_key ) {
-		$switch_role = \Voxel\Role::get( $new_role_key );
-		if ( ! $switch_role ) {
-			return;
-		}
-
-		if ( ! $switch_role->is_switching_enabled() ) {
-			return;
-		}
-
-		$switchable_roles = $user->get_switchable_roles();
-		if ( ! isset( $switchable_roles[ $switch_role->get_key() ] ) ) {
-			return;
-		}
-
-		$membership = $user->get_membership();
-		if ( ! $membership->plan->supports_role( $switch_role->get_key() ) ) {
-			return;
-		}
-
-		if ( $user->has_role( 'administrator' ) || $user->has_role( 'editor' ) ) {
-			return;
-		}
-
-		// if user already has this role, process checkout without the role-switch request
-		if ( $user->has_role( $switch_role->get_key() ) ) {
-			return;
-		}
-
-		$user->set_role( $switch_role->get_key() );
 	}
 }

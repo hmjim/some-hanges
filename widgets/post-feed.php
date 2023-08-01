@@ -322,15 +322,6 @@ class Post_Feed extends Base_Widget {
 			);
 
 			$this->add_control(
-				'ts_lm_icon',
-				[
-					'label' => __( 'Load more icon', 'text-domain' ),
-					'type' => \Elementor\Controls_Manager::ICONS,
-
-				]
-			);
-
-			$this->add_control(
 				'ts_noresults_icon',
 				[
 					'label' => __( 'No results icon', 'text-domain' ),

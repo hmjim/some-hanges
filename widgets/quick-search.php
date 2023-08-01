@@ -56,18 +56,6 @@ class Quick_Search extends Base_Widget {
 				]
 			);
 
-			$this->add_control(
-				'ts_hide_cpt',
-				[
-					'label' => __( 'Hide post type tabs', 'voxel-elementor' ),
-					'description' => __( 'Useful if you add a single post type', 'voxel-elementor' ),
-					'type' => \Elementor\Controls_Manager::SWITCHER,
-					'return_value' => 'none',
-					'selectors' => [
-						'{{WRAPPER}} .cpt-tabs' => 'display: none !important;',
-					],
-				]
-			);
 
 
 
@@ -149,7 +137,7 @@ class Quick_Search extends Base_Widget {
 			$this->add_control(
 				'ts_trash_ico',
 				[
-					'label' => __( 'Clear searches icon', 'text-domain' ),
+					'label' => __( 'Close icon', 'text-domain' ),
 					'type' => \Elementor\Controls_Manager::ICONS,
 				]
 			);
@@ -602,7 +590,7 @@ class Quick_Search extends Base_Widget {
 			$this->add_control(
 				'ts_repeater_hide_filter',
 				[
-					'label' => __( 'Hide suffix', 'voxel-elementor' ),
+					'label' => __( 'Hide filter', 'voxel-elementor' ),
 					'type' => \Elementor\Controls_Manager::SWITCHER,
 					'return_value' => 'none',
 					'selectors' => [
@@ -1619,8 +1607,6 @@ class Quick_Search extends Base_Widget {
 				'placeholder' => __( 'Type your text', 'voxel-elementor' ),
 			]
 		);
-
-
 
 		$this->add_control(
 			'ts_search_icon',

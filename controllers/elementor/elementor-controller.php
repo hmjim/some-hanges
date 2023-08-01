@@ -30,7 +30,6 @@ class Elementor_Controller extends \Voxel\Controllers\Base_Controller {
 		$this->on( 'elementor/editor/init', '@set_current_term_in_editor' );
 		$this->on( 'elementor/ajax/register_actions', '@set_current_term_in_editor' );
 
-		$this->on( 'wp_head', '@enqueue_global_styles', 0 );
 		$this->on( 'wp_head', '@print_dynamic_styles' );
 
 		$this->filter( 'elementor/widget/print_template', '@handle_tags_in_editor' );
@@ -78,9 +77,6 @@ class Elementor_Controller extends \Voxel\Controllers\Base_Controller {
 		// 		delete_post_meta_by_key( '_elementor_css' );
 		// 	} );
 		// }
-
-		$this->on( 'manage_elementor_library_posts_custom_column', '@modify_template_type_markup', 100, 2 );
-		$this->on( 'voxel_ajax_backend.elementor.modify_template_type', '@modify_template_type_handler' );
 	}
 
 	protected function register_widgets() {
@@ -350,10 +346,6 @@ class Elementor_Controller extends \Voxel\Controllers\Base_Controller {
 		return $image;
 	}
 
-	protected function enqueue_global_styles() {
-		add_action( 'wp_enqueue_scripts', [ \Elementor\Plugin::$instance->frontend, 'enqueue_styles' ] );
-	}
-
 	protected function print_dynamic_styles() {
 		$mobile_end = \Elementor\Plugin::$instance->breakpoints->get_breakpoints('mobile')->get_value();
 		$tablet_start = $mobile_end + 1;
@@ -562,69 +554,6 @@ class Elementor_Controller extends \Voxel\Controllers\Base_Controller {
 			}
 
 			printf( '<script type="text/javascript">window.VX_Post_Select_Cache = %s</script>', wp_json_encode( (object) $cache ) );
-		}
-	}
-
-	protected function modify_template_type_markup( $column_name, $post_id ) {
-		if ( $column_name === 'elementor_library_type' ) {
-			$document_types = array_filter( \Elementor\Plugin::$instance->documents->get_document_types(), function( $type ) {
-				return $type::get_property( 'show_in_library' );
-			} );
-			?>
-			<details class="vx-el-modify-type">
-				<summary class="button button-small">Modify type</summary>
-				<ul>
-					<?php foreach ( $document_types as $key => $type ):
-						$handler = add_query_arg( [
-							'action' => 'backend.elementor.modify_template_type',
-							'template_id' => $post_id,
-							'new_template_type' => $key,
-							'_wpnonce' => wp_create_nonce( 'vx-backend' ),
-						], home_url( sprintf( '/?vx=1' ) ) )
-						?>
-						<li>
-							<a vx-action href="<?= $handler ?>"><?= $type::get_title() ?></a>
-						</li>
-					<?php endforeach ?>
-				</ul>
-			</details>
-			<?php
-		}
-	}
-
-	protected function modify_template_type_handler() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			die;
-		}
-
-		try {
-			if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'] ?? '', 'vx-backend' ) ) {
-				throw new \Exception( 'Could not process request.' );
-			}
-
-			$template_id = absint( $_GET['template_id'] ?? 0 );
-			$template_type = sanitize_text_field( $_GET['new_template_type'] );
-			$allowed_types = \Elementor\Plugin::$instance->documents->get_document_types();
-			if ( get_post_type( $template_id ) !== 'elementor_library' ) {
-				throw new \Exception( 'Template not found.' );
-			}
-
-			if ( ! isset( $allowed_types[ $template_type ] ) ) {
-				throw new \Exception( 'Cannot assign this type to template.' );
-			}
-
-			update_post_meta( $template_id, '_elementor_template_type', $template_type );
-			wp_set_object_terms( $template_id, $template_type, 'elementor_library_type' );
-
-			return wp_send_json( [
-				'success' => true,
-				'redirect_to' => '(reload)',
-			] );
-		} catch ( \Exception $e ) {
-			return wp_send_json( [
-				'success' => false,
-				'message' => $e->getMessage(),
-			] );
 		}
 	}
 }

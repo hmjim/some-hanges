@@ -21,7 +21,6 @@ class Is_Less_Than extends Base_Control_Structure {
 			'value' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => _x( 'Value', 'modifiers', 'voxel-backend' ),
-				'classes' => 'x-col-12',
 			],
 		];
 	}
