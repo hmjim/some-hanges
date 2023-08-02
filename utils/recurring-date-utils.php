@@ -52,7 +52,7 @@ function get_where_clause( $range_start, $range_end, $input_mode = 'date-range',
 		$search_date = $range_start;
 		$query = <<<SQL
 			( `start` <= '{$search_date}' AND `end` >= '{$search_date}' )
-			OR ( `start` <= '{$search_date}' AND `unit` = 'DAY' AND (
+			OR ( `unit` = 'DAY' AND (
 				DATE_ADD( `start`, INTERVAL ( `frequency` * CEIL(
 					( TIMESTAMPDIFF( DAY, `start`, '{$search_date}' ) / `frequency` )
 				) ) DAY ) <= LEAST( '{$search_date}', `until` )
@@ -60,7 +60,7 @@ function get_where_clause( $range_start, $range_end, $input_mode = 'date-range',
 					( TIMESTAMPDIFF( DAY, `start`, '{$search_date}' ) / `frequency` )
 				) ) DAY ) >= '{$search_date}'
 			) )
-			OR ( `start` <= '{$search_date}' AND `unit` = 'MONTH' AND (
+			OR ( `unit` = 'MONTH' AND (
 				DATE_ADD( `start`, INTERVAL ( `frequency` * CEIL(
 					( TIMESTAMPDIFF( MONTH, `start`, '{$search_date}' ) / `frequency` )
 				) ) MONTH ) <= LEAST( '{$search_date}', `until` )
@@ -73,12 +73,12 @@ function get_where_clause( $range_start, $range_end, $input_mode = 'date-range',
 		$query = <<<SQL
 			( `start` BETWEEN '{$range_start}' AND '{$range_end}' )
 			OR ( `start` <= '{$range_start}' AND `end` >= '{$range_end}' )
-			OR ( `start` <= '{$range_start}' AND `unit` = 'DAY' AND (
+			OR ( `unit` = 'DAY' AND (
 				DATE_ADD( `start`, INTERVAL ( `frequency` * CEIL(
 					( TIMESTAMPDIFF( DAY, `start`, '{$range_start}' ) / `frequency` ) + 0.00001
 				) ) DAY ) <= LEAST( '{$range_end}', `until` )
 			) )
-			OR ( `start` <= '{$range_start}' AND `unit` = 'MONTH' AND (
+			OR ( `unit` = 'MONTH' AND (
 				DATE_ADD( `start`, INTERVAL ( `frequency` * CEIL(
 					( TIMESTAMPDIFF( MONTH, `start`, '{$range_start}' ) / `frequency` ) + 0.00001
 				) ) MONTH ) <= LEAST( '{$range_end}', `until` )
@@ -88,12 +88,12 @@ function get_where_clause( $range_start, $range_end, $input_mode = 'date-range',
 		if ( $match_ongoing ) {
 			$query .= <<<SQL
 				OR ( `end` BETWEEN '{$range_start}' AND '{$range_end}' )
-				OR ( `start` <= '{$range_start}' AND `unit` = 'DAY' AND (
+				OR ( `unit` = 'DAY' AND (
 					DATE_ADD( `end`, INTERVAL ( `frequency` * FLOOR(
 						( TIMESTAMPDIFF( DAY, `start`, '{$range_start}' ) / `frequency` )
 					) ) DAY ) BETWEEN '{$range_start}' AND LEAST( '{$range_end}', `until` )
 				) )
-				OR ( `start` <= '{$range_start}' AND `unit` = 'MONTH' AND (
+				OR ( `unit` = 'MONTH' AND (
 					DATE_ADD( `end`, INTERVAL ( `frequency` * FLOOR(
 						( TIMESTAMPDIFF( MONTH, `start`, '{$range_start}' ) / `frequency` )
 					) ) MONTH ) BETWEEN '{$range_start}' AND LEAST( '{$range_end}', `until` )
@@ -115,9 +115,9 @@ function get_upcoming( $recurring_dates, $limit = 10, $max = null, $reference_da
 	}
 
 	foreach ( $recurring_dates as $date ) {
-		$start = date_create_from_format( 'Y-m-d H:i:s', $date['start'], $now->getTimezone() );
-		$end = date_create_from_format( 'Y-m-d H:i:s', $date['end'], $now->getTimezone() );
-		$until = isset( $date['until'] ) ? date_create_from_format( 'Y-m-d', $date['until'], $now->getTimezone() ) : null;
+		$start = date_create_from_format( 'Y-m-d H:i:s', $date['start'] );
+		$end = date_create_from_format( 'Y-m-d H:i:s', $date['end'] );
+		$until = isset( $date['until'] ) ? date_create_from_format( 'Y-m-d', $date['until'] ) : null;
 		$count = $limit;
 
 		if ( ! ( $start && $end ) ) {
@@ -221,9 +221,9 @@ function get_previous( $recurring_dates, $limit = 10, $reference_date = null ) {
 	}
 
 	foreach ( $recurring_dates as $date ) {
-		$start = date_create_from_format( 'Y-m-d H:i:s', $date['start'], $now->getTimezone()  );
-		$end = date_create_from_format( 'Y-m-d H:i:s', $date['end'], $now->getTimezone()  );
-		$until = isset( $date['until'] ) ? date_create_from_format( 'Y-m-d', $date['until'], $now->getTimezone()  ) : null;
+		$start = date_create_from_format( 'Y-m-d H:i:s', $date['start'] );
+		$end = date_create_from_format( 'Y-m-d H:i:s', $date['end'] );
+		$until = isset( $date['until'] ) ? date_create_from_format( 'Y-m-d', $date['until'] ) : null;
 		$count = $limit;
 
 		if ( ! ( $start && $end ) ) {

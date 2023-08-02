@@ -22,12 +22,14 @@ class Availability_Filter extends Base_Filter {
 	public function get_models(): array {
 		return [
 			'label' => $this->get_label_model(),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'description' => $this->get_description_model(),
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'source' => $this->get_source_model( 'product' ),
 			'input_mode' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Input mode',
-				'classes' => 'x-col-6',
+				'width' => '1/1',
 				'choices' => [
 					'date-range' => 'Date range',
 					'single-date' => 'Single date',
@@ -37,7 +39,7 @@ class Availability_Filter extends Base_Filter {
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'v-if' => 'filter.input_mode === \'date-range\'',
 				'label' => 'Date range matching',
-				'classes' => 'x-col-6',
+				'width' => '1/1',
 				'choices' => [
 					'lazy' => 'Lazy: Match posts having at least one available day in given range',
 					'greedy' => 'Greedy: Match posts having every day available in given range',
@@ -46,20 +48,17 @@ class Availability_Filter extends Base_Filter {
 			'l10n_checkin' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'Check-in label',
-				'classes' => 'x-col-6',
+				'width' => '1/2',
 			],
 			'l10n_checkout' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'Check-out label',
-				'classes' => 'x-col-6',
+				'width' => '1/2',
 			],
 			'l10n_pickdate' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'Placeholder',
-				'classes' => 'x-col-6',
 			],
-			'description' => $this->get_description_model(),
-			'icon' => $this->get_icon_model(),
 		];
 	}
 
@@ -127,7 +126,7 @@ class Availability_Filter extends Base_Filter {
 
 		global $wpdb;
 
-		// query against main column
+		// query agains main column
 		$start_day = date_diff( \Voxel\epoch(), new \DateTime( $value['start'], new \DateTimeZone('UTC') ) )->days;
 		$end_day = date_diff( \Voxel\epoch(), new \DateTime( $value['end'], new \DateTimeZone('UTC') ) )->days;
 		$linestring = sprintf( 'LINESTRING(%s 0,%s 0)', $start_day / 1000, $end_day / 1000 );

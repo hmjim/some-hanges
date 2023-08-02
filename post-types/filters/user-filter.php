@@ -16,7 +16,7 @@ class User_Filter extends Base_Filter {
 	public function get_models(): array {
 		return [
 			'label' => $this->get_label_model(),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'key' => $this->get_key_model(),
 			'icon' => $this->get_icon_model(),
 		];
 	}

@@ -15,7 +15,8 @@ trait Model_Helpers {
 			'type' => Form_Models\Key_Model::class,
 			'label' => 'Field Key',
 			'description' => 'Enter a unique field key',
-			'classes' => 'x-col-4',
+			'width' => '1/2',
+			'classes' => 'field-key-wrapper ',
 			'editable' => '(!!field.singular) === false',
 			'ref' => 'keyInput',
 		];

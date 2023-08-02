@@ -28,63 +28,61 @@ class Range_Filter extends Base_Filter {
 		return [
 			'label' => $this->get_label_model(),
 			'placeholder' => $this->get_placeholder_model(),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'description' => $this->get_description_model(),
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'source' => $this->_get_source_model(),
 			'handles' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Handles',
-				'classes' => 'x-col-6',
+				'width' => '1/1',
 				'choices' => [
 					'single' => 'Single handle',
 					'double' => 'Double handles',
 				],
 			],
-			'compare' => [
-				'type' => \Voxel\Form_Models\Select_Model::class,
-				'label' => 'Comparison',
-				'classes' => 'x-col-6',
-				'choices' => [
-					'in_range' => 'Inside selected range',
-					'outside_range' => 'Outside selected range',
-				],
-			],
 			'range_start' => [
 				'type' => \Voxel\Form_Models\Number_Model::class,
 				'label' => 'Range start',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 				'step' => 'any',
 			],
 			'range_end' => [
 				'type' => \Voxel\Form_Models\Number_Model::class,
 				'label' => 'Range end',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 				'step' => 'any',
 			],
 			'step_size' => [
 				'type' => \Voxel\Form_Models\Number_Model::class,
 				'label' => 'Step size',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 				'min' => 0,
 				'step' => 'any',
 			],
-
+			'compare' => [
+				'type' => \Voxel\Form_Models\Select_Model::class,
+				'label' => 'Comparison',
+				'width' => '1/1',
+				'choices' => [
+					'in_range' => 'Inside selected range',
+					'outside_range' => 'Outside selected range',
+				],
+			],
 			'format_numeric' => [
 				'type' => \Voxel\Form_Models\Switcher_Model::class,
 				'label' => 'Format displayed value',
-				'classes' => 'x-col-12',
 			],
 			'format_prefix' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'Prefix',
-				'classes' => 'x-col-6',
+				'width' => '1/2',
 			],
 			'format_suffix' => [
 				'type' => \Voxel\Form_Models\Text_Model::class,
-				'label' => 'Suffix',
-				'classes' => 'x-col-6',
+				'label' => 'suffix',
+				'width' => '1/2',
 			],
-			'description' => $this->get_description_model(),
-			'icon' => $this->get_icon_model(),
 		];
 	}
 
@@ -161,7 +159,7 @@ class Range_Filter extends Base_Filter {
 		return [
 			'handles' => $this->props['handles'],
 			'compare' => $this->props['compare'],
-			'step_size' => abs( (float) $this->props['step_size'] ),
+			'step_size' => (float) abs( $this->props['step_size'] ),
 			'range_start' => (float) $this->props['range_start'],
 			'range_end' => (float) $this->props['range_end'],
 			'value' => $value !== null ? $value : [],

@@ -22,7 +22,7 @@ class Random_Order extends Base_Search_Order {
 			'seed' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Randomize every',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 				'choices' => [
 					0 => 'Always',
 					1800 => '30 minutes',

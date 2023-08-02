@@ -20,19 +20,18 @@ class Open_Now_Filter extends Base_Filter {
 		return [
 			'label' => $this->get_label_model(),
 			'placeholder' => $this->get_placeholder_model(),
+			'description' => $this->get_description_model(),
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'source' => $this->get_source_model( 'work-hours' ),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
 			'convert_tz' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Match based on:',
-				'classes' => 'x-col-12',
 				'choices' => [
 					'post' => 'Local time: The current time of each post based on the individual post timezone',
 					'site' => 'Site time: The current time based on the site timezone',
 				],
 			],
-			'description' => $this->get_description_model(),
-			'icon' => $this->get_icon_model(),
 		];
 	}
 

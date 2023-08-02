@@ -31,13 +31,22 @@ class Repeater_Field extends Base_Post_Field {
 
 	public function get_models(): array {
 		return [
-			'label' => $this->get_model( 'label', [ 'classes' => 'x-col-6' ]),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'label' => $this->get_label_model(),
+			'key' => $this->get_model( 'key', [ 'width' => '1/2' ] ),
 			'description' => $this->get_description_model(),
 			'required' => $this->get_required_model(),
-
+			'min' => [
+				'type' => Form_Models\Number_Model::class,
+				'label' => 'Minimum repeater items',
+				'width' => '1/2',
+			],
+			'max' => [
+				'type' => Form_Models\Number_Model::class,
+				'label' => 'Maximum repeater items',
+				'width' => '1/2',
+			],
 			'row_label' => function() { ?>
-				<div class="ts-form-group x-col-12">
+				<div class="ts-form-group ts-col-1-1">
 					<label>Row label</label>
 					<select v-model="field.row_label">
 						<option value=""></option>
@@ -55,48 +64,24 @@ class Repeater_Field extends Base_Post_Field {
 			'l10n_item' => [
 				'type' => Form_Models\Text_Model::class,
 				'label' => 'Default row label',
-				'classes' => 'x-col-3',
+				'width' => '1/2',
 			],
 
 			'l10n_add_row' => [
 				'type' => Form_Models\Text_Model::class,
 				'label' => 'Add row label',
-				'classes' => 'x-col-3',
-			],
-
-			'min' => [
-				'type' => Form_Models\Number_Model::class,
-				'label' => 'Minimum repeater items',
-				'classes' => 'x-col-3',
-			],
-			'max' => [
-				'type' => Form_Models\Number_Model::class,
-				'label' => 'Maximum repeater items',
-				'classes' => 'x-col-3',
+				'width' => '1/2',
 			],
 
 			'additions_enabled' => [
 				'type' => Form_Models\Switcher_Model::class,
 				'v-if' => '!repeater',
 				'label' => 'Generate product additions from repeater items',
-				'classes' => 'x-col-12',
-			],
-
-
-
-			'additions_mode' => [
-				'v-if' => '!repeater && field.additions_enabled',
-				'type' => Form_Models\Select_Model::class,
-				'label' => 'Additions mode',
-				'classes' => 'x-col-6',
-				'choices' => [
-					'single' => 'Radio: Customers can select only one addition during checkout',
-					'multiple' => 'Checkbox: Customers can select multiple additions during checkout',
-				],
+				'width' => '1/1',
 			],
 
 			'additions_field' => function() { ?>
-				<div class="ts-form-group x-col-6" v-if="!repeater && field.additions_enabled">
+				<div class="ts-form-group ts-col-1-1" v-if="!repeater && field.additions_enabled">
 					<label>Product field</label>
 					<select v-model="field.additions_field">
 						<option v-for="field in $root.getFieldsByType('product')" :value="field.key">
@@ -106,25 +91,35 @@ class Repeater_Field extends Base_Post_Field {
 				</div>
 			<?php },
 
+			'additions_mode' => [
+				'v-if' => '!repeater && field.additions_enabled',
+				'type' => Form_Models\Select_Model::class,
+				'label' => 'Additions mode',
+				'choices' => [
+					'single' => 'Radio: Customers can select only one addition during checkout',
+					'multiple' => 'Checkbox: Customers can select multiple additions during checkout',
+				],
+			],
+
 			'additions_allow_quantity' => [
 				'type' => Form_Models\Switcher_Model::class,
 				'v-if' => '!repeater && field.additions_enabled',
 				'label' => 'Enable quantity settings for addition items',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 			],
 
 			'additions_required' => [
 				'type' => Form_Models\Switcher_Model::class,
 				'v-if' => '!repeater && field.additions_enabled && field.additions_mode === \'single\'',
 				'label' => 'Is required in checkout',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 			],
 
 			'additions_repeat' => [
 				'type' => Form_Models\Switcher_Model::class,
 				'v-if' => '!repeater && field.additions_enabled && field.additions_mode === \'single\'',
 				'label' => 'Apply pricing to each day in booked day range',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 			],
 		];
 	}

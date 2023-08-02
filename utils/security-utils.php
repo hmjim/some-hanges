@@ -35,25 +35,6 @@ function verify_nonce( $nonce, $action ) {
 	}
 }
 
-function validate_username( $username ) {
-	if ( empty( $username ) ) {
-		throw new \Exception( _x( 'Please enter a username.', 'auth', 'voxel' ), 101 );
-	}
-
-	if ( ! \validate_username( $username ) ) {
-		throw new \Exception( _x( 'Please enter a valid username.', 'auth', 'voxel' ), 102 );
-	}
-
-	if ( username_exists( $username ) ) {
-		throw new \Exception( _x( 'This username is already registered. Please choose another one.', 'auth', 'voxel' ), 103 );
-	}
-
-	$illegal_user_logins = (array) apply_filters( 'illegal_user_logins', [] );
-	if ( in_array( strtolower( $username ), array_map( 'strtolower', $illegal_user_logins ), true ) ) {
-		throw new \Exception( _x( 'This username is not allowed.', 'auth', 'voxel' ), 104 );
-	}
-}
-
 function validate_password( $password ) {
 	if ( mb_strlen( $password ) < 8 ) {
 		throw new \Exception( _x( 'Password must contain at least 8 characters.', 'validate password', 'voxel' ) );
@@ -65,19 +46,5 @@ function validate_password( $password ) {
 
 	if ( ! preg_match( '/[A-Za-z]+/', $password ) ) {
 		throw new \Exception( _x( 'Password must contain at least one letter.', 'validate password', 'voxel' ) );
-	}
-}
-
-function validate_user_email( $email ) {
-	if ( empty( $email ) ) {
-		throw new \Exception( _x( 'Please enter your email address.', 'auth', 'voxel' ), 105 );
-	}
-
-	if ( ! is_email( $email ) ) {
-		throw new \Exception( _x( 'Please enter a valid email address.', 'auth', 'voxel' ), 106 );
-	}
-
-	if ( email_exists( $email ) ) {
-		throw new \Exception( _x( 'This email is already registered.', 'auth', 'voxel' ), 107 );
 	}
 }

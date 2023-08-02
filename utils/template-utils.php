@@ -13,7 +13,6 @@ function create_template( $title ) {
 		'post_title' => $title,
 		'meta_input' => [
 			'_elementor_edit_mode' => 'builder',
-			'_elementor_template_type' => 'page',
 		],
 	] );
 
@@ -25,7 +24,6 @@ function create_template( $title ) {
 		}
 
 		wp_set_object_terms( $template_id, 'voxel-template', 'elementor_library_category' );
-		wp_set_object_terms( $template_id, 'page', 'elementor_library_type' );
 	}
 
 	return $template_id;
@@ -118,9 +116,8 @@ function print_header() {
 		return;
 	}
 
-	$template_id = \Voxel\resolve_template_for_location( 'header' );
-	if ( \Voxel\template_exists( $template_id ) ) {
-		\Voxel\print_template( $template_id );
+	if ( \Voxel\template_exists( \Voxel\get( 'templates.header' ) ) ) {
+		\Voxel\print_template( \Voxel\get( 'templates.header' ) );
 	}
 }
 
@@ -129,30 +126,9 @@ function print_footer() {
 		return;
 	}
 
-	$template_id = \Voxel\resolve_template_for_location( 'footer' );
-	if ( \Voxel\template_exists( $template_id ) ) {
-		\Voxel\print_template( $template_id );
+	if ( \Voxel\template_exists( \Voxel\get( 'templates.footer' ) ) ) {
+		\Voxel\print_template( \Voxel\get( 'templates.footer' ) );
 	}
-}
-
-function resolve_template_for_location( string $type ) {
-	$templates = \Voxel\get( 'custom_templates' );
-	if ( empty( $templates[ $type ] ) ) {
-		return \Voxel\get( sprintf( 'templates.%s', $type ) );
-	}
-
-	foreach ( $templates[ $type ] as $index => $template ) {
-		if ( empty( $template['visibility_rules'] ) ) {
-			continue;
-		}
-
-		$rules_passed = \Voxel\evaluate_visibility_rules( $template['visibility_rules'] );
-		if ( $rules_passed ) {
-			return $template['id'];
-		}
-	}
-
-	return \Voxel\get( sprintf( 'templates.%s', $type ) );
 }
 
 function get_custom_page_settings( $post_id ) {
@@ -235,12 +211,10 @@ function get_post_type_for_preview( $template_id ) {
 		$templates = $post_type->get_templates();
 		$custom_card_templates = array_column( $post_type->repository->get_custom_templates()['card'], 'id' );
 		$custom_single_templates = array_column( $post_type->repository->get_custom_templates()['single'], 'id' );
-		$custom_single_post_templates = array_column( $post_type->repository->get_custom_templates()['single_post'], 'id' );
 		return (
 			in_array( $template_id, [ $templates['single'], $templates['card'] ] )
 			|| in_array( $template_id, $custom_card_templates )
 			|| in_array( $template_id, $custom_single_templates )
-			|| in_array( $template_id, $custom_single_post_templates )
 		);
 	} ) );
 }

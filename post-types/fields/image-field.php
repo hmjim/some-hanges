@@ -25,7 +25,7 @@ class Image_Field extends File_Field {
 		$models['default'] = [
 			'type' => \Voxel\Form_Models\Media_Model::class,
 			'label' => 'Default image',
-			'classes' => 'x-col-12',
+			'width' => '1/1',
 			'multiple' => false,
 		];
 

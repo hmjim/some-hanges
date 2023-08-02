@@ -22,14 +22,15 @@ class Date_Filter extends Base_Filter {
 
 	public function get_models(): array {
 		return [
-			'label' => $this->get_model( 'label', [ 'classes' => 'x-col-6' ]),
-			'description' => $this->get_model( 'description', [ 'classes' => 'x-col-6' ]),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'label' => $this->get_label_model(),
+			'description' => $this->get_description_model(),
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'source' => $this->get_source_model( 'date' ),
 			'input_mode' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Input mode',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 				'choices' => [
 					'date-range' => 'Date range',
 					'single-date' => 'Single date',
@@ -39,7 +40,7 @@ class Date_Filter extends Base_Filter {
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'v-if' => 'filter.input_mode === \'single-date\'',
 				'label' => 'Comparison',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 				'choices' => [
 					'equals' => 'Equals selected date',
 					'greater_than' => 'Greater than selected date',
@@ -50,21 +51,19 @@ class Date_Filter extends Base_Filter {
 				'v-if' => 'filter.input_mode === \'date-range\'',
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'From label',
-				'classes' => 'x-col-6',
+				'width' => '1/2',
 			],
 			'l10n_to' => [
 				'v-if' => 'filter.input_mode === \'date-range\'',
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'To label',
-				'classes' => 'x-col-6',
+				'width' => '1/2',
 			],
 			'l10n_pickdate' => [
 				'v-if' => 'filter.input_mode === \'single-date\'',
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'Placeholder',
-				'classes' => 'x-col-12',
 			],
-			'icon' => $this->get_icon_model(),
 		];
 	}
 

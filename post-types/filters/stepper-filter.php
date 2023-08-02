@@ -23,40 +23,40 @@ class Stepper_Filter extends Base_Filter {
 	public function get_models(): array {
 		return [
 			'label' => $this->get_label_model(),
+			'description' => $this->get_description_model(),
 			'placeholder' => $this->get_placeholder_model(),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'source' => $this->_get_source_model(),
 			'range_start' => [
 				'type' => \Voxel\Form_Models\Number_Model::class,
 				'label' => 'Range start',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 				'step' => 'any',
 			],
 			'range_end' => [
 				'type' => \Voxel\Form_Models\Number_Model::class,
 				'label' => 'Range end',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 				'step' => 'any',
 			],
 			'step_size' => [
 				'type' => \Voxel\Form_Models\Number_Model::class,
 				'label' => 'Step size',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 				'min' => 0,
 				'step' => 'any',
 			],
 			'compare' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Comparison',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 				'choices' => [
 					'equals' => 'Equals selected value',
 					'greater_than' => 'Greater than or equal to selected value',
 					'less_than' => 'Less than or equal to selected value',
 				],
 			],
-			'description' => $this->get_description_model(),
-			'icon' => $this->get_icon_model(),
 		];
 	}
 
@@ -84,7 +84,7 @@ class Stepper_Filter extends Base_Filter {
 	}
 
 	public function frontend_props() {
-		$step = abs( (float) $this->props['step_size'] );
+		$step = (float) abs( $this->props['step_size'] );
 		$precision = absint( strlen( substr( strrchr( $step, '.' ), 1 ) ) );
 		$value = $this->parse_value( $this->get_value() );
 

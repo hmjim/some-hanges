@@ -30,26 +30,23 @@ class Taxonomy_Field extends Base_Post_Field {
 			'taxonomy' => [
 				'type' => Form_Models\Taxonomy_Select_Model::class,
 				'label' => 'Choose taxonomy',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 				'post_type' => $this->post_type->get_key(),
 			],
-
+			'multiple' => [
+				'type' => Form_Models\Switcher_Model::class,
+				'label' => 'Allow selection of multiple terms?',
+				'width' => '1/1',
+			],
 			'display_as' => [
 				'type' => Form_Models\Select_Model::class,
 				'label' => 'Display as',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 				'choices' => [
 					'popup' => 'Popup',
 					'inline' => 'Inline',
 				],
 			],
-
-			'multiple' => [
-				'type' => Form_Models\Switcher_Model::class,
-				'label' => 'Allow selection of multiple terms?',
-				'classes' => 'x-col-12',
-			],
-
 			'required' => $this->get_required_model(),
 		];
 	}

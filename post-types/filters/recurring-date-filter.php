@@ -23,12 +23,14 @@ class Recurring_Date_Filter extends Base_Filter {
 	public function get_models(): array {
 		return [
 			'label' => $this->get_label_model(),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'description' => $this->get_description_model(),
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'source' => $this->get_source_model( 'recurring-date' ),
 			'input_mode' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Input mode',
-				'classes' => 'x-col-6',
+				'width' => '1/1',
 				'choices' => [
 					'date-range' => 'Date range',
 					'single-date' => 'Single date',
@@ -37,29 +39,25 @@ class Recurring_Date_Filter extends Base_Filter {
 			'match_ongoing' => [
 				'type' => \Voxel\Form_Models\Switcher_Model::class,
 				'label' => 'Match ongoing dates',
-				'classes' => 'x-col-12',
 				'description' => 'Set whether to match dates that have already begun but haven\'t ended yet.',
 			],
 			'l10n_from' => [
 				'v-if' => 'filter.input_mode === \'date-range\'',
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'From label',
-				'classes' => 'x-col-6',
+				'width' => '1/2',
 			],
 			'l10n_to' => [
 				'v-if' => 'filter.input_mode === \'date-range\'',
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'To label',
-				'classes' => 'x-col-6',
+				'width' => '1/2',
 			],
 			'l10n_pickdate' => [
 				'v-if' => 'filter.input_mode === \'single-date\'',
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'Placeholder',
-				'classes' => 'x-col-6',
 			],
-			'description' => $this->get_description_model(),
-			'icon' => $this->get_icon_model(),
 		];
 	}
 
@@ -76,7 +74,7 @@ class Recurring_Date_Filter extends Base_Filter {
 				return;
 			}
 
-			$value = $preset['callback']( \Voxel\utc() );
+			$value = $preset['callback']( \Voxel\now() );
 			if ( ! ( strtotime( $value['start'] ?? null ) && strtotime( $value['end'] ?? null ) ) ) {
 				return;
 			}
@@ -94,7 +92,7 @@ class Recurring_Date_Filter extends Base_Filter {
 		if ( $value['start'] === '1000-01-01' ) {
 			$where_clause = '';
 			$current_start = \Voxel\Utils\Recurring_Date\get_current_start_query(
-				\Voxel\utc()->format( 'Y-m-d' ),
+				\Voxel\now()->format( 'Y-m-d' ),
 				$value['end']
 			);
 		} else {

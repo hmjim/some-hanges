@@ -24,7 +24,7 @@ class Rating_Order extends Base_Search_Order {
 			'mode' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Mode',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 				'choices' => [
 					'weighted' => 'Weighted average',
 					'simple' => 'Simple average',

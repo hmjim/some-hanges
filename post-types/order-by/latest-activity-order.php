@@ -24,7 +24,6 @@ class Latest_Activity_Order extends Base_Search_Order {
 			'activity' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Activity type',
-				'classes' => 'x-col-12',
 				'choices' => [
 					'wall' => 'Wall posts',
 					'reviews' => 'Reviews',
@@ -34,7 +33,6 @@ class Latest_Activity_Order extends Base_Search_Order {
 			'include_replies' => [
 				'type' => \Voxel\Form_Models\Switcher_Model::class,
 				'label' => 'Should status replies be considered as activity?',
-				'classes' => 'x-col-12',
 			],
 		];
 	}

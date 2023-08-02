@@ -40,12 +40,12 @@ class Keywords_Filter extends Base_Filter {
 
 	public function get_models(): array {
 		return [
-			'label' => $this->get_model( 'label', [ 'classes' => 'x-col-12' ]),
-			'placeholder' => $this->get_model( 'placeholder', [ 'classes' => 'x-col-6' ]),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
-
+			'label' => $this->get_label_model(),
+			'placeholder' => $this->get_placeholder_model(),
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'sources' => function() { ?>
-				<div class="ts-form-group x-col-12 ts-checkbox">
+				<div class="ts-form-group ts-col-1-1 ts-checkbox">
 					<label>Look for matches in:</label>
 					<div class="ts-checkbox-container two-column min-scroll">
 						<label v-for="field in $root.getFieldsByType( <?= esc_attr( wp_json_encode( $this->supported_field_types ) ) ?> )"
@@ -60,7 +60,7 @@ class Keywords_Filter extends Base_Filter {
 			'mode' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Search mode',
-				'classes' => 'x-col-12',
+				'width' => '1/1',
 				'choices' => [
 					'default' => 'Default',
 					'natural' => 'Natural language mode',
@@ -68,8 +68,6 @@ class Keywords_Filter extends Base_Filter {
 					'boolean' => 'Boolean mode',
 				],
 			],
-
-			'icon' => $this->get_model( 'icon', [ 'classes' => 'x-col-12' ]),
 		];
 	}
 

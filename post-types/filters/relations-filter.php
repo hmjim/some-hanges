@@ -19,10 +19,10 @@ class Relations_Filter extends Base_Filter {
 	public function get_models(): array {
 		return [
 			'label' => $this->get_label_model(),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
-
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'source' => function() { ?>
-				<div class="ts-form-group x-col-12">
+				<div class="ts-form-group ts-col-1-1">
 					<label>Data source:</label>
 					<select v-model="filter.source">
 						<option v-for="field in $root.getFieldsByType('post-relation')" :value="field.key">
@@ -36,13 +36,13 @@ class Relations_Filter extends Base_Filter {
 				'v-if' => 'filter.source === "(manual)"',
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'Relation key',
-				'classes' => 'x-col-6',
+				'width' => '1/2',
 			],
 			'manual_relation_type' => [
 				'v-if' => 'filter.source === "(manual)"',
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Relation type',
-				'classes' => 'x-col-6',
+				'width' => '1/2',
 				'choices' => [
 					'has_one' => 'Has one',
 					'has_many' => 'Has many',
@@ -50,7 +50,6 @@ class Relations_Filter extends Base_Filter {
 					'belongs_to_many' => 'Belongs to many',
 				],
 			],
-			'icon' => $this->get_icon_model(),
 		];
 	}
 

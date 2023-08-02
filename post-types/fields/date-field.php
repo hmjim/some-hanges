@@ -25,13 +25,12 @@ class Date_Field extends Base_Post_Field {
 			'key' => $this->get_key_model(),
 			'placeholder' => $this->get_placeholder_model(),
 			'description' => $this->get_description_model(),
+			'required' => $this->get_required_model(),
 			'enable_timepicker' => [
 				'type' => Form_Models\Switcher_Model::class,
 				'label' => 'Enable timepicker',
 				'description' => 'Set whether users can also select the time of day when adding a date.',
-				'classes' => 'x-col-12',
 			],
-			'required' => $this->get_required_model(),
 		];
 	}
 

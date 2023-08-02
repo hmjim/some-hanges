@@ -20,7 +20,7 @@ class Recurring_Date_Order extends Base_Search_Order {
 	public function get_models(): array {
 		return [
 			'source' => function() { ?>
-				<div class="ts-form-group x-col-12">
+				<div class="ts-form-group ts-col-1-1">
 					<label>Recurring date filter:</label>
 					<select v-model="clause.source">
 						<option v-for="filter in $root.getFiltersByType('recurring-date', 'availability')" :value="filter.key">

@@ -19,8 +19,8 @@ class Switcher_Field extends Base_Post_Field {
 
 	public function get_models(): array {
 		return [
-			'label' => $this->get_model( 'label', [ 'classes' => 'x-col-6' ]),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'label' => $this->get_label_model(),
+			'key' => $this->get_model( 'key', [ 'width' => '1/1' ]),
 			'description' => $this->get_description_model(),
 			'required' => $this->get_required_model(),
 		];

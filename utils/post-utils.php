@@ -541,23 +541,3 @@ function cache_post_wall_reply_stats( $post_id ) {
 	do_action( 'voxel/post/wall-reply-stats-updated', $post_id, $stats );
 	return $stats;
 }
-
-function get_single_post_template_id( \Voxel\Post_Type $post_type ) {
-	$templates = $post_type->repository->get_custom_templates()['single_post'] ?? null;
-	if ( empty( $templates ) ) {
-		return $post_type->get_templates()['single'] ?? null;
-	}
-
-	foreach ( $templates as $index => $template ) {
-		if ( empty( $template['visibility_rules'] ) ) {
-			continue;
-		}
-
-		$rules_passed = \Voxel\evaluate_visibility_rules( $template['visibility_rules'] );
-		if ( $rules_passed ) {
-			return $template['id'];
-		}
-	}
-
-	return $post_type->get_templates()['single'] ?? null;
-}

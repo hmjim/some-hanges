@@ -32,22 +32,22 @@ class Number_Field extends Base_Post_Field {
 			'min' => [
 				'type' => Form_Models\Number_Model::class,
 				'label' => 'Minimum value',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 			],
 			'max' => [
 				'type' => Form_Models\Number_Model::class,
 				'label' => 'Maximum value',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 			],
 			'step' => [
 				'type' => Form_Models\Number_Model::class,
 				'label' => 'Step size',
-				'classes' => 'x-col-4',
+				'width' => '1/3',
 			],
 			'display' => [
 				'type' => Form_Models\Select_Model::class,
 				'label' => 'Display as',
-				'classes' => 'x-col-4',
+				'width' => '1/1',
 				'choices' => [
 					'input' => 'Input',
 					'stepper' => 'Stepper',
@@ -57,7 +57,6 @@ class Number_Field extends Base_Post_Field {
 				'v-if' => 'field.display === "input"',
 				'type' => Form_Models\Text_Model::class,
 				'label' => 'Suffix',
-				'classes' => 'x-col-4',
 			],
 			'required' => $this->get_required_model(),
 		];
@@ -118,11 +117,7 @@ class Number_Field extends Base_Post_Field {
 	}
 
 	public function _get_value_multiplier() {
-		if ( ! is_numeric( $this->props['step'] ) ) {
-			return 1;
-		}
-
-		$step = abs( (float) $this->props['step'] );
+		$step = (float) abs( $this->props['step'] );
 		$precision = strlen( substr( strrchr( $step, '.' ), 1 ) );
 
 		return pow( 10, $precision );

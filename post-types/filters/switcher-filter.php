@@ -18,11 +18,13 @@ class Switcher_Filter extends Base_Filter {
 
 	public function get_models(): array {
 		return [
-			'label' => $this->get_model( 'label', [ 'classes' => 'x-col-12' ]),
+			'label' => $this->get_label_model(),
 			'placeholder' => $this->get_placeholder_model(),
-			'key' => $this->get_model( 'key', [ 'classes' => 'x-col-6' ]),
+			'description' => $this->get_description_model(),
+			'key' => $this->get_key_model(),
+			'icon' => $this->get_icon_model(),
 			'source' => function() { ?>
-				<div class="ts-form-group x-col-6">
+				<div class="ts-form-group ts-col-1-1">
 					<label>Data source:</label>
 					<select v-model="filter.source">
 						<option v-for="field in $root.getFieldsByType('switcher')" :value="field.key">
@@ -41,14 +43,12 @@ class Switcher_Filter extends Base_Filter {
 			'compare' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Comparison',
-				'classes' => 'x-col-6',
+				'width' => '1/1',
 				'choices' => [
 					'checked' => 'Is checked',
 					'unchecked' => 'Is unchecked',
 				],
 			],
-			'description' => $this->get_description_model(),
-			'icon' => $this->get_icon_model(),
 		];
 	}
 

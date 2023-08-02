@@ -82,7 +82,7 @@ abstract class Base_Search_Order {
 
 	protected function get_source_model( $field_types ) {
 		return function() use ( $field_types ) { ?>
-			<div class="ts-form-group x-col-12">
+			<div class="ts-form-group ts-col-1-1">
 				<label>Field:</label>
 				<select v-model="clause.source">
 					<option v-for="field in $root.getFieldsByType( <?= esc_attr( wp_json_encode( (array) $field_types ) ) ?> )" :value="field.key">
@@ -97,7 +97,6 @@ abstract class Base_Search_Order {
 		return [
 			'type' => \Voxel\Form_Models\Radio_Buttons_Model::class,
 			'label' => 'Order',
-			'classes' => 'x-col-12',
 			'choices' => [
 				'ASC' => __( 'Ascending', 'voxel-backend' ),
 				'DESC' => __( 'Descending', 'voxel-backend' ),

@@ -35,7 +35,6 @@ class Post_Relation_Field extends Base_Post_Field {
 			'relation_type' => [
 				'type' => \Voxel\Form_Models\Select_Model::class,
 				'label' => 'Relation type',
-				'classes' => 'x-col-12',
 				':class' => '{"vx-disabled": ($root.config.settings.key === "collection" && field.key === "items")}',
 				'choices' => [
 					'has_one' => 'Has one',
@@ -48,20 +47,17 @@ class Post_Relation_Field extends Base_Post_Field {
 				'type' => \Voxel\Form_Models\Checkboxes_Model::class,
 				'label' => 'Related to',
 				'choices' => $post_types,
-				'classes' => 'x-col-12',
 			],
 			'use_custom_key' => [
 				'type' => \Voxel\Form_Models\Switcher_Model::class,
 				'label' => 'Use custom relation key',
 				':class' => '{"vx-disabled": ($root.config.settings.key === "collection" && field.key === "items")}',
 				'description' => 'By default, the field key will be used as the relation key. Enable this setting to use a custom relation key instead.',
-				'classes' => 'x-col-12',
 			],
 			'custom_key' => [
 				'v-if' => 'field.use_custom_key',
 				'type' => \Voxel\Form_Models\Text_Model::class,
 				'label' => 'Relation key',
-				'classes' => 'x-col-12',
 			],
 		];
 	}
@@ -93,11 +89,12 @@ class Post_Relation_Field extends Base_Post_Field {
 		$query_post_types = '\''.join( '\',\'', array_map( 'esc_sql', $this->props['post_types'] ) ).'\'';
 		$author_id = absint( $this->post ? $this->post->get_author_id() : get_current_user_id() );
 
+// INDEX Editing of post relation post_author = {$author_id}	AND
+
 		$existing_ids = $wpdb->get_col( <<<SQL
 			SELECT ID
 			FROM {$wpdb->posts}
-			WHERE post_author = {$author_id}
-				AND post_status = 'publish'
+			WHERE  post_status = 'publish'
 				AND post_type IN ({$query_post_types})
 				AND ID IN ({$query_ids})
 			ORDER BY FIELD(ID,{$query_ids})
@@ -201,7 +198,25 @@ class Post_Relation_Field extends Base_Post_Field {
 			return null;
 		}
 
-		return $ids;
+		$posts = \Voxel\Post::query( [
+			'post_type' => 'any',
+			'post__in' => $ids,
+		] );
+
+		$config = [];
+		foreach ( $ids as $post_id ) {
+			if ( $post = \Voxel\Post::get( $post_id ) ) {
+				$config[] = [
+					'id' => $post->get_id(),
+					'title' => $post->get_title(),
+					'logo' => $post->get_logo_markup(),
+				];
+			}
+		}
+
+		return ! empty( $posts ) ? array_map( function( $post ) {
+			return $post->get_id();
+		}, $posts ) : null;
 	}
 
 	protected function frontend_props() {
@@ -212,7 +227,6 @@ class Post_Relation_Field extends Base_Post_Field {
 			$posts = \Voxel\Post::query( [
 				'post_type' => 'any',
 				'post__in' => $ids,
-				'posts_per_page' => -1,
 			] );
 
 			foreach ( $posts as $post ) {
