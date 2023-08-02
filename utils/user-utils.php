@@ -87,10 +87,10 @@ function cache_user_post_stats( $user_id ) {
 
 	$post_types = join( ',', $post_types );
 	$results = $wpdb->get_results( <<<SQL
-		SELECT COUNT(ID) AS total, post_type, post_status FROM {$wpdb->posts}
+		SELECT COUNT(*) AS total, post_type, post_status FROM {$wpdb->posts}
 		WHERE post_author = {$user_id}
 			AND post_type IN ({$post_types})
-			AND post_status IN ('publish','pending')
+			AND post_status IN ('publish','pending','rejected','draft','unpublished','expired','trash')
 		GROUP BY post_type, post_status
 		ORDER BY post_type
 	SQL );

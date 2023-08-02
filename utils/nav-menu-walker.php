@@ -235,7 +235,7 @@ class Nav_Menu_Walker extends \Walker {
 			    	<div class="ts-popup-head flexify hide-d">
 						<div class="ts-popup-name flexify">
 							<?= \Voxel\get_icon_markup( $args->_icon_mobile ) ?: \Voxel\svg( 'menu.svg' ); ?>
-							<p><?= $widget->get_settings_for_display( 'hamburger_title' ) ?></p>
+							<span><?= $widget->get_settings_for_display( 'hamburger_title' ) ?></span>
 						</div>
 
 						<ul class="flexify simplify-ul">

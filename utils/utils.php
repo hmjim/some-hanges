@@ -25,11 +25,12 @@ spl_autoload_register( function( $classname ) {
 
 require_once locate_template( 'app/utils/constants.php' );
 require_once locate_template( 'app/utils/app-utils.php' );
+require_once locate_template( 'app/utils/auth-utils.php' );
+require_once locate_template( 'app/utils/security-utils.php' );
 require_once locate_template( 'app/utils/post-utils.php' );
 require_once locate_template( 'app/utils/template-utils.php' );
 require_once locate_template( 'app/utils/term-utils.php' );
 require_once locate_template( 'app/utils/user-utils.php' );
-require_once locate_template( 'app/utils/security-utils.php' );
 require_once locate_template( 'app/utils/recurring-date-utils.php' );
 require_once locate_template( 'app/utils/timeline-utils.php' );
 require_once locate_template( 'app/utils/demo-import-utils.php' );
@@ -195,9 +196,21 @@ function get_icon_markup( $icon ) {
 
 	\Elementor\Plugin::$instance->frontend->enqueue_font( $icon['library'] );
 
+	if ( $icon['library'] === 'svg' && ! empty( $icon['value']['url'] ) ) {
+		if ( ! str_ends_with( $icon['value']['url'], '.svg' ) ) {
+			return '';
+		}
+	}
+
 	ob_start();
 	\Elementor\Icons_Manager::render_icon( $icon, [ 'aria-hidden' => 'true' ] );
-	return ob_get_clean();
+	$markup = ob_get_clean();
+
+	if ( $icon['library'] === 'svg' && ! str_contains( $markup, '<svg' ) ) {
+		return '';
+	}
+
+	return $markup;
 }
 
 function render_icon( $icon ) {
@@ -374,13 +387,17 @@ function random_string( int $length ) {
 	return $token;
 }
 
-function get_google_auth_link() {
+function get_google_auth_link( $role = '' ) {
 	return add_query_arg( [
 		'response_type' => 'code',
 		'client_id' => \Voxel\get( 'settings.auth.google.client_id' ),
 		'redirect_uri' => rawurlencode( home_url('/?vx=1&action=auth.google.login') ),
 		'scope' => 'openid email',
-		'state' => sprintf( '%s..%s', wp_create_nonce( 'vx_auth_google' ), rawurlencode( \Voxel\get_redirect_url() ) ),
+		'state' => base64_encode( wp_json_encode( [
+			'_wpnonce' => wp_create_nonce( 'vx_auth_google' ),
+			'redirect_to' => \Voxel\get_redirect_url(),
+			'role' => $role,
+		] ) ),
 	], 'https://accounts.google.com/o/oauth2/v2/auth' );
 }
 
@@ -587,6 +604,7 @@ function qrcode( $text ) {
 function svg( $filename, $output = true ) {
 	$filename = str_ends_with( $filename, '.svg' ) ? $filename : $filename.'.svg';
 	$svg = file_get_contents( locate_template( 'assets/images/svgs/'.$filename ) );
+
 	if ( $output ) {
 		echo $svg;
 	} else {
