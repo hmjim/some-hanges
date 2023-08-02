@@ -96,8 +96,7 @@ class Post_Relation_Field extends Base_Post_Field {
 		$existing_ids = $wpdb->get_col( <<<SQL
 			SELECT ID
 			FROM {$wpdb->posts}
-			WHERE post_author = {$author_id}
-				AND post_status = 'publish'
+			WHERE post_status = 'publish'
 				AND post_type IN ({$query_post_types})
 				AND ID IN ({$query_ids})
 			ORDER BY FIELD(ID,{$query_ids})
