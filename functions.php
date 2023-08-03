@@ -22,8 +22,6 @@ namespace {
 
     use Voxel\Post;
 
-    require_once 'functions_index.php';
-
     function voxel_child_enqueue_styles()
     {
         wp_enqueue_style('voxel-child-style', get_template_directory_uri() . '/style.css', false, wp_get_theme()->get('Version'));
@@ -41,378 +39,267 @@ namespace {
 	}
   </style>';
     }
-	
-	function vat_estimation_feild_save($post_id)
-	{
-		
-		require 'app/controllers/frontend/create_title.php';
-
-	}
-	 
-	add_action('wp_insert_post', 'vat_estimation_feild_save', 99);
-	add_action('wp_update_post', 'vat_estimation_feild_save', 99);
-	add_action('wp_save_post', 'vat_estimation_feild_save', 99);
-
-	function my_saved_post( $post_id) {
-
-		wp_update_post(array(
-			'ID'    =>  $post_id,
-			'post_status'   =>  'publish'
-		));	
-
-	} 
-	add_action( 'pmxi_saved_post', 'my_saved_post', 99 );
-
-// CUSTOM CODE FOR INDEX.cy 
-// 
 
 
+    function index_get_related_posts($post_id, $rel_key, $rel_type)
+    {
+        global $wpdb;
 
-// Add to voxel template [post_views id="@post(:id)"] 
-    /*
+        if ($rel_type == 'has_one' || $rel_type == 'has_many') {
+            $rows = $wpdb->get_col($wpdb->prepare(<<<SQL
+				SELECT child_id
+				FROM {$wpdb->prefix}voxel_relations
+				WHERE parent_id = %d AND relation_key = %s
+				ORDER BY `order` ASC
+			SQL, $post_id, $rel_key));
+        } else {
+            $rows = $wpdb->get_col($wpdb->prepare(<<<SQL
+				SELECT parent_id
+				FROM {$wpdb->prefix}voxel_relations
+				WHERE child_id = %d AND relation_key = %s
+				ORDER BY `order` ASC
+			SQL, $post_id, $rel_key));
+        }
 
-    function voxel_post_views($atts) {
-        // Get the post ID.
-        //
+        $ids = array_map('absint', (array)$rows);
+
+        $is_multiple = in_array($rel_type, ['has_many', 'belongs_to_many'], true);
+        if (!$is_multiple && !empty($ids)) {
+            $ids = [array_shift($ids)];
+        }
+
+        return $ids;
+    }
+
+    function index_create_relation($parent_id, $child_id, $rel_key)
+    {
+
+        global $wpdb;
+
+        // delete existing relations
+        $wpdb->delete($wpdb->prefix . 'voxel_relations', [
+            'parent_id' => $parent_id,
+            'relation_key' => $rel_key,
+        ]);
+
+        // insert new relations
+
+
+        $query = "INSERT INTO {$wpdb->prefix}voxel_relations (`parent_id`, `child_id`, `relation_key`, `order`) VALUES ";
+        $query .= $wpdb->prepare('(%d,%d,%s,%d)', $parent_id, $child_id, $rel_key, 0);
+        $insert_id = $wpdb->query($query);
+
+        // clear cache
+
+        $cache_key = sprintf('relations:%s:%d:%s', $rel_key, $child_id, 'child_id');
+        wp_cache_delete($cache_key, 'voxel');
+
+        return $insert_id;
+
+    }
+
+
+    function vat_estimation_feild_save($post_id)
+    {
+
+        require 'app/controllers/frontend/create_title.php';
+
+    }
+
+    add_action('wp_insert_post', 'vat_estimation_feild_save', 99);
+    add_action('wp_update_post', 'vat_estimation_feild_save', 99);
+    add_action('wp_save_post', 'vat_estimation_feild_save', 99);
+
+    function my_saved_post($post_id)
+    {
+
+        wp_update_post(array(
+            'ID' => $post_id,
+            'post_status' => 'publish'
+        ));
+
+    }
+
+    add_action('pmxi_saved_post', 'my_saved_post', 99);
+
+
+    function price_history_shortcode($atts)
+    {
         $post_id = get_the_ID();
+        $output = '';
 
-        $atts = shortcode_atts( array(
-            'id' => $post_id,
-        ), $atts, 'voxel_post_views' );
+        // Retrieve the price history array
+        $price_history = get_post_meta($post_id, 'price_history', true);
+
+        // Unserialize the price history array
+        if ($price_history) {
+            $price_history = unserialize($price_history);
+
+            // Generate the output HTML
+            if (!empty($price_history)) {
+                $output .= '<b>Price Change History</b><table>';
+
+                foreach ($price_history as $entry) {
+                    $timestamp = $entry['timestamp'];
+                    $value = $entry['value'];
+
+                    $output .= '<tr>';
+                    $output .= '<td>&euro;' . number_format_i18n($value) . '</td';
+                    $output .= '<td> on ' . date('Y-m-d', $timestamp) . '</td>';
+                    $output .= '</tr>';
+                }
+
+                $output .= '</table>';
+            } else {
+                $output .= '<!-- No price history available. -->';
+            }
+        } else {
+            $output .= '<!--- No price history available. -->';
+        }
+
+        return $output;
+    }
+
+    add_shortcode('price_history', 'price_history_shortcode');
+
+    function index_title_link($atts)
+    {
+        $output = '';
+        $post_id = $atts['id'];
+
+        //$post_id = get_the_id();
+
+        if ($post_id) {
+            $output .= '<a href="' . get_permalink($post_id) . '">' . get_the_title($post_id) . '</a>';
+        }
+        return $output;
+    }
+
+    add_shortcode('title_link', 'index_title_link');
 
 
-        $post_id = $atts['post_id'];
-
-        if ( ! isset( $post_id ) || empty( $post_id ) ) {
+    function sendNotification($title, $subject, $link)
+    {
+        if (!class_exists('WonderPushAdmin')) {
             return;
         }
-
-        // Get the number of views for that post.
-        $views = jp_post_views_get_view( $post_id );
-
-        if ( isset( $views ) && ! empty( $views ) ) {
-            $view = sprintf(
-                esc_html(
-                    _n(
-                        '%s view',
-                        '%s views',
-                        $views['total'],
-                        'post-views-for-jetpack'
-                    )
+        $client = get_wonderpush_client();
+        $client->deliveries()->create(array(
+            'notification' => array(
+                'alert' => array(
+                    'title' => $title,
+                    'text' => $subject,
+                    'targetUrl' => $link,
                 ),
-                number_format_i18n( $views['total'] )
-            );
-        } else {
-            $view = esc_html__( 'no views', 'post-views-for-jetpack' );
+            ),
+            // Option 1: Target all your users
+            'targetSegmentIds' => '@ALL',
+            // Option 2: Target specific user by ids
+            //'targetUserIds' => array('johndoe', 'janedoe'),
+            // Option 3: Target by tags
+            //'targetTags' => array('news'),
+            // More options are available, read our Management API documentation at: https://docs.wonderpush.com/reference/post-deliveries
+        ));
+    }
+
+
+    /* ADD GTM TO HEAD AND BELOW OPENING BODY */
+
+    add_action('wp_head', 'google_tag_manager_head', 20);
+    function google_tag_manager_head()
+    { ?>
+        <!-- Google Tag Manager -->
+        <script>(function (w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({
+                    'gtm.start':
+                        new Date().getTime(), event: 'gtm.js'
+                });
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+                j.async = true;
+                j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', 'GTM-TCJRQST');</script>
+        <!-- End Google Tag Manager -->
+        <!-- Meta Pixel Code -->
+        <script>
+            !function (f, b, e, v, n, t, s) {
+                if (f.fbq) return;
+                n = f.fbq = function () {
+                    n.callMethod ?
+                        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                };
+                if (!f._fbq) f._fbq = n;
+                n.push = n;
+                n.loaded = !0;
+                n.version = '2.0';
+                n.queue = [];
+                t = b.createElement(e);
+                t.async = !0;
+                t.src = v;
+                s = b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t, s)
+            }(window, document, 'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '285348897347958');
+            fbq('track', 'PageView');
+        </script>
+        <script>
+            window.addEventListener('load', function () {
+                // Check if the page URL contains the hash "#recover_account"
+                if (window.location.hash === "#recover_account") {
+                    // Find the anchor element with the href "#recover_account"
+                    var recoverAccountLink = document.querySelector('a[href="#recover_account"]');
+
+                    // Trigger a click event on the anchor element
+                    if (recoverAccountLink) {
+                        recoverAccountLink.click();
+                    }
+                }
+            });
+        </script>
+        <!-- Meta Pixel End -->
+        <?php
+        //	Temporary remove elements for app approval
+        if (stripos($_SERVER['HTTP_USER_AGENT'], 'index-ios-app') !== false) {
+            ?>
+            <style>
+                .dashboard_current_plan,
+                .menu-item-5174,
+                .ts-social-connect,
+                .elementor-element-5849dbae,
+                .elementor-element-80694e3,
+                #cmplz-cookiebanner-container {
+                    display: none !important;
+                }
+            </style>
+
+            <?php
         }
 
-        return apply_filters( 'voxel_post_views_output', $view, $views, $post_id );
+
     }
 
-    add_shortcode( 'post_views', 'voxel_post_views' );
+    add_action('wp_body_open', 'google_tag_manager_body', 100);
+    function google_tag_manager_body()
+    { ?>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript>
+            <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TCJRQST"
+                    height="0" width="0" style="display:none;visibility:hidden"></iframe>
+        </noscript>
+        <!-- End Google Tag Manager (noscript) -->
+        <!-- Meta Pixel Code -->
+        <noscript><img height="1" width="1" style="display:none"
+                       src="https://www.facebook.com/tr?id=285348897347958&ev=PageView&noscript=1"
+            /></noscript>
+        <!-- End Meta Pixel Code -->
 
 
-    function voxel_convert_price($atts) {
-        // Get the post ID.
-        //
-        //$post_id = get_the_ID();
-
-        $atts = shortcode_atts( array(
-            'value' => '',
-        ), $atts, 'voxel_convert_price' );
-
-
-        $price = $atts['value'];
-
-        $price = ($price / 1000).'k';
-
-        return apply_filters( 'voxel_convert_price_output', $price);
+        <?php
     }
-
-    add_shortcode( 'convert_price', 'voxel_convert_price' );
-
-    */
-
-
-    /* VAT ESTIMATION CUSTOM FIELD */
-/*    print('<pre>');
-    print_r(get_post(6838));
-    print_r(get_post_custom(6838));
-    die();*/
-
-    // const LEVEL1 = 85000;
-    // const LEVEL2 = 85000;//170000 - LEVEL1
-    // const LOWPRICE_PERCENT = 3;
-    // const MIDDLEPRICE_PERCENT = 5;
-    // const HIGHPRICE_PERCENT = 8;
-
-    // function vat_estimation_feild_save($post_id, $post, $update)
-    // {
-
-        // if (get_post_type($post_id) !== 'sale') return;
-
-        // $price = get_post_meta($post_id, 'price');
-        // $area = get_post_meta($post_id, 'covered-area');
-
-        // if (!isset($price[0])) $price[0] = 0;
-        // if (!isset($area[0])) $area[0] = 0;
-
-        // if (($price[0] > 0) && ($area[0] > 0)) {
-            // $vat_max = round($price[0] * 0.19);
-
-            // $price_per_sqm = round($price[0] / $area[0]);
-
-            // if ($area[0] <= 150) {
-
-                // $vat_min = round($price[0] * 0.05);
-
-            // } else {
-
-
-                // $area19 = $area[0] - 150;
-
-                // $vat_min = round(($price[0] / $area[0] * $area19 * 0.19) + ($price[0] / $area[0] * 150 * 0.05));
-
-
-            // }
-
-            // $vat_estimation = $vat_min . '&euro; or ' . $vat_max . '&euro;';
-
-            // update_post_meta($post_id, 'vat_min', $vat_min);
-            // update_post_meta($post_id, 'vat_max', $vat_max);
-            // update_post_meta($post_id, 'vat_estimation', $vat_estimation);
-            // update_post_meta($post_id, 'price_per_sqm', $price_per_sqm);
-        // }
-
-        // $lowPrice = $middlePrice = $highPrice = 0;
-        // $lowPrice = $price[0];
-        // if ($lowPrice > LEVEL1) {
-            // $middlePrice = $lowPrice - LEVEL1;
-            // $lowPrice = LEVEL1;
-        // }
-        // if ($middlePrice > LEVEL2) {
-            // $highPrice = $middlePrice - LEVEL2;
-            // $middlePrice = LEVEL2;
-        // }
-        // $title_transfer_fee = ($lowPrice * LOWPRICE_PERCENT / 100 + $middlePrice * MIDDLEPRICE_PERCENT / 100 + $highPrice * HIGHPRICE_PERCENT / 100) / 2;
-        // $title_transfer_fee = sprintf("%01.2f", $title_transfer_fee);
-        // update_post_meta($post_id, 'title_transfer_fee', $title_transfer_fee);
-
-        // if (is_admin()) {
-            // global $taxonomiesForTitle, $importantTaxonomies;
-            // foreach ($importantTaxonomies as $taxonomy) $taxonomiesForTitle[$taxonomy] = get_the_terms($post_id, $taxonomy);
-            // updatePostTitleSlug($post_id, $taxonomiesForTitle);
-        // }
-    // }
-
-    // add_action('save_post', 'vat_estimation_feild_save', 199, 3);
-	
-	
-  
-	
-    // $taxonomiesForTitle = [];
-    // $importantTaxonomies = ['sale_type', 'ad_bedrooms', 'district', 'city'];
-    // function titleSlugProcess($post_id, $terms, $tt_ids, $taxonomy) {
-        // global $taxonomiesForTitle, $importantTaxonomies, $post_title, $post_name;
-        // if (in_array($taxonomy, $importantTaxonomies)) {
-            // $taxonomiesForTitle[$taxonomy] = get_the_terms($post_id, $taxonomy);
-            // if (count($taxonomiesForTitle) == count($importantTaxonomies)) {
-                // updatePostTitleSlug($post_id, $taxonomiesForTitle);
-            // }
-        // }
-    // }
-    // add_action('set_object_terms', 'titleSlugProcess', 200, 4);
-
-
-
-
-// function udpdate_title_cron_job() {
-    // if ( ! wp_next_scheduled( 'run_update_title_cron_job' ) ) {
-        // wp_schedule_event( current_time( 'timestamp' ), 'hourly', 'run_update_title_cron_job' );
-    // }
-// }
-// add_action( 'wp', 'udpdate_title_cron_job' );
-
-
-
-    // function updatePostTitleSlug($post_id, $taxonomiesForTitle)
-    // {
-        // $post_title = "";
-        // $post = get_post($post_id);
-        // $coveredArea = get_post_meta($post_id, 'covered-area');
-        // $totalArea = get_post_meta($post_id, 'plot-area');
-        // $propertyTypeLabel = get_post_type_object($post->post_type)->label;
-
-        // if (isset($taxonomiesForTitle['sale_type'][0]->slug)) {
-            // if (($taxonomiesForTitle['sale_type'][0]->slug == 'residential') || (($taxonomiesForTitle['sale_type'][1]->slug ?? false) == 'residential')) {
-                // if (isset($taxonomiesForTitle['ad_bedrooms'][0]) && ($taxonomiesForTitle['sale_type'][0]->slug != 'plot-of-land-residential')) {
-                    // $post_title .= $taxonomiesForTitle['ad_bedrooms'][0]->name . ' bedroom';
-                    // $post_title .= ' ';
-                // } elseif (isset($coveredArea[0]) && ($coveredArea[0] != '') && ($taxonomiesForTitle['sale_type'][0]->slug != 'plot-of-land-residential')) {
-                    // $post_title .= $coveredArea[0] . 'sq.m ';
-                // } elseif (isset($totalArea[0]) && ($totalArea[0] != '') && ($taxonomiesForTitle['sale_type'][0]->slug == 'plot-of-land-residential')) {
-                    // $post_title .= $totalArea[0] . 'sq.m Residential ';
-                // }
-                // if (isset($taxonomiesForTitle['sale_type'][0]) && ($taxonomiesForTitle['sale_type'][0]->slug != 'residential')) {
-                    // $post_title .= $taxonomiesForTitle['sale_type'][0]->name . ' ';
-                // } else {
-                    // $post_title .= 'Residential Property';
-                // }
-                // $post_title = trim($post_title);
-                // $post_title .= ' ' . $propertyTypeLabel;
-                // if (isset($taxonomiesForTitle['city'][0]->name))
-                    // $post_title .= ' in ' . $taxonomiesForTitle['city'][0]->name;
-                // if (isset($taxonomiesForTitle['district'][0]) && (str_replace('_district', '', $taxonomiesForTitle['district'][0]->slug) != ($taxonomiesForTitle['city'][0]->slug ?? false)) && !str_contains(($taxonomiesForTitle['city'][0]->name ?? false), $taxonomiesForTitle['district'][0]->name)) $post_title .= ', ' . $taxonomiesForTitle['district'][0]->name . ' district';
-            // }
-            // if (($taxonomiesForTitle['sale_type'][0]->slug == 'commercial') || (($taxonomiesForTitle['sale_type'][1]->slug ?? false) == 'commercial')) {
-                // if (isset($coveredArea[0]) && ($coveredArea[0] != '') && ($taxonomiesForTitle['sale_type'][1]->slug != 'plot-of-land-commercial')) {
-                    // $post_title .= $coveredArea[0] . 'sq.m. ';
-                // } elseif (isset($totalArea[0]) && ($totalArea[0] != '') && ($taxonomiesForTitle['sale_type'][1]->slug == 'plot-of-land-commercial')) {
-                    // $post_title .= $totalArea[0] . 'sq.m. Commercial ';
-                // } 
-                // if (isset($taxonomiesForTitle['sale_type'][1])) {
-                    // $post_title .= $taxonomiesForTitle['sale_type'][1]->name . ' ';
-                    // if($taxonomiesForTitle['sale_type'][0]->name == 'Building'){
-                        // $post_title .= $taxonomiesForTitle['sale_type'][0]->name . ' ';
-                    // }
-                // } else {
-                    // if (isset($taxonomiesForTitle['sale_type'][0]))
-                        // $post_title .= $taxonomiesForTitle['sale_type'][0]->name . ' ';
-                    // $post_title .= 'Property';
-                // }
-
-                // $post_title = trim($post_title);
-                // $post_title .= ' ' . $propertyTypeLabel;
-                // if (isset($taxonomiesForTitle['city'][0]))
-                    // $post_title .= ' in ' . $taxonomiesForTitle['city'][0]->name;
-                // if (isset($taxonomiesForTitle['district'][0]) && (str_replace('_district', '', $taxonomiesForTitle['district'][0]->slug) != ($taxonomiesForTitle['city'][0]->slug ?? false)) && !str_contains(($taxonomiesForTitle['city'][0]->name ?? false), $taxonomiesForTitle['district'][0]->name)) $post_title .= ', ' . $taxonomiesForTitle['district'][0]->name . ' district';
-            // }
-            // $post_name = wp_unique_post_slug(sanitize_title($post_id.' '.$post_title), $post_id, $post->post_status, $post->post_type, $post->post_parent);
-            // remove_action('save_post', 'vat_estimation_feild_save', 199);
-            // wp_update_post(['ID' => $post_id, 'post_title' => $post_title, 'post_name' => $post_name]);
-        // }
-    // }
-
-// add_action( 'init', 'run_update_title' );
-
-// function run_update_title( ) {
-	// if ( isset( $_GET['gettitlerun'] ) ) {
-		// $today = getdate();
-
-		// $postss = get_posts([
-		// 'post_type'  => 'sale',
-		// 'posts_per_page' => -1,
-		// 'title' => '',
-
-		// 'date_query' => array(
-			// array(
-				// 'after' => strtotime( 'last Sunday' ),
-			// ),
-		 // ),
-
-		// ]);
-		// var_dump($_GET['gettitlerun']);
-		// foreach( $postss as $lke => $postt ){
-			// setup_postdata($postt);		
-			// if($lke == $_GET['gettitlerun']){ 
-				// die();
-			// } else {
-				// if($postt->post_title == ''){
-					
-					
-					
-					
-    // $taxonomiesForTitle = [];
-    // $importantTaxonomies = ['sale_type', 'ad_bedrooms', 'district', 'city'];
-	// $post_id = $postt->ID;
-	// global $wp_taxonomies;
-        // $post_title = "";
-        // $post = get_post($postt->ID);
-        // $coveredArea = get_post_meta($postt->ID, 'covered-area');
-        // $totalArea = get_post_meta($postt->ID, 'total-area');
-        // $propertyTypeLabel = 'Sale';
-
-		// foreach ($importantTaxonomies as $taxonomy) {
-			// $taxonomiesForTitle[$taxonomy] = get_the_terms($postt->ID, $taxonomy);
-		// }
-// updatePostTitleSlug($postt->ID, $taxonomiesForTitle);
-
-
-        // print '<pre>';
-		// var_dump('ID -> ' . $postt->ID);
-		// var_dump('Title -> ' . get_the_title($postt->ID));
-        // print '</pre>';					
-
-				// }
-			// }
-			
-		// }
-
-	// }
-	
-// }
-
-
-
-// add_action( 'init', 'run_update_title_rent' );
-
-// function run_update_title_rent( ) {
-	// if ( isset( $_GET['gettitlerunrent'] ) ) {
-		// $today = getdate();
-
-		// $postss = get_posts([
-		// 'post_type'  => 'rent',
-		// 'posts_per_page' => -1,
-		// 'title' => '',
-
-		// 'date_query' => array(
-			// array(
-				// 'after' => strtotime( 'last Sunday' ),
-			// ),
-		 // ),
-
-		// ]);
-		// var_dump($_GET['gettitlerunrent']);
-		// foreach( $postss as $lke => $postt ){
-			// setup_postdata($postt);		
-			// if($lke == $_GET['gettitlerunrent']){ 
-				// die();
-			// } else {
-				// if($postt->post_title == ''){
-					
-					
-					
-					
-    // $taxonomiesForTitle = [];
-    // $importantTaxonomies = ['sale_type', 'ad_bedrooms', 'district', 'city'];
-	// $post_id = $postt->ID;
-	// global $wp_taxonomies;
-        // $post_title = "";
-        // $post = get_post($postt->ID);
-        // $coveredArea = get_post_meta($postt->ID, 'covered-area');
-        // $totalArea = get_post_meta($postt->ID, 'total-area');
-        // $propertyTypeLabel = 'Sale';
-
-		// foreach ($importantTaxonomies as $taxonomy) {
-			// $taxonomiesForTitle[$taxonomy] = get_the_terms($postt->ID, $taxonomy);
-		// }
-// updatePostTitleSlug($postt->ID, $taxonomiesForTitle);
-
-
-        // print '<pre>';
-		// var_dump('ID -> ' . $postt->ID);
-		// var_dump('Title -> ' . get_the_title($postt->ID));
-        // print '</pre>';					
-
-				// }
-			// }
-			
-		// }
-
-	// }
-	
-// }
-
 
 
     add_action('admin_head', 'maybe_modify_admin_css');
@@ -431,122 +318,29 @@ namespace {
     }
 
     add_action('wp_enqueue_scripts', 'voxel_child_enqueue_filter', 999);
-	
-	
-	//Changing JS files from parents to Child themes. 
-//add_action('wp_print_scripts', 'index_change_scripts', 100);
-function index_change_scripts()
-{
-    
-	wp_dequeue_script('vx:search-form.js');
-	wp_deregister_script('vx:search-form.js');
-    wp_enqueue_script('index_search_form', get_stylesheet_directory_uri().'/assets/dist/search-form.js', array('vx:commons.js'));
-	
-}
 
-	//Debugging the scripts
+
+//add_action('wp_print_scripts', 'index_change_scripts', 100);
+    function index_change_scripts()
+    {
+
+        wp_dequeue_script('vx:search-form.js');
+        wp_deregister_script('vx:search-form.js');
+        wp_enqueue_script('index_search_form', get_stylesheet_directory_uri() . '/assets/dist/search-form.js', array('vx:commons.js'));
+
+    }
 
 //add_action('wp_enqueue_scripts', 'index_debug_dequeue', 10000);
 
-function index_debug_dequeue() {
-    if (wp_script_is('vx:search-form.js', 'enqueued')) {
-        echo 'The script is enqueued';
-    }
-    elseif (wp_script_is('vx:search-form.js', 'registered')) {
-        echo 'The script is registered';
-    }
-    else {
-        echo 'The script is not enqueued or registered';
-    }
-}
-	
-	
-	
-
-	
-	
-	
-	
-} //END OF NAMESPACE
-
-// Editing Number Formal modifier for the Map. The modifier delimiter set to 10 will turn price into 345k or 1.4M
-/*
-namespace Voxel\Dynamic_Tags\Modifiers {
-
-    
-    require_once locate_template('/app/dynamic-tags/base-modifier.php');
-
-    class Number_Format extends \Voxel\Dynamic_Tags\Base_Modifier
+    function index_debug_dequeue()
     {
-        public function get_key(): string
-        {
-            return 'number_format';
-        }
-
-        public function get_label(): string
-        {
-            return _x('Number Format', 'modifiers', 'voxel-backend');
-        }
-
-        public function get_arguments(): array
-        {
-            return [
-                'decimals' => [
-                    'type' => \Voxel\Form_Models\Number_Model::class,
-                    'label' => _x('Decimals', 'modifiers', 'voxel-backend'),
-                    'description' => _x('Precision of the number of decimal places. Default 0.', 'modifiers', 'voxel-backend'),
-                ],
-            ];
-        }
-
-        public function apply($value, $args, $group)
-        {
-            if (!is_numeric($value)) {
-                return $value;
-            }
-
-            $decimals = $args[0] ?? 0;
-
-            if ($decimals < 0) {
-                $exp = absint($decimals);
-                $rounded = round($value / pow(10, $exp)) * pow(10, $exp);
-
-                $formatted = number_format_i18n($rounded, 0);
-                if (!is_null($formatted)) {
-                    $value = $formatted;
-                }
-
-                return $value;
-            } elseif ($decimals == 10) {
-
-                if ($value >= 1000000) {
-
-                    $value = (round($value / 10000) / 100) . 'M';
-
-                } else {
-                    $value = round($value / 1000) . 'k';
-                }
-
-                return $value;
-
-
-            } elseif ($decimals == 20) {
-
-                
-                $value = round(($value / 1000), 1) . 'k';
-
-                
-                return $value;
-
-
-            } else {
-                $formatted = number_format_i18n($value, $decimals);
-                if (!is_null($formatted)) {
-                    $value = $formatted;
-                }
-
-                return $value;
-            }
+        if (wp_script_is('vx:search-form.js', 'enqueued')) {
+            echo 'The script is enqueued';
+        } elseif (wp_script_is('vx:search-form.js', 'registered')) {
+            echo 'The script is registered';
+        } else {
+            echo 'The script is not enqueued or registered';
         }
     }
-}*/
+	
+	
